@@ -38,7 +38,7 @@
 // Install framer-motion: npm install framer-motion
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link);
 
 export default function LandingPage() {
   return (
