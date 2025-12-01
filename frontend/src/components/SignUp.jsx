@@ -97,6 +97,8 @@ import React from "react";
 // }
 
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { schema } from "../validation/signupSchema.js";
 
 const SignUp = () => {
   // setup react hook form
@@ -104,7 +106,9 @@ const SignUp = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   // submit handler
   const onSubmit = (data) => {
@@ -131,7 +135,7 @@ const SignUp = () => {
               Full Name
             </label>
             <input
-              {...register("fullName", { required: "Fullname is required" })}
+              {...register("fullName")}
               type="text"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your full name"
@@ -149,14 +153,8 @@ const SignUp = () => {
               Email
             </label>
             <input
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: "Enter a valid email address",
-                },
-              })}
-              type="text"
+              {...register("email")}
+              type="email"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your email"
             />
@@ -173,15 +171,7 @@ const SignUp = () => {
               Password
             </label>
             <input
-              {...register("password", {
-                pattern: {
-                  value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).+$/,
-                  message:
-                    "Password must include uppercase, lowercase, number, and special character",
-                },
-                required: "Password is required",
-                minLength: { value: 6, message: "Minimum 6 characters" },
-              })}
+              {...register("password")}
               type="password"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your password"
@@ -199,11 +189,7 @@ const SignUp = () => {
               Confirm Password
             </label>
             <input
-              {...register("confirmPassword", {
-                required: "Please confirm your password",
-                validate: (value, formValues) =>
-                  value === formValues.password || "Passwords do not match",
-              })}
+              {...register("confirmPassword")}
               type="password"
               placeholder="Confirm your password"
               className="mt-1 w-full border rounded-md px-3 py-2"
@@ -223,10 +209,7 @@ const SignUp = () => {
               Age
             </label>
             <input
-              {...register("age", {
-                required: "Age is required",
-                min: { value: 18, message: "must be atleast 13 yrs old" },
-              })}
+              {...register("age")}
               type="number"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your age"
@@ -239,14 +222,12 @@ const SignUp = () => {
           {/* Date of birth */}
           <div>
             <label
-              htmlFor="dateofbirth"
+              htmlFor="dob"
               className="block text-sm font-medium text-gray-700">
               Date of Birth
             </label>
             <input
-              {...register("dateofbirth", {
-                required: "Date of birth is required",
-              })}
+              {...register("dob")}
               type="date"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your date of birth"
@@ -261,24 +242,18 @@ const SignUp = () => {
           {/* phone number */}
           <div>
             <label
-              htmlFor="number"
+              htmlFor="phone"
               className="block text-sm font-medium text-gray-700">
               Phone Number
             </label>
             <input
-              {...register("number", {
-                required: "Phone number is required",
-                pattern: {
-                  value: /^[0-9]{10}$/,
-                  message: "Enter a valid 10 digit number",
-                },
-              })}
+              {...register("phone")}
               type="tel"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your phone number"
             />
-            {errors.number && (
-              <p className="text-red-500 text-sm">{errors.number.message}</p>
+            {errors.phone && (
+              <p className="text-red-500 text-sm">{errors.phone.message}</p>
             )}
           </div>
 
@@ -290,7 +265,7 @@ const SignUp = () => {
               Address
             </label>
             <input
-              {...register("address", { required: "Address is required" })}
+              {...register("address")}
               type="text"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your address"
@@ -309,7 +284,7 @@ const SignUp = () => {
             </label>
             <select
               id="country"
-              {...register("country", { required: "Please enter valid input" })}
+              {...register("country")}
               name="country"
               className="mt-1 w-full border rounded-md px-3 py-2">
               <option value="">Select your country</option>
@@ -326,7 +301,9 @@ const SignUp = () => {
 
           {/* button  */}
           <div className="md:col-span-2 text-center">
-            <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-semibold transition duration-300 cursor-pointer">
+            <button
+              type="submit"
+              className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-semibold transition duration-300 cursor-pointer">
               Submit
             </button>
           </div>
