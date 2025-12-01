@@ -99,8 +99,10 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "../validation/signupSchema.js";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
+  const navigate = useNavigate();
   // setup react hook form
   const {
     register,
@@ -111,9 +113,28 @@ const SignUp = () => {
   });
 
   // submit handler
-  const onSubmit = (data) => {
-    console.log("Form data", data);
-    window.alert("Signup successful!");
+  const onSubmit = async (data) => {
+ try {
+    // console.log("Submitting:", data); // Debug log
+    const res = await fetch("http://localhost:5000/api/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    // console.log("Response status:", res.status); // Debug log
+    const result = await res.json();
+    // console.log("Result:", result); // Debug log
+
+    if (res.ok) {
+      navigate("/signin");
+    } else {
+      alert(result.message);
+    }
+  } catch (err) {
+    // console.error("Error:", err); // Debug log
+    alert("Something went wrong");
+  }
   };
 
   return (
@@ -182,7 +203,7 @@ const SignUp = () => {
           </div>
 
           {/* Confirm Password */}
-          <div>
+          {/* <div>
             <label
               htmlFor="confirmpasword"
               className="block text-sm font-medium text-gray-700">
@@ -199,7 +220,7 @@ const SignUp = () => {
                 {errors.confirmPassword.message}
               </p>
             )}
-          </div>
+          </div> */}
 
           {/* age */}
           <div>
@@ -276,7 +297,7 @@ const SignUp = () => {
           </div>
 
           {/* Country */}
-          <div>
+          {/* <div>
             <label
               htmlFor="country"
               className="block text-sm font-medium text-gray-700">
@@ -297,7 +318,7 @@ const SignUp = () => {
             {errors.country && (
               <p className="text-red-500 text-sm">{errors.country.message}</p>
             )}
-          </div>
+          </div> */}
 
           {/* button  */}
           <div className="md:col-span-2 text-center">

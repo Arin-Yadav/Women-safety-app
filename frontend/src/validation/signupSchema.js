@@ -11,7 +11,6 @@ export const schema = Yup.object().shape({
     .matches(/^[0-9]{10}$/, "Enter a valid 10-digit phone number")
     .required("Phone number is required"),
   address: Yup.string().required("Address is required"),
-  country: Yup.string().required("Country is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
     .min(8, "Password must be at least 8 characters")
@@ -20,7 +19,4 @@ export const schema = Yup.object().shape({
       "Password must include uppercase, lowercase, number, and special character"
     )
     .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Passwords must match")
-    .required("Confirm your password"),
 });
