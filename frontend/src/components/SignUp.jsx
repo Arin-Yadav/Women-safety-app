@@ -96,7 +96,22 @@ import React from "react";
 //   );
 // }
 
+import { useForm } from "react-hook-form";
+
 const SignUp = () => {
+  // setup react hook form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  // submit handler
+  const onSubmit = (data) => {
+    console.log("Form data", data);
+    window.alert("Signup successful!");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-pink-500 to-purple-700">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-4xl">
@@ -104,7 +119,10 @@ const SignUp = () => {
           Create Your Account
         </h2>
 
-        <form action="" className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          action=""
+          className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* fullName */}
           <div>
             <label
@@ -113,10 +131,14 @@ const SignUp = () => {
               Full Name
             </label>
             <input
+              {...register("fullName", { required: "Fullname is required" })}
               type="text"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your full name"
             />
+            {errors.fullName && (
+              <p className="text-red-500 text-sm">{errors.fullName.message}</p>
+            )}
           </div>
 
           {/* email */}
@@ -127,10 +149,20 @@ const SignUp = () => {
               Email
             </label>
             <input
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Enter a valid email address",
+                },
+              })}
               type="text"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your email"
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
+            )}
           </div>
 
           {/* password */}
@@ -141,10 +173,46 @@ const SignUp = () => {
               Password
             </label>
             <input
-              type="text"
+              {...register("password", {
+                pattern: {
+                  value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).+$/,
+                  message:
+                    "Password must include uppercase, lowercase, number, and special character",
+                },
+                required: "Password is required",
+                minLength: { value: 6, message: "Minimum 6 characters" },
+              })}
+              type="password"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your password"
             />
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password.message}</p>
+            )}
+          </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label
+              htmlFor="confirmpasword"
+              className="block text-sm font-medium text-gray-700">
+              Confirm Password
+            </label>
+            <input
+              {...register("confirmPassword", {
+                required: "Please confirm your password",
+                validate: (value, formValues) =>
+                  value === formValues.password || "Passwords do not match",
+              })}
+              type="password"
+              placeholder="Confirm your password"
+              className="mt-1 w-full border rounded-md px-3 py-2"
+            />
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-sm">
+                {errors.confirmPassword.message}
+              </p>
+            )}
           </div>
 
           {/* age */}
@@ -155,10 +223,17 @@ const SignUp = () => {
               Age
             </label>
             <input
-              type="text"
+              {...register("age", {
+                required: "Age is required",
+                min: { value: 18, message: "must be atleast 13 yrs old" },
+              })}
+              type="number"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your age"
             />
+            {errors.age && (
+              <p className="text-red-500 text-sm">{errors.age.message}</p>
+            )}
           </div>
 
           {/* Date of birth */}
@@ -169,38 +244,60 @@ const SignUp = () => {
               Date of Birth
             </label>
             <input
-              type="text"
+              {...register("dateofbirth", {
+                required: "Date of birth is required",
+              })}
+              type="date"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your date of birth"
             />
+            {errors.dateofbirth && (
+              <p className="text-red-500 text-sm">
+                {errors.dateofbirth.message}
+              </p>
+            )}
           </div>
 
           {/* phone number */}
           <div>
             <label
-              htmlFor="fullName"
+              htmlFor="number"
               className="block text-sm font-medium text-gray-700">
               Phone Number
             </label>
             <input
-              type="text"
+              {...register("number", {
+                required: "Phone number is required",
+                pattern: {
+                  value: /^[0-9]{10}$/,
+                  message: "Enter a valid 10 digit number",
+                },
+              })}
+              type="tel"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your phone number"
             />
+            {errors.number && (
+              <p className="text-red-500 text-sm">{errors.number.message}</p>
+            )}
           </div>
 
           {/* address */}
           <div>
             <label
-              htmlFor="fullName"
+              htmlFor="address"
               className="block text-sm font-medium text-gray-700">
               Address
             </label>
             <input
+              {...register("address", { required: "Address is required" })}
               type="text"
               className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your address"
             />
+            {errors.address && (
+              <p className="text-red-500 text-sm">{errors.address.message}</p>
+            )}
           </div>
 
           {/* Country */}
@@ -211,16 +308,20 @@ const SignUp = () => {
               Country
             </label>
             <select
+              id="country"
+              {...register("country", { required: "Please enter valid input" })}
               name="country"
               className="mt-1 w-full border rounded-md px-3 py-2">
-              <option>India</option>
-              <option>USA</option>
-              <option>UK</option>
-              <option>Australia</option>
-              <option>Japan</option>
-              <option>China</option>
-              <option>South Korea</option>
+              <option value="">Select your country</option>
+              <option value="India">India</option>
+              <option value="USA">USA</option>
+              <option value="UK">UK</option>
+              <option value="Canada">Canada</option>
+              <option value="Other">Other</option>
             </select>
+            {errors.country && (
+              <p className="text-red-500 text-sm">{errors.country.message}</p>
+            )}
           </div>
 
           {/* button  */}
