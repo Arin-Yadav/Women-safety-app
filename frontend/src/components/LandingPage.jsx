@@ -35,16 +35,19 @@
 
 // export default LandingPage;
 
-// Install framer-motion: npm install framer-motion
+// Note: Install framer-motion: npm install framer-motion
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import Navbar from "./Navbar";
 const MotionLink = motion.create(Link);
 
 export default function LandingPage() {
   return (
+    
     <div className="min-h-screen bg-linear-to-r from-pink-500 to-purple-600 text-white">
+      <Navbar />
       {/* Hero Section */}
-      <header className="flex flex-col items-center justify-center h-screen text-center px-6">
+      <header id="home" className="flex flex-col items-center justify-center h-screen text-center px-6">
         <motion.h1
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -67,7 +70,7 @@ export default function LandingPage() {
           whileTap={{ scale: 0.95 }}
           className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg">
           <Link to="/signup">Get Started</Link>
-        </motion.div> */}
+        </motion.div>                   *this element can be written as (see below) */} 
         <MotionLink
           to="/signup"
           whileHover={{ scale: 1.1 }}
@@ -106,13 +109,13 @@ export default function LandingPage() {
         </div>
       </section> */}
 
-      <section className="bg-gray-50 py-20 px-6">
+      <section id="features" className="bg-gray-50 py-20 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-extrabold text-purple-700 mb-12">
             Our Features
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
             {/* Feature 1 */}
             <div className="bg-white shadow-lg rounded-lg p-8 hover:shadow-xl transition duration-300 cursor-pointer">
               <div className="flex items-center justify-center w-16 h-16 mx-auto bg-purple-100 text-purple-600 rounded-full mb-6">
@@ -133,7 +136,7 @@ export default function LandingPage() {
                 📍
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                Live Location Tracking
+                Live Location Sharing
               </h3>
               <p className="text-gray-600">
                 Share your real-time location with family and friends for added
@@ -142,7 +145,7 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-white shadow-lg rounded-lg p-8 hover:shadow-xl transition duration-300 cursor-pointer">
+            {/* <div className="bg-white shadow-lg rounded-lg p-8 hover:shadow-xl transition duration-300 cursor-pointer">
               <div className="flex items-center justify-center w-16 h-16 mx-auto bg-purple-100 text-purple-600 rounded-full mb-6">
                 🎤
               </div>
@@ -153,10 +156,10 @@ export default function LandingPage() {
                 Trigger safety alerts hands-free using simple voice commands in
                 urgent situations.
               </p>
-            </div>
+            </div> */}
 
             {/* Feature 4 */}
-            <div className="bg-white shadow-lg rounded-lg p-8 hover:shadow-xl transition duration-300 cursor-pointer">
+            {/* <div className="bg-white shadow-lg rounded-lg p-8 hover:shadow-xl transition duration-300 cursor-pointer">
               <div className="flex items-center justify-center w-16 h-16 mx-auto bg-purple-100 text-purple-600 rounded-full mb-6">
                 📱
               </div>
@@ -167,20 +170,19 @@ export default function LandingPage() {
                 Activate emergency alerts by shaking your phone — quick, easy,
                 and reliable.
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
 
       {/* About us section  */}
-      <section className="relative bg-linear-to-r from-purple-600 to-pink-500 py-20 px-6">
+      <section id="aboutus" className="relative bg-linear-to-r from-purple-600 to-pink-500 py-20 px-6">
         <div className="max-w-6xl mx-auto text-center text-white">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6">About Us</h2>
           <p className="text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
             We are dedicated to creating a safer world for women through
             technology. Our Women Safety WebApp empowers individuals with
-            instant emergency alerts, live location tracking, and smart
-            detection features that respond quickly in critical situations.
+            instant emergency alerts, live location tracking.
           </p>
           <p className="text-lg md:text-xl leading-relaxed max-w-3xl mx-auto mt-6">
             Beyond safety, our vision is to foster awareness, build supportive

@@ -3,12 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.js";
-// import { authMiddleware } from "./middlewares/authMiddleware.js";
-// const express = require("express")
-// const cors = require("cors")
-// const dotenv = require("dotenv")
-// const connectDB = require("./config/db")
-// const authRoutes = require("./routes/auth")
+import contactRoutes from './routes/contactRoute.js'
 
 dotenv.config();
 const app = express();
@@ -19,6 +14,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api", authRoutes);
+app.use("/api", contactRoutes);
 
 // DB + Server
 connectDB();

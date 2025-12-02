@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 export default function SignInForm() {
   // Setup form with validation
   const navigate = useNavigate();
-  
+
   const {
     register,
     handleSubmit,
@@ -18,7 +18,7 @@ export default function SignInForm() {
 
   // Submit handler
   const onSubmit = async (data) => {
-   try {
+    try {
       const res = await fetch("http://localhost:5000/api/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -29,16 +29,17 @@ export default function SignInForm() {
       // console.log("Response:", result);
 
       if (res.ok) {
-      localStorage.setItem("token", result.token);
-      localStorage.setItem("user", JSON.stringify(result.user)); // Add this
-      // console.log("Signin result:", result);
+        localStorage.setItem("token", result.token);
+        localStorage.setItem("user", JSON.stringify(result.user)); // Add this
+        localStorage.setItem("userId", result.user.id); // Add this line
+        // console.log("Signin result:", result);
 
-      navigate("/welcome");
+        navigate("/welcome");
       } else {
         alert(result.message);
       }
     } catch (err) {
-      console.error("Error:", err);
+      // console.error("Error:", err);
       alert("Something went wrong");
     }
   };

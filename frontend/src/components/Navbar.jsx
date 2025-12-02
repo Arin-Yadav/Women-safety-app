@@ -45,7 +45,7 @@
 
 //       <div className="hidden md:flex gap-6">
 //         {/* <a href="https://www.linkedin.com/in/arinyadav/" target='_blank' rel='noopener noreferrer'>
-//                             <FaLinkedin className='w-6 h-6 hover:text-blue-500' />   
+//                             <FaLinkedin className='w-6 h-6 hover:text-blue-500' />
 //                         </a>
 //                         <a href="https://github.com/Arin-Yadav" target="_blank" rel="noopener noreferrer">
 //                             <FaGithub className="w-6 h-6 text-white hover:text-gray-400" />
@@ -100,15 +100,15 @@
 
 // export default Navbar;
 
-
 import React, { useState } from "react";
-import { Link } from "react-router-dom"
+// import { Link } from "react-router-dom"
+import { Link } from "react-scroll";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-purple-700 text-white shadow-lg">
+    <nav className="bg-purple-700 text-white shadow-lg fixed w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -116,32 +116,34 @@ export default function Navbar() {
             🛡️ SafetyApp
           </div>
 
-
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
-            {["Dashboard", "Contacts", "Logs", "Settings"].map((item, i) => (
+            {/* {["Dashboard", "Contacts", "Logs", "Settings"].map((item, i) => ( */}
+            {["Home", "Features", "About us"].map((item, i) => (
               <Link
                 key={i}
-                to={`/${item.toLowerCase()}`}
-                className="px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-600 transition"
-              >
+                // to={`/${item.toLowerCase()}`}
+                to={item.toLowerCase().replace(" ", "")}
+                smooth={true} // enables smooth scroll
+                duration={500} // scroll speed in ms
+                offset={-70} // adjust for navbar height
+                spy={true} // highlights active section
+                className="px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-600 transition">
                 {item}
               </Link>
             ))}
-            <Link
-              to="/signin"
-              className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-semibold transition"
-            >
+            <a
+              href="/signin"
+              className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-semibold transition">
               Sign in
-            </Link>
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="focus:outline-none text-2xl"
-            >
+              className="focus:outline-none text-2xl">
               {isOpen ? "✖" : "☰"}
             </button>
           </div>
@@ -155,15 +157,13 @@ export default function Navbar() {
             <Link
               key={i}
               to={`/${item.toLowerCase()}`}
-              className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-600 transition"
-            >
+              className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-600 transition">
               {item}
             </Link>
           ))}
           <Link
             to="/signin"
-            className="block bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-semibold transition"
-          >
+            className="block bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-semibold transition">
             Sign in
           </Link>
         </div>

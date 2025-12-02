@@ -7,6 +7,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import WelcomeScreen from "./components/WelcomeScreen";
 import { useState } from "react";
 import { useEffect } from "react";
+import HomePage from "./components/HomePage";
+import AddContact from "./components/AddContact";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -34,13 +36,14 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Navbar /> {/* always visible */}
+      {/* <Navbar /> always visible */}
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/signin" element={<SignInForm />} />
         <Route path="/welcome" element={<WelcomeScreen user={user} />} />
-        {/* <Route path="/add-contact" element={<AddContact />} /> */}
+        <Route path="/homepage" element={<HomePage user={user} />} />
+        <Route path="/addcontact" element={<AddContact user={user} />} />
       </Routes>
     </BrowserRouter>
   );

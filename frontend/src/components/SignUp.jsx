@@ -114,27 +114,27 @@ const SignUp = () => {
 
   // submit handler
   const onSubmit = async (data) => {
- try {
-    // console.log("Submitting:", data); // Debug log
-    const res = await fetch("http://localhost:5000/api/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    try {
+      // console.log("Submitting:", data); // Debug log
+      const res = await fetch("http://localhost:5000/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
-    // console.log("Response status:", res.status); // Debug log
-    const result = await res.json();
-    // console.log("Result:", result); // Debug log
+      // console.log("Response status:", res.status); // Debug log
+      const result = await res.json();
+      // console.log("Result:", result); // Debug log
 
-    if (res.ok) {
-      navigate("/signin");
-    } else {
-      alert(result.message);
+      if (res.ok) {
+        navigate("/signin");
+      } else {
+        alert(result.message);
+      }
+    } catch (err) {
+      // console.error("Error:", err); // Debug log
+      alert("Something went wrong");
     }
-  } catch (err) {
-    // console.error("Error:", err); // Debug log
-    alert("Something went wrong");
-  }
   };
 
   return (
@@ -327,6 +327,16 @@ const SignUp = () => {
               className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-semibold transition duration-300 cursor-pointer">
               Submit
             </button>
+          </div>
+          <div  className="md:col-span-2 text-center">
+            <p className="text-sm text-black">
+              Already have an account?{" "}
+              <a
+                href="/signin"
+                className="text-purple-600 hover:underline font-medium">
+                Sign in
+              </a>
+            </p>
           </div>
         </form>
       </div>
