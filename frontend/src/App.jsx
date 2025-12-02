@@ -9,6 +9,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import HomePage from "./components/HomePage";
 import AddContact from "./components/AddContact";
+import ProtectedRoute from "./components/ProtectedRoute";
+import SafetyTips from "./components/SafetyTips";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -21,7 +23,7 @@ const App = () => {
     }
   }, []);
 
-    // Listen for storage changes (when user is saved in Signin)
+  // Listen for storage changes (when user is saved in Signin)
   useEffect(() => {
     const handleStorageChange = () => {
       const savedUser = localStorage.getItem("user");
@@ -42,8 +44,16 @@ const App = () => {
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/signin" element={<SignInForm />} />
         <Route path="/welcome" element={<WelcomeScreen user={user} />} />
-        <Route path="/homepage" element={<HomePage user={user} />} />
+        <Route
+          path="/homepage"
+          element={
+            <ProtectedRoute>
+              <HomePage user={user} />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/addcontact" element={<AddContact user={user} />} />
+        {/* <Route path="/safetytips" element={<SafetyTips />} /> */}
       </Routes>
     </BrowserRouter>
   );

@@ -6,17 +6,11 @@ A full-stack **Women Safety Application** built with **React.js, Tailwind CSS, N
 
 ## ✨ Features
 
-- 🎙️ **Voice Detection**  
-  Detects emergency keywords like *“help”*, *“save me”*, or *“emergency”* using speech recognition.
-
-- 📱 **Shake Trigger**  
-  Uses device accelerometer to detect strong shakes and automatically trigger alerts.
-
 - 📍 **Live Location Sharing**  
   Captures user’s geolocation and sends it to emergency contacts.
 
 - 📧 **Alert System**  
-  Sends SMS/email notifications to pre-configured contacts using services like **Twilio** or **SendGrid**.
+  Sends Email notifications to pre-configured contacts using services like **Twilio** or **SendGrid**.
 
 - 👤 **User Management**  
   Secure authentication with **JWT** and role-based access control.
@@ -34,8 +28,6 @@ A full-stack **Women Safety Application** built with **React.js, Tailwind CSS, N
 | Backend           | Node.js, Express.js               |
 | Database          | MongoDB                           |
 | Authentication    | JWT, Cookies                      |
-| Notifications     | Twilio (SMS), SendGrid (Email)    |
-| Voice Detection   | react-speech-recognition          |
-| Shake Trigger     | DeviceMotion API                  |
+| Notifications     | SendGrid (Email)                  |
 
 ---
