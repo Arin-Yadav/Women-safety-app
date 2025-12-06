@@ -1,6 +1,6 @@
-# 🛡️ Women Safety App
+# 🛡️ Women Safety Web App
 
-A full-stack **Women Safety Application** built with **React.js, Tailwind CSS, Node.js, Express, and MongoDB**, designed to provide emergency support through **voice detection** and **shake trigger**. The app empowers users to quickly alert emergency contacts with their live location via SMS/email.
+A full-stack **Women Safety Web Application** built with **React.js, Tailwind CSS, Node.js, Express, and MongoDB**, designed to provide emergency support through **live location sharing** and **email alerts**. The Webapp empowers users to quickly alert emergency contacts with their live location via SMS/email.
 
 ---
 
@@ -10,7 +10,7 @@ A full-stack **Women Safety Application** built with **React.js, Tailwind CSS, N
   Captures user’s geolocation and sends it to emergency contacts.
 
 - 📧 **Alert System**  
-  Sends Email notifications to pre-configured contacts using services like **Twilio** or **SendGrid**.
+  Sends Email notifications to pre-configured contacts using services like **Nodemailer**.
 
 - 👤 **User Management**  
   Secure authentication with **JWT** and role-based access control.
@@ -28,6 +28,6 @@ A full-stack **Women Safety Application** built with **React.js, Tailwind CSS, N
 | Backend           | Node.js, Express.js               |
 | Database          | MongoDB                           |
 | Authentication    | JWT, Cookies                      |
-| Notifications     | SendGrid (Email)                  |
+| Notifications     | SendGrid/Nodemailer (Email)       |
 
 ---
