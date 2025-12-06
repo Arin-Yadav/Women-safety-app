@@ -40,16 +40,18 @@ export default function AddContacts() {
   });
 
   const onSubmit = async (data) => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      alert("User ID not found. Please sign in again.");
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user.id) {
+      alert("User not found. Please sign in again.");
       return;
     }
 
     const res = await fetch("http://localhost:5000/api/addcontacts", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, contacts: data.contacts }),
+      headers: { "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+       },
+      body: JSON.stringify({ userId: user.id, contacts: data.contacts }),
     });
 
     const result = await res.json();

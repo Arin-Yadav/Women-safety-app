@@ -31,7 +31,7 @@ export default function SignInForm() {
       if (res.ok) {
         localStorage.setItem("token", result.token);
         localStorage.setItem("user", JSON.stringify(result.user)); // Add this
-        localStorage.setItem("userId", result.user.id); // Add this line
+        // localStorage.setItem("userId", result.user.id); // Add this line
         // console.log("Signin result:", result);
 
         navigate("/welcome");

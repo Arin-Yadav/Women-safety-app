@@ -11,6 +11,7 @@ import HomePage from "./components/HomePage";
 import AddContact from "./components/AddContact";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SafetyTips from "./components/SafetyTips";
+import Dashboard from "./components/Dashboard";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -48,7 +49,15 @@ const App = () => {
           path="/homepage"
           element={
             <ProtectedRoute>
-              <HomePage user={user} />
+              <HomePage/>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard user={user} />
             </ProtectedRoute>
           }
         />

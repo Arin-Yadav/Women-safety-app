@@ -10,7 +10,16 @@ async function handleCreateNewUsers(req, res) {
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    await User.create({ fullName, email, password, age, dob, phone, address });
+    await User.create({
+      fullName,
+      email,
+      password,
+      age,
+      dob,
+      phone,
+      address,
+      contacts: [],
+    });
     return res.status(201).json({ message: "User created successfully" });
   } catch (err) {
     console.error(err);
@@ -33,13 +42,13 @@ async function handleSignin(req, res) {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-    // const isMatch = await bcrypt.compare(password, user.password);
-    // if (!isMatch)
-    //   return res.status(400).json({ message: "Invalid email or password" });
 
     // 3. Generate JWT
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      {
+        id: user._id,
+        email: user.email,
+      },
       process.env.JWT_SECRET || "defaultsecret",
       { expiresIn: "1h" }
     );
@@ -47,18 +56,15 @@ async function handleSignin(req, res) {
     // 4. Exclude password from response
     // const { password: _, ...userData } = user.toObject();
     const userObj = user.toObject();
+    // console.log("Signin userObj:", userObj);
     // console.log("Signin response userId:", user._id.toString());
-
 
     return res.status(200).json({
       message: "Signin successful",
       user: {
         id: user._id.toString(), // Add this - convert ObjectId to string
-        email: userObj.email,
         fullName: userObj.fullName,
-        phone: userObj.phone,
-        age: userObj.age,
-        address: userObj.address,
+        email: userObj.email,
       },
       token,
     });
