@@ -42,7 +42,7 @@ const RecentActivity = ({ user }) => {
         <p className="text-gray-500">No recent activity found.</p>
       ) : (
         <ul className="space-y-4">
-          {activities.map((act) => (
+          {activities.slice(0,3).map((act) => (
             <li
               key={act._id}
               className="border-b pb-3 last:border-b-0 last:pb-0"

@@ -13,8 +13,8 @@ export default function ContactList() {
             Authorization: `Bearer ${token}`,
           },
         });
-        if(!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         setContacts(data.contacts); // expected: [{name, phone, relation, email}]
@@ -34,16 +34,19 @@ export default function ContactList() {
       {contacts.length === 0 ? (
         <p className="text-gray-600 text-center">No contacts added yet.</p>
       ) : (
-        <div className="grid md:grid-cols-2 gap-6">
+        <div
+          className="grid md:grid-cols-2 gap-6 max-h-[420px] overflow-y-auto 
+               scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-400 
+               scrollbar-track-gray-100 hover:scrollbar-thumb-gray-500">
           {contacts.map((contact, index) => (
             <div
               key={index}
               className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg hover:shadow-lg transition">
               {/* <img
-                src={contact.avatar || "https://via.placeholder.com/50"}
-                alt={contact.name}
-                className="w-12 h-12 rounded-full border"
-              /> */}
+          src={contact.avatar || "https://via.placeholder.com/50"}
+          alt={contact.name}
+          className="w-12 h-12 rounded-full border"
+        /> */}
               <div>
                 <h3 className="font-semibold text-lg text-gray-800">
                   {`Name: ${contact.name}`}
