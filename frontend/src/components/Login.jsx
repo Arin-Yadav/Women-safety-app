@@ -1,12 +1,15 @@
-import React from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signinSchema } from "../validation/signinSchema";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { RouteHomepage, RouteSignup } from "../helpers/RouteName";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/slices/userSlice";
 
-export default function SignInForm() {
-  // Setup form with validation
-  const navigate = useNavigate();
+export default function Login() {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const {
     register,
@@ -19,27 +22,17 @@ export default function SignInForm() {
   // Submit handler
   const onSubmit = async (data) => {
     try {
-      const res = await fetch("http://localhost:5000/api/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/login`,
+        data,
+        { withCredentials: true },
+      );
 
-      const result = await res.json();
-      // console.log("Response:", result);
+      navigate(RouteHomepage)
+      dispatch(setUser(response.data))
 
-      if (res.ok) {
-        localStorage.setItem("token", result.token);
-        localStorage.setItem("user", JSON.stringify(result.user)); // Add this
-        // localStorage.setItem("userId", result.user.id); // Add this line
-        // console.log("Signin result:", result);
-
-        navigate("/welcome");
-      } else {
-        alert(result.message);
-      }
     } catch (err) {
-      // console.error("Error:", err);
+      console.error("Error:", err);
       alert("Something went wrong");
     }
   };
@@ -50,7 +43,7 @@ export default function SignInForm() {
         {/* Logo / Title */}
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-purple-700">Welcome Back</h1>
-          <p className="text-gray-500">Sign in to continue to SafetyApp</p>
+          <p className="text-gray-500">Login to continue to SafetyApp</p>
         </div>
 
         {/* Form */}
@@ -91,37 +84,24 @@ export default function SignInForm() {
             )}
           </div>
 
-          {/* Remember Me + Forgot Password */}
-          {/* <div className="flex items-center justify-between">
-            <label className="flex items-center text-sm text-gray-600">
-              <input type="checkbox" className="mr-2 rounded border-gray-300" />
-              Remember Me
-            </label>
-            <a
-              href="/forgot-password"
-              className="text-sm text-purple-600 hover:underline">
-              Forgot Password?
-            </a>
-          </div> */}
-
           {/* Submit Button */}
           <div>
             <button
               type="submit"
               className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-semibold transition duration-300 shadow-md">
-              Sign In Securely
+              Login
             </button>
           </div>
         </form>
 
         {/* Footer */}
         <p className="mt-6 text-center text-sm text-gray-500">
-          Don’t have an account?{" "}
-          <a
-            href="/signup"
+          Don't have an account?{" "}
+          <Link
+            to={RouteSignup}
             className="text-purple-600 hover:underline font-medium">
-            Sign Up
-          </a>
+            Sign up
+          </Link>
         </p>
       </div>
     </div>

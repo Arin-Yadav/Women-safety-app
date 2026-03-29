@@ -1,11 +1,24 @@
-import React from "react";
+import axios from "axios";
 import SafetyTips from "../components/SafetyTips";
-import ProfileMenu from "./ProfileMenu";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { RouteChatLayout, RouteIndex } from "../helpers/RouteName";
 
-export default function HomePage() {//display user name in above sos button
-  const user = JSON.parse(localStorage.getItem("user"));
+export default function HomePage() {
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/logout`,
+        {},
+        { withCredentials: true },
+      );
+      navigate(RouteIndex);
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Scrolling Banner */}
@@ -30,18 +43,18 @@ export default function HomePage() {//display user name in above sos button
           <li className="hover:text-red-600 cursor-pointer">Contacts</li>
           <li className="hover:text-red-600 cursor-pointer">Settings</li>
           <li className="hover:text-red-600 cursor-pointer">
-            {" "}
-            <ProfileMenu />{" "}
+            <button onClick={handleLogout} className="cursor-pointer">
+              Logout
+            </button>
           </li>
         </ul>
       </nav>
 
       {/* Main Content */}
       <main className="grow">
-        {/* Hero Section */}
         <section className="flex flex-col items-center text-center mt-12 px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
-            Welcome {user.fullName} 👋
+            Welcome 👋
           </h2>
           <p className="text-gray-600 mt-3 max-w-xl">
             Your trusted contacts are ready to respond. Stay safe, stay
@@ -50,60 +63,31 @@ export default function HomePage() {//display user name in above sos button
         </section>
 
         {/* SOS Button */}
-        <div className="flex justify-center mt-12">
-          <button
-            onClick={() => {
-              window.alert("SOS Alert Sent ");
-            }}
-            className="bg-red-600 cursor-pointer text-white font-bold rounded-full w-48 h-48 shadow-xl hover:bg-red-700 transition transform hover:scale-105">
-            SOS
-          </button>
-        </div>
-        <p className="text-center mt-4 text-gray-700">
-          Tap SOS to alert your contacts instantly
-        </p>
+        <section>
+          <div className="flex justify-center mt-12">
+            <button
+              onClick={() => {
+                window.alert("SOS Alert Sent ");
+              }}
+              className="bg-red-600 cursor-pointer text-white font-bold rounded-full w-48 h-48 shadow-xl hover:bg-red-700 transition transform hover:scale-105">
+              SOS
+            </button>
+          </div>
+          <p className="text-center mt-4 text-gray-700">
+            Tap SOS to alert your contacts instantly
+          </p>
+        </section>
 
         {/* Quick Access Cards */}
         <section className="grid md:grid-cols-3 gap-6 mt-16 px-6 w-full max-w-6xl mx-auto">
+          {/* Chat system  */}
           <div className="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition">
-            <h3 className="font-semibold text-gray-800">
-              <p className="text-gray-600 mb-2">
-                Manage trusted emergency contacts.
-              </p>
-              <button
-                onClick={() => navigate("/addcontact")}
-                className="w-full cursor-pointer bg-red-600 hover:bg-red-700 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold shadow-lg transition duration-300 transform hover:-translate-y-0.5 hover:shadow-xl text-sm sm:text-base">
-                ➕ Add Emergency Contacts
-              </button>
-            </h3>
-          </div>
-          <div className="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition">
-            <h3
-              onClick={() => {
-                window.alert("Live location Sent to Emergency Contact ");
-              }}
-              className="font-semibold text-gray-800">
-              <p className="text-gray-600 mb-2">
-                Send live location to contacts.
-              </p>
-              <button
-                onClick={() => navigate("/addcontact")}
-                className="w-full cursor-pointer bg-red-600 hover:bg-red-700 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold shadow-lg transition duration-300 transform hover:-translate-y-0.5 hover:shadow-xl text-sm sm:text-base">
-                ➕ Live Location
-              </button>
-            </h3>
-          </div>
-          <div className="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition">
-            <h3 className="font-semibold text-gray-800">
-              <p className="text-gray-600 mb-2">
-                Access helplines and safety organizations.
-              </p>
-              <button
-                onClick={() => navigate("/addcontact")}
-                className="w-full cursor-pointer bg-red-600 hover:bg-red-700 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold shadow-lg transition duration-300 transform hover:-translate-y-0.5 hover:shadow-xl text-sm sm:text-base">
-                ➕ See Resources
-              </button>
-            </h3>
+            <p className="text-gray-600 mb-2">Chat with your contacts.</p>
+            <button className="w-full cursor-pointer bg-red-600 hover:bg-red-700 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold shadow-lg transition duration-300 transform hover:-translate-y-0.5 hover:shadow-xl text-sm sm:text-base">
+              <Link
+              to={RouteChatLayout}
+              >Chat</Link>
+            </button>
           </div>
         </section>
 

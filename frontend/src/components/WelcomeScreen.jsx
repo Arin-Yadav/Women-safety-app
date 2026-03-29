@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function WelcomeScreen({ user }) {
+export default function WelcomeScreen() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
 
@@ -35,7 +35,7 @@ export default function WelcomeScreen({ user }) {
         </h1>
 
         <p className="text-gray-600 mb-8 text-sm sm:text-base md:text-lg">
-          Your safety is our priority. Let’s set up your emergency contacts so
+          Your safety is our priority. Let's set up your emergency contacts so
           we can notify them instantly if you ever need help.
         </p>
 
@@ -49,9 +49,6 @@ export default function WelcomeScreen({ user }) {
           <button
             onClick={() => navigate("/homepage")}
             className="w-full bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold shadow-md transition duration-300 text-sm sm:text-base">
-            {/* <a href="/homepage">
-              Skip for now → Go to Homepage
-            </a> */}
             Skip for now → Go to Homepage
           </button>
         </div>

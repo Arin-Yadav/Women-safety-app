@@ -1,20 +1,9 @@
-import React, { useEffect, useState } from "react";
 import ContactList from "../components/ContactList";
 import SafetyTips from "../components/SafetyTips";
 import RecentActivity from "../components/RecentActivity";
 
 export default function Dashboard() {
-  const loggedUser = localStorage.getItem("user");
-  const parsedLoggedUser = loggedUser ? JSON.parse(loggedUser) : null;
-  const userId = parsedLoggedUser ? parsedLoggedUser._id : null;
-  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
@@ -23,19 +12,19 @@ export default function Dashboard() {
         <h1 className="text-2xl font-bold text-red-600 tracking-wide">
           Women Safety Dashboard
         </h1>
-        {user && (
+        {/* {user && (
           <div className="flex items-center space-x-4">
             <img
-              src={user.avatar || "#"}
+              src={"#"}
               alt="profile"
               className="w-12 h-12 rounded-full border-2 border-red-500 shadow-sm"
             />
             <div>
-              <p className="font-semibold text-gray-900">{user.name}</p>
-              <p className="text-sm text-gray-500">{user.email}</p>
+              <p className="font-semibold text-gray-900">Name</p>
+              <p className="text-sm text-gray-500">Email</p>
             </div>
           </div>
-        )}
+        )} */}
       </header>
 
       {/* Main Content */}
@@ -55,7 +44,7 @@ export default function Dashboard() {
             <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
               Recent Activity
             </h2>
-            <RecentActivity user={user} />
+            <RecentActivity/>
           </div>
         </div>
 

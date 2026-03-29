@@ -1,6 +1,6 @@
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+
 async function handleCreateNewUsers(req, res) {
   try {
     const { fullName, email, password, age, dob, phone, address } = req.body;
@@ -30,13 +30,11 @@ async function handleCreateNewUsers(req, res) {
 async function handleSignin(req, res) {
   try {
     const { email, password } = req.body;
-
     // 1. Find user by email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-
     // 2. Compare password with hashed password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
@@ -50,23 +48,28 @@ async function handleSignin(req, res) {
         email: user.email,
       },
       process.env.JWT_SECRET || "defaultsecret",
-      { expiresIn: "1h" }
+      { expiresIn: "1h" },
     );
 
+    res.cookie("access-token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      path: "/",
+    });
+
     // 4. Exclude password from response
-    // const { password: _, ...userData } = user.toObject();
-    const userObj = user.toObject();
-    // console.log("Signin userObj:", userObj);
-    // console.log("Signin response userId:", user._id.toString());
+    const { password: _, ...userData } = user.toObject();
+    // const userObj = user.toObject();
 
     return res.status(200).json({
-      message: "Signin successful",
+      message: "Login successful",
       user: {
-        id: user._id.toString(), // Add this - convert ObjectId to string
-        fullName: userObj.fullName,
-        email: userObj.email,
+        id: userData._id.toString(), // Add this - it convert ObjectId to string
+        fullName: userData.fullName,
+        email: userData.email,
       },
-      token,
+      // token,
     });
   } catch (err) {
     console.error(err);
@@ -74,4 +77,17 @@ async function handleSignin(req, res) {
   }
 }
 
-export { handleCreateNewUsers, handleSignin };
+async function handleLogout(req, res) {
+  res.clearCookie("access-token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    path: "/",
+  });
+  res.json({
+    message: "Logged out successfully",
+    success: true,
+  });
+}
+
+export { handleCreateNewUsers, handleSignin, handleLogout };

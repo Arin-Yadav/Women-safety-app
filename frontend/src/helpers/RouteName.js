@@ -1,0 +1,6 @@
+export const RouteIndex = "/"
+export const RouteSignup = "/signup"
+export const RouteLogin = "/login"
+export const RouteWelcome = "/welcome"
+export const RouteHomepage = "/homepage"
+export const RouteChatLayout = "/chatLayout"

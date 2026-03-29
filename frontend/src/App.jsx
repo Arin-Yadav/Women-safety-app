@@ -1,68 +1,29 @@
-import React from "react";
-import Navbar from "./components/Navbar";
 import LandingPage from "./components/LandingPage";
-import SignupForm from "./components/SignUp";
-import SignInForm from "./components/Signin";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import WelcomeScreen from "./components/WelcomeScreen";
-import { useState } from "react";
-import { useEffect } from "react";
 import HomePage from "./components/HomePage";
-import AddContact from "./components/AddContact";
-import ProtectedRoute from "./components/ProtectedRoute";
-import SafetyTips from "./components/SafetyTips";
-import Dashboard from "./components/Dashboard";
+import {
+  RouteChatLayout,
+  RouteHomepage,
+  RouteIndex,
+  RouteLogin,
+  RouteSignup,
+  RouteWelcome,
+} from "./helpers/RouteName";
+import Login from "./components/Login";
+import SignUp from "./components/SignUp";
+import ChatLayout from "./components/ChatLayout";
 
 const App = () => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    //  console.log("Loaded user:", savedUser);
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-  }, []);
-
-  // Listen for storage changes (when user is saved in Signin)
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedUser = localStorage.getItem("user");
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
-
   return (
     <BrowserRouter>
-      {/* <Navbar /> always visible */}
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/signup" element={<SignupForm />} />
-        <Route path="/signin" element={<SignInForm />} />
-        <Route path="/welcome" element={<WelcomeScreen user={user} />} />
-        <Route
-          path="/homepage"
-          element={
-            <ProtectedRoute>
-              <HomePage/>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard user={user} />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/addcontact" element={<AddContact user={user} />} />
-        {/* <Route path="/safetytips" element={<SafetyTips />} /> */}
+        <Route path={RouteIndex} element={<LandingPage />} />
+        <Route path={RouteSignup} element={<SignUp />} />
+        <Route path={RouteLogin} element={<Login />} />
+        <Route path={RouteWelcome} element={<WelcomeScreen />} />
+        <Route path={RouteHomepage} element={<HomePage />} />
+        <Route path={RouteChatLayout} element={<ChatLayout />}></Route>
       </Routes>
     </BrowserRouter>
   );

@@ -8,7 +8,6 @@ const contactSchema = new mongoose.Schema({
   relation: { type: String, required: true },
 });
 
-
 const userSchema = new mongoose.Schema(
   {
     fullName: { type: String, required: true, trim: true },
@@ -20,7 +19,7 @@ const userSchema = new mongoose.Schema(
     address: { type: String, trim: true },
     contacts: [contactSchema], // 👈 emergency contacts stored here
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 userSchema.pre("save", async function () {
