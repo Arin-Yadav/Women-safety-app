@@ -1,11 +1,12 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "../validation/signupSchema.js";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { RouteLogin } from "../helpers/RouteName.js";
+import axios from "axios";
 
 const SignUp = () => {
   const navigate = useNavigate();
-  // setup react hook form
   const {
     register,
     handleSubmit,
@@ -17,24 +18,12 @@ const SignUp = () => {
   // submit handler
   const onSubmit = async (data) => {
     try {
-      // console.log("Submitting:", data); // Debug log
-      const res = await fetch("http://localhost:5000/api/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+      await axios.post(`${import.meta.env.VITE_API_URL}/signup`, data, {
+        withCredentials: true,
       });
-
-      // console.log("Response status:", res.status); // Debug log
-      const result = await res.json();
-      // console.log("Result:", result); // Debug log
-
-      if (res.ok) {
-        navigate("/signin");
-      } else {
-        alert(result.message);
-      }
+      navigate(RouteLogin);
     } catch (err) {
-      // console.error("Error:", err); // Debug log
+      console.error("Error:", err); // Debug log
       alert("Something went wrong");
     }
   };
@@ -186,14 +175,14 @@ const SignUp = () => {
               Submit
             </button>
           </div>
-          <div  className="md:col-span-2 text-center">
+          <div className="md:col-span-2 text-center">
             <p className="text-sm text-black">
               Already have an account?{" "}
-              <a
-                href="/signin"
+              <Link
+                to={RouteLogin}
                 className="text-purple-600 hover:underline font-medium">
-                Sign in
-              </a>
+                Login
+              </Link>
             </p>
           </div>
         </form>

@@ -113,8 +113,7 @@ const ChatSidebar = ({ isOpen, onSelectRoom, onClose }) => {
           <input
             type="text"
             placeholder="New contact group name"
-            className="w-full p-2 rounded-md border border-gray-300 
-                 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="w-full p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             {...register("roomName", { required: "Room name is required" })}
           />
           {errors.roomName && (
@@ -123,9 +122,7 @@ const ChatSidebar = ({ isOpen, onSelectRoom, onClose }) => {
 
           <button
             type="submit"
-            className="w-full bg-linear-to-r from-blue-500 to-indigo-500 
-                 text-white py-2 rounded-md font-medium 
-                 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+            className="w-full bg-linear-to-r from-blue-500 to-indigo-500 text-white py-2 rounded-md font-medium cursor-pointer hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
             Create Groups
           </button>
         </form>

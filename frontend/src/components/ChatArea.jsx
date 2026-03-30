@@ -24,9 +24,9 @@ const MessageBubble = React.memo(({ msg, userId }) => {
   );
 });
 
+// Messages
 const MessageList = React.memo(({ messages, userId }) => {
   const bottomRef = React.useRef(null);
-
   // Scroll to bottom whenever messages change
   React.useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -47,11 +47,12 @@ const ChatArea = ({ room }) => {
   const fullUser = useSelector((state) => state.user);
   const user = fullUser?.user?.user;
   const userId = user?.id;
-  const username = user?.username;
+  const username = user?.fullName;
 
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
+  console.log(typingUsers)
 
   // Use socket with callback
   const { sendMessage, startTyping, stopTyping } = useSocket(
@@ -89,7 +90,7 @@ const ChatArea = ({ room }) => {
     if (value) {
       startTyping(username);
       clearTimeout(typingTimeout);
-      typingTimeout = setTimeout(() => stopTyping(username), 2000); // stop after 2s idle
+      typingTimeout = setTimeout(() => stopTyping(username), 1000); // stop after 1s idle
     } else {
       stopTyping(username);
     }
@@ -98,7 +99,7 @@ const ChatArea = ({ room }) => {
   const handleSend = (e) => {
     e.preventDefault();
     if (!text.trim()) return;
-    sendMessage(text); // ✅ socket handles sending
+    sendMessage(text); // socket handles sending
     setText("");
     stopTyping(username);
   };

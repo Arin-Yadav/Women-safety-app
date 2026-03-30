@@ -7,7 +7,7 @@ export const useSocket = (
   onMessageReceived,
   onTyping,
   onStopTyping,
-  // onSOSReceived // 👈 new callback
+  onSOSReceived // new callback
 ) => {
   const socketRef = useRef(null);
 
@@ -23,7 +23,9 @@ export const useSocket = (
     }
 
     socket.on("receiveMessage", (message) => {
-      onMessageReceived?.(message);
+      if (onMessageReceived) {
+        onMessageReceived(message); // callback to update local state
+      }
     });
 
     socket.on("userTyping", ({ username }) => {
@@ -35,9 +37,9 @@ export const useSocket = (
     });
 
     // 👇 SOS listener
-    // socket.on("receiveSOS", (data) => {
-    //   onSOSReceived?.(data);
-    // });
+    socket.on("receiveSOS", (data) => {
+      onSOSReceived?.(data);
+    });
 
     return () => {
       socket.off("receiveMessage");
@@ -45,7 +47,7 @@ export const useSocket = (
       socket.off("userStopTyping");
       socket.off("receiveSOS");
     };
-  }, [roomId, userId, onMessageReceived, onTyping, onStopTyping]);
+  }, [roomId, userId, onMessageReceived, onTyping, onStopTyping, onSOSReceived]);
 
   useEffect(() => {
     return () => {

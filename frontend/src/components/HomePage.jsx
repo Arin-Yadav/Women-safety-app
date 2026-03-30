@@ -1,10 +1,17 @@
 import axios from "axios";
 import SafetyTips from "../components/SafetyTips";
 import { Link, useNavigate } from "react-router-dom";
-import { RouteChatLayout, RouteIndex } from "../helpers/RouteName";
+import { RouteChatLayout, RouteContacts, RouteDashboard, RouteHomepage, RouteIndex, RouteProfile } from "../helpers/RouteName";
+import { useSelector } from "react-redux";
+import { useState } from "react";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { IoMdClose } from "react-icons/io";
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user?.user);
+  const userName = user.user.fullName;
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -21,89 +28,121 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Scrolling Banner */}
-      <div className="bg-red-600 text-white py-2 overflow-hidden">
-        <div className="animate-marquee whitespace-nowrap font-semibold text-lg">
-          <span className="mx-8">Women Helpline (India): 1091</span>
-          <span className="mx-8">Police Emergency: 100</span>
-          <span className="mx-8">National Domestic Violence Helpline: 181</span>
-          <span className="mx-8">Child Helpline: 1098</span>
-          <span className="mx-8">Emergency Ambulance: 108</span>
-        </div>
-      </div>
-
       {/* Navbar */}
-      <nav className="w-full bg-white shadow-md p-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-red-600">Women Safety WebApp</h1>
-        <button className="md:hidden text-gray-600">☰</button>
-        <ul className="hidden md:flex space-x-6 text-gray-700 font-medium">
-          <li className="hover:text-red-600 cursor-pointer">
-            <a href="/dashboard">Dashboard</a>
-          </li>
-          <li className="hover:text-red-600 cursor-pointer">Contacts</li>
-          <li className="hover:text-red-600 cursor-pointer">Settings</li>
-          <li className="hover:text-red-600 cursor-pointer">
-            <button onClick={handleLogout} className="cursor-pointer">
-              Logout
-            </button>
-          </li>
-        </ul>
+      <nav className="w-full bg-white shadow-md px-6 py-4 flex justify-between items-center sticky top-0 left-0 right-0 z-50">
+        <div className="flex items-center space-x-3">
+          <span className="text-2xl font-bold text-red-600">♀</span>
+          <Link to={RouteHomepage}>
+            Women Safety WebApp
+          </Link>
+        </div>
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="md:hidden text-gray-600 text-2xl">
+          {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
+        </button>
       </nav>
 
-      {/* Main Content */}
-      <main className="grow">
-        <section className="flex flex-col items-center text-center mt-12 px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
-            Welcome 👋
-          </h2>
-          <p className="text-gray-600 mt-3 max-w-xl">
-            Your trusted contacts are ready to respond. Stay safe, stay
-            confident.
-          </p>
-        </section>
+      {/* Layout wrapper: navbar height reserved */}
+      <div className="flex flex-1">
+        {/* Overlay for mobile */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
 
-        {/* SOS Button */}
-        <section>
-          <div className="flex justify-center mt-12">
+        {/* Sidebar */}
+        <aside
+          className={`fixed md:sticky top-16 left-0 md:h-[calc(100vh-4rem)] h-[calc(100vh-4rem)] w-64 transform ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0 transition-transform duration-300 ease-in-out bg-white shadow-lg z-40 flex flex-col`}>
+          {/* Sidebar content wrapper */}
+          <div className="flex flex-col justify-between h-full">
+            {/* Nav links (scrollable if too many) */}
+            <nav className="flex flex-col p-3 space-y-2 text-gray-700 font-medium overflow-y-auto">
+              <Link
+                to={RouteDashboard}
+                className="flex items-center px-3 py-2 rounded-md bg-gray-100 hover:bg-blue-50 hover:text-red-600">
+                Dashboard
+              </Link>
+              <Link
+                to={RouteChatLayout}
+                className="flex items-center px-3 py-2 rounded-md bg-gray-100 hover:bg-blue-50 hover:text-red-600">
+                Chat
+              </Link>
+              <Link
+                to={RouteContacts}
+                className="flex items-center px-3 py-2 rounded-md bg-gray-100 hover:bg-blue-50 hover:text-red-600">
+                Contacts
+              </Link>
+              <Link
+                to={RouteProfile}
+                className="flex items-center px-3 py-2 rounded-md bg-gray-100 hover:bg-blue-50 hover:text-red-600">
+                Profile
+              </Link>
+            </nav>
+
+            {/* Logout pinned at bottom */}
+            <div className="p-4 border-t">
+              <button
+                onClick={handleLogout}
+                className="w-full block text-sm font-medium cursor-pointer bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors">
+                Logout
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 p-6 md:p-12 overflow-y-auto">
+          {/* Welcome Section */}
+          <section className="text-center mt-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
+              Welcome, {userName} 👋
+            </h2>
+            <p className="text-gray-600 mt-3 max-w-xl mx-auto">
+              Your trusted contacts are ready to respond. Stay safe, stay
+              confident.
+            </p>
+          </section>
+
+          {/* SOS Button */}
+          <section className="mt-12 flex flex-col items-center">
             <button
-              onClick={() => {
-                window.alert("SOS Alert Sent ");
-              }}
-              className="bg-red-600 cursor-pointer text-white font-bold rounded-full w-48 h-48 shadow-xl hover:bg-red-700 transition transform hover:scale-105">
+              onClick={() => window.alert("SOS Alert Sent")}
+              className="bg-red-600 cursor-pointer text-white font-bold rounded-full w-48 h-48 shadow-2xl hover:bg-red-700 transition transform hover:scale-110 focus:ring-4 focus:ring-red-300">
               SOS
             </button>
-          </div>
-          <p className="text-center mt-4 text-gray-700">
-            Tap SOS to alert your contacts instantly
-          </p>
-        </section>
+            <p className="mt-4 text-gray-700 font-medium">
+              Tap SOS to alert your contacts instantly
+            </p>
+          </section>
 
-        {/* Quick Access Cards */}
-        <section className="grid md:grid-cols-3 gap-6 mt-16 px-6 w-full max-w-6xl mx-auto">
-          {/* Chat system  */}
-          <div className="bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition">
-            <p className="text-gray-600 mb-2">Chat with your contacts.</p>
-            <button className="w-full cursor-pointer bg-red-600 hover:bg-red-700 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-semibold shadow-lg transition duration-300 transform hover:-translate-y-0.5 hover:shadow-xl text-sm sm:text-base">
+          {/* Quick Access Cards */}
+          {/* <section className="grid md:grid-cols-3 gap-8 mt-16 max-w-6xl mx-auto">
+            <div className="bg-white shadow-lg rounded-xl p-6 text-center hover:shadow-2xl transition transform hover:-translate-y-1">
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                Chat with your contacts
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Stay connected and share updates instantly.
+              </p>
               <Link
-              to={RouteChatLayout}
-              >Chat</Link>
-            </button>
+                to={RouteChatLayout}
+                className="block w-full bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transition duration-300 transform hover:scale-105">
+                Chat
+              </Link>
+            </div>
+          </section> */}
+
+          {/* Safety Tips */}
+          <div className="mt-20">
+            <SafetyTips />
           </div>
-        </section>
-
-        {/* Safety Tips */}
-        <SafetyTips />
-      </main>
-
-      {/* Footer (Sticky at Bottom) */}
-      <footer className="w-full bg-gray-200 p-6 text-center text-gray-700 mt-auto">
-        <p>© 2025 Women Safety WebApp | Privacy Policy | Terms</p>
-        <div className="flex justify-center space-x-6 mt-3">
-          <span className="cursor-pointer hover:text-red-600">🌐</span>
-          <span className="cursor-pointer hover:text-red-600">📘</span>
-          <span className="cursor-pointer hover:text-red-600">🐦</span>
-        </div>
-      </footer>
+        </main>
+      </div>
     </div>
   );
 }
