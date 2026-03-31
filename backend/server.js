@@ -10,6 +10,7 @@ import { authMiddleware } from "./middlewares/authMiddleware.js";
 import initSocket from './helpers/socket.js'
 import roomRoutes from './routes/roomRoutes.js'
 import messageRoutes from "./routes/messageRoute.js";
+import sosRoutes from './routes/liveLocationMessage.js'
 
 dotenv.config();
 const app = express();
@@ -30,6 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", authRoutes);
 app.use("/rooms", roomRoutes)
 app.use("/messages", messageRoutes);
+app.use("/api", sosRoutes);
 app.use("/api", authMiddleware, contactRoutes);
 app.use("/api", authMiddleware, activityRoutes);
 

@@ -11,7 +11,30 @@ export default function HomePage() {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user?.user);
   const userName = user.user.fullName;
+  const userId = user?.user?.id
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleSOS = () => {
+  navigator.geolocation.getCurrentPosition((position) => {
+    const locationMessage = {
+      type: "location",
+      userId: userId, // logged-in user
+      lat: position.coords.latitude,
+      lng: position.coords.longitude,
+      timestamp: new Date().toISOString()
+    };
+
+    fetch(`${import.meta.env.VITE_API_URL}/sos`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        roomId: `${import.meta.env.VITE_ROOM_ID}`,   // hardcoded for testing
+        message: locationMessage
+      })
+    });
+  });
+};
+
 
   const handleLogout = async () => {
     try {
@@ -111,7 +134,7 @@ export default function HomePage() {
           {/* SOS Button */}
           <section className="mt-12 flex flex-col items-center">
             <button
-              onClick={() => window.alert("SOS Alert Sent")}
+              onClick={handleSOS}
               className="bg-red-600 cursor-pointer text-white font-bold rounded-full w-48 h-48 shadow-2xl hover:bg-red-700 transition transform hover:scale-110 focus:ring-4 focus:ring-red-300">
               SOS
             </button>

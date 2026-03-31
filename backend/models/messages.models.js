@@ -5,7 +5,7 @@ const messageSchema = new mongoose.Schema(
     room: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Room",
-      requried: true,
+      required: true,
     },
     sender: {
       type: mongoose.Schema.Types.ObjectId,
@@ -14,7 +14,16 @@ const messageSchema = new mongoose.Schema(
     },
     text: {
       type: String,
-      required: true,
+    },
+    type: {
+      type: String,
+      default: "text", // "text" or "location"
+    },
+    lat: {
+      type: Number,
+    },
+    lng: {
+      type: Number,
     },
   },
   { timestamps: true },

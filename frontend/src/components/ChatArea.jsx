@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 
 const MessageBubble = React.memo(({ msg, userId }) => {
   const isOwnMessage = msg?.sender?._id === userId;
+
   return (
     <div className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}>
       <div
@@ -14,7 +15,20 @@ const MessageBubble = React.memo(({ msg, userId }) => {
             ? "bg-blue-500 text-white rounded-br-none"
             : "bg-gray-200 text-gray-800 rounded-bl-none"
         } max-w-[75%] sm:max-w-[60%] md:max-w-[50%]`}>
-        <p className="whitespace-pre-wrap">{msg?.text}</p>
+        {/* Handle location vs text */}
+        {msg?.type === "location" ? (
+          <>
+            <p>{msg?.sender?.username} shared live location</p>
+            <iframe
+              src={`https://maps.google.com/maps?q=${msg.lat},${msg.lng}&z=15&output=embed`}
+              width="250"
+              height="150"
+              style={{ borderRadius: "8px", marginTop: "8px" }}></iframe>
+          </>
+        ) : (
+          <p className="whitespace-pre-wrap">{msg?.text}</p>
+        )}
+
         <div className="flex gap-2 justify-between items-center mt-1 text-xs opacity-70">
           <span>{msg?.sender?.username}</span>
           <span>{dayjs(msg?.createdAt).format("h:mm A")}</span>
@@ -24,11 +38,10 @@ const MessageBubble = React.memo(({ msg, userId }) => {
   );
 });
 
-// Messages
+// Messages list
 const MessageList = React.memo(({ messages, userId }) => {
   const bottomRef = React.useRef(null);
-  // Scroll to bottom whenever messages change
-  React.useEffect(() => {
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
@@ -37,7 +50,6 @@ const MessageList = React.memo(({ messages, userId }) => {
       {messages.map((msg) => (
         <MessageBubble key={msg._id} msg={msg} userId={userId} />
       ))}
-      {/* Invisible div to scroll into view */}
       <div ref={bottomRef} />
     </div>
   );
@@ -52,9 +64,8 @@ const ChatArea = ({ room }) => {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
-  console.log(typingUsers)
 
-  // Use socket with callback
+  // Socket hook
   const { sendMessage, startTyping, stopTyping } = useSocket(
     room._id,
     userId,
@@ -76,7 +87,6 @@ const ChatArea = ({ room }) => {
         setMessages(res.data.messages);
       } catch (error) {
         console.log(error);
-        // showToast("error", "Failed to load messages");
       }
     };
     if (room?._id) fetchMessages();
@@ -90,7 +100,7 @@ const ChatArea = ({ room }) => {
     if (value) {
       startTyping(username);
       clearTimeout(typingTimeout);
-      typingTimeout = setTimeout(() => stopTyping(username), 1000); // stop after 1s idle
+      typingTimeout = setTimeout(() => stopTyping(username), 1000);
     } else {
       stopTyping(username);
     }
@@ -99,7 +109,7 @@ const ChatArea = ({ room }) => {
   const handleSend = (e) => {
     e.preventDefault();
     if (!text.trim()) return;
-    sendMessage(text); // socket handles sending
+    sendMessage(text);
     setText("");
     stopTyping(username);
   };
@@ -109,7 +119,6 @@ const ChatArea = ({ room }) => {
       <div className="p-4 bg-white border-b flex items-center h-16">
         <div className="flex flex-col justify-center">
           <h2 className="font-semibold text-sm">Chatting in {room.roomName}</h2>
-          {/* typing indicator */}
           <div className="h-4">
             {typingUsers.length > 0 && (
               <span className="text-xs text-green-500">
