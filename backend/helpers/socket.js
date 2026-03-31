@@ -10,8 +10,6 @@ export default function initSocket(server) {
   });
 
   io.on("connection", (socket) => {
-    // console.log("User connected:", socket.id);
-
     // Join room
     socket.on("joinRoom", (roomId) => {
       socket.join(roomId);
