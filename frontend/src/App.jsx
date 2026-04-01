@@ -7,12 +7,14 @@ import {
   RouteHomepage,
   RouteIndex,
   RouteLogin,
+  RouteProfile,
   RouteSignup,
   RouteWelcome,
 } from "./helpers/RouteName";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import ChatLayout from "./components/ChatLayout";
+import Profile from "./components/Profile";
 
 const App = () => {
   return (
@@ -24,6 +26,7 @@ const App = () => {
         <Route path={RouteWelcome} element={<WelcomeScreen />} />
         <Route path={RouteHomepage} element={<HomePage />} />
         <Route path={RouteChatLayout} element={<ChatLayout />}></Route>
+        <Route path={RouteProfile} element={<Profile />} />
       </Routes>
     </BrowserRouter>
   );

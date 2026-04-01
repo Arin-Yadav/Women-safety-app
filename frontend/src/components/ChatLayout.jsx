@@ -6,7 +6,6 @@ import { RouteHomepage } from "../helpers/RouteName";
 import { IoMdClose } from "react-icons/io";
 import { RxHamburgerMenu } from "react-icons/rx";
 
-
 const ChatLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -14,7 +13,7 @@ const ChatLayout = () => {
   return (
     <div className="flex flex-col h-screen">
       {/* Navbar */}
-      <div className="h-16 bg-blue-600 text-white flex items-center justify-between px-4">
+      <div className="h-16 bg-blue-600 text-white flex fixed top-0 z-50 w-full items-center justify-between px-4">
         <h1 className="font-bold">My Chat App</h1>
         {/* Hamburger button only on small screens */}
         <div className="flex items-center gap-2 justify-center">
@@ -32,8 +31,9 @@ const ChatLayout = () => {
           </button>
         </div>
       </div>
+
       {/* Body */}
-      <div className="flex flex-1">
+      <div className="flex flex-1 mt-16 h-[calc(100vh-64px)]">
         {/* Sidebar */}
         <ChatSidebar
           onSelectRoom={setSelectedRoom}

@@ -68,6 +68,8 @@ async function handleSignin(req, res) {
         id: userData._id.toString(), // Add this - it convert ObjectId to string
         fullName: userData.fullName,
         email: userData.email,
+        age: userData.age,
+        phone: userData.phone,
       },
       // token,
     });

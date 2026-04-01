@@ -19,11 +19,17 @@ const MessageBubble = React.memo(({ msg, userId }) => {
         {msg?.type === "location" ? (
           <>
             <p>{msg?.sender?.username} shared live location</p>
-            <iframe
-              src={`https://maps.google.com/maps?q=${msg.lat},${msg.lng}&z=15&output=embed`}
-              width="250"
-              height="150"
-              style={{ borderRadius: "8px", marginTop: "8px" }}></iframe>
+            <div className="mt-2 w-full">
+              {/* Responsive iframe wrapper */}
+              <div className="relative w-full pb-[75%] max-h-64 rounded-lg overflow-hidden">
+                <iframe
+                  src={`https://maps.google.com/maps?q=${msg.lat},${msg.lng}&z=15&output=embed`}
+                  className="absolute top-0 left-0 w-full h-full rounded-lg"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"></iframe>
+              </div>
+            </div>
           </>
         ) : (
           <p className="whitespace-pre-wrap">{msg?.text}</p>

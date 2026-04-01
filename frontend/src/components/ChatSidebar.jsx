@@ -68,7 +68,7 @@ const ChatSidebar = ({ isOpen, onSelectRoom, onClose }) => {
         className={`fixed lg:static top-16 left-0 h-[calc(100vh-64px)] lg:h-auto w-64 bg-linear-to-b from-white to-gray-50 text-gray-800 border-r shadow-sm p-4 flex flex-col transform transition-transform duration-300 z-40
         ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
         {/* User Greeting */}
-        <div className="mb-4 pb-2 border-b">
+        {/* <div className="mb-4 pb-2 border-b">
           <p className="text-sm pt-2 text-gray-600">
             Hello,
             {
@@ -77,7 +77,7 @@ const ChatSidebar = ({ isOpen, onSelectRoom, onClose }) => {
               </span>
             }
           </p>
-        </div>
+        </div> */}
 
         {/* Rooms Header */}
         <h4 className="text-sm font-semibold text-gray-700 tracking-wide mb-3">

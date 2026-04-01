@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { Link as ScrollLink } from "react-scroll";
 import { Link } from "react-router-dom";
-import { RouteLogin } from "../helpers/RouteName";
+import { RouteIndex, RouteLogin } from "../helpers/RouteName";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-purple-700 text-white shadow-lg fixed w-full">
+    <nav className="bg-purple-700 text-white shadow-lg fixed top-0 h-16 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="shrink-0 text-2xl font-bold cursor-pointer">
-            🛡️ SafetyApp
-          </div>
+          <Link
+            to={RouteIndex}
+            className="shrink-0 text-2xl font-bold cursor-pointer">
+            🛡️Suraksha
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">

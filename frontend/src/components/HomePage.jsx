@@ -1,40 +1,45 @@
 import axios from "axios";
 import SafetyTips from "../components/SafetyTips";
 import { Link, useNavigate } from "react-router-dom";
-import { RouteChatLayout, RouteContacts, RouteDashboard, RouteHomepage, RouteIndex, RouteProfile } from "../helpers/RouteName";
+import {
+  RouteChatLayout,
+  RouteHomepage,
+  RouteIndex,
+  RouteProfile,
+} from "../helpers/RouteName";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoMdClose } from "react-icons/io";
+import { FaShieldAlt } from "react-icons/fa";
 
 export default function HomePage() {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user?.user);
   const userName = user.user.fullName;
-  const userId = user?.user?.id
+  const userId = user?.user?.id;
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleSOS = () => {
-  navigator.geolocation.getCurrentPosition((position) => {
-    const locationMessage = {
-      type: "location",
-      userId: userId, // logged-in user
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-      timestamp: new Date().toISOString()
-    };
+    navigator.geolocation.getCurrentPosition((position) => {
+      const locationMessage = {
+        type: "location",
+        userId: userId, // logged-in user
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        timestamp: new Date().toISOString(),
+      };
 
-    fetch(`${import.meta.env.VITE_API_URL}/sos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        roomId: `${import.meta.env.VITE_ROOM_ID}`,   // hardcoded for testing
-        message: locationMessage
-      })
+      fetch(`${import.meta.env.VITE_API_URL}/sos`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          roomId: `${import.meta.env.VITE_ROOM_ID}`, // hardcoded for testing
+          message: locationMessage,
+        }),
+      });
     });
-  });
-};
-
+  };
 
   const handleLogout = async () => {
     try {
@@ -52,11 +57,11 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Navbar */}
-      <nav className="w-full bg-white shadow-md px-6 py-4 flex justify-between items-center sticky top-0 left-0 right-0 z-50">
+      <nav className="w-full bg-white shadow-md px-6 py-4 h-16 flex justify-between items-center sticky top-0 left-0 right-0 z-50">
         <div className="flex items-center space-x-3">
-          <span className="text-2xl font-bold text-red-600">♀</span>
-          <Link to={RouteHomepage}>
-            Women Safety WebApp
+          {/* <span className="text-2xl font-bold text-red-600">♀</span> */}
+          <Link to={RouteHomepage} className="font-bold text-2xl">
+            🛡️Suraksha
           </Link>
         </div>
         <button
@@ -78,43 +83,29 @@ export default function HomePage() {
 
         {/* Sidebar */}
         <aside
-          className={`fixed md:sticky top-16 left-0 md:h-[calc(100vh-4rem)] h-[calc(100vh-4rem)] w-64 transform ${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0 transition-transform duration-300 ease-in-out bg-white shadow-lg z-40 flex flex-col`}>
-          {/* Sidebar content wrapper */}
-          <div className="flex flex-col justify-between h-full">
-            {/* Nav links (scrollable if too many) */}
-            <nav className="flex flex-col p-3 space-y-2 text-gray-700 font-medium overflow-y-auto">
-              <Link
-                to={RouteDashboard}
-                className="flex items-center px-3 py-2 rounded-md bg-gray-100 hover:bg-blue-50 hover:text-red-600">
-                Dashboard
-              </Link>
-              <Link
-                to={RouteChatLayout}
-                className="flex items-center px-3 py-2 rounded-md bg-gray-100 hover:bg-blue-50 hover:text-red-600">
-                Chat
-              </Link>
-              <Link
-                to={RouteContacts}
-                className="flex items-center px-3 py-2 rounded-md bg-gray-100 hover:bg-blue-50 hover:text-red-600">
-                Contacts
-              </Link>
-              <Link
-                to={RouteProfile}
-                className="flex items-center px-3 py-2 rounded-md bg-gray-100 hover:bg-blue-50 hover:text-red-600">
-                Profile
-              </Link>
-            </nav>
-
-            {/* Logout pinned at bottom */}
-            <div className="p-4 border-t">
-              <button
-                onClick={handleLogout}
-                className="w-full block text-sm font-medium cursor-pointer bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors">
-                Logout
-              </button>
-            </div>
+          className={`fixed md:sticky top-16 left-0 md:h-[calc(100vh-4rem)] h-[calc(100vh-4rem)] w-64 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 ease-in-out bg-white shadow-lg z-40 flex flex-col`}>
+          {/* Title */}
+          <h1 className="text-xl font-bold p-3 text-blue-600">Quick Links</h1>
+          {/* Scrollable sidebar */}
+          <div className="flex flex-col p-3 space-y-2 text-gray-700 font-medium overflow-y-auto h-full">
+            <Link
+              to={RouteChatLayout}
+              className="flex items-center px-3 py-2 rounded-md bg-gray-100 hover:bg-blue-50 hover:text-red-600">
+              Chat
+            </Link>
+            <Link
+              to={RouteProfile}
+              className="flex items-center px-3 py-2 rounded-md bg-gray-100 hover:bg-blue-50 hover:text-red-600">
+              Profile
+            </Link>
+          </div>
+          {/* Logout pinned at bottom */}
+          <div className="p-4 border-t">
+            <button
+              onClick={handleLogout}
+              className="w-full block text-sm font-medium cursor-pointer bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors">
+              Logout
+            </button>
           </div>
         </aside>
 

@@ -4,25 +4,29 @@ const tips = [
   {
     id: 1,
     title: "Stay Alert",
-    description: "Always be aware of your surroundings, especially in unfamiliar areas.",
+    description:
+      "Always be aware of your surroundings, especially in unfamiliar areas.",
     icon: "👀",
   },
   {
     id: 2,
     title: "Share Location",
-    description: "Keep your trusted contacts updated with your live location when traveling.",
+    description:
+      "Keep your trusted contacts updated with your live location when traveling.",
     icon: "📍",
   },
   {
     id: 3,
-    title: "Emergency Contacts",
-    description: "Add and update emergency contacts regularly for quick access.",
-    icon: "📞",
+    title: "Protect Your Privacy",
+    description:
+      "Don't overshare your address on social media or public platforms.",
+    icon: "🏠",
   },
   {
     id: 4,
     title: "Trust Your Instincts",
-    description: "If something feels wrong, act immediately and use the SOS button.",
+    description:
+      "If something feels wrong, act immediately and use the SOS button.",
     icon: "⚡",
   },
 ];
@@ -37,11 +41,12 @@ export default function SafetyTips() {
         {tips.map((tip) => (
           <div
             key={tip.id}
-            className="flex items-start space-x-4 bg-gray-50 p-4 rounded-lg hover:shadow-lg transition"
-          >
+            className="flex items-start space-x-4 bg-gray-50 p-4 rounded-lg hover:shadow-lg transition">
             <span className="text-3xl">{tip.icon}</span>
             <div>
-              <h3 className="font-semibold text-lg text-gray-800">{tip.title}</h3>
+              <h3 className="font-semibold text-lg text-gray-800">
+                {tip.title}
+              </h3>
               <p className="text-gray-600 mt-1">{tip.description}</p>
             </div>
           </div>
