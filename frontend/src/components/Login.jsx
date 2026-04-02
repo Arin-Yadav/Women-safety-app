@@ -6,14 +6,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { RouteHomepage, RouteSignup } from "../helpers/RouteName";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/slices/userSlice";
+import { useState } from "react";
 
 export default function Login() {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [serverError, setServerError] = useState("");
 
   const {
     register,
     handleSubmit,
+    setError, // ✅ IMPORTANT
     formState: { errors },
   } = useForm({
     resolver: yupResolver(signinSchema),
@@ -25,29 +29,56 @@ export default function Login() {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/login`,
         data,
-        { withCredentials: true },
+        { withCredentials: true }
       );
 
-      navigate(RouteHomepage)
-      dispatch(setUser(response.data))
+      dispatch(setUser(response.data));
+      navigate(RouteHomepage);
 
     } catch (err) {
-      console.error("Error:", err);
-      alert("Something went wrong");
+      console.error("FULL ERROR:", err);
+
+      if (err.response) {
+        const message = err.response.data.message;
+
+        // ✅ Show under fields
+        if (message.toLowerCase().includes("email")) {
+          setError("email", {
+            type: "manual",
+            message: message,
+          });
+        } else if (message.toLowerCase().includes("password")) {
+          setError("password", {
+            type: "manual",
+            message: message,
+          });
+        } else {
+          setServerError(message); // show top error
+        }
+      } else {
+        setServerError("Network error");
+      }
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-purple-600 to-pink-500">
       <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
-        {/* Logo / Title */}
+
+        {/* Title */}
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-purple-700">Welcome Back</h1>
           <p className="text-gray-500">Login to continue to SafetyApp</p>
         </div>
 
+        {/* 🔴 Server Error */}
+        {serverError && (
+          <p className="text-red-500 text-center mb-3">{serverError}</p>
+        )}
+
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -55,9 +86,8 @@ export default function Login() {
             </label>
             <input
               type="email"
-              placeholder="Enter your email"
               {...register("email")}
-              className="mt-1 w-full border rounded-md px-3 py-2 focus:ring-purple-500 focus:border-purple-500"
+              className="mt-1 w-full border rounded-md px-3 py-2"
             />
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">
@@ -73,9 +103,8 @@ export default function Login() {
             </label>
             <input
               type="password"
-              placeholder="Enter your password"
               {...register("password")}
-              className="mt-1 w-full border rounded-md px-3 py-2 focus:ring-purple-500 focus:border-purple-500"
+              className="mt-1 w-full border rounded-md px-3 py-2"
             />
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">
@@ -84,14 +113,13 @@ export default function Login() {
             )}
           </div>
 
-          {/* Submit Button */}
-          <div>
-            <button
-              type="submit"
-              className="w-full bg-purple-600 hover:bg-purple-700 cursor-pointer text-white px-6 py-2 rounded-lg font-semibold transition duration-300 shadow-md">
-              Login
-            </button>
-          </div>
+          {/* Button */}
+          <button
+            type="submit"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg"
+          >
+            Login
+          </button>
         </form>
 
         {/* Footer */}
@@ -99,7 +127,8 @@ export default function Login() {
           Don't have an account?{" "}
           <Link
             to={RouteSignup}
-            className="text-purple-600 hover:underline font-medium">
+            className="text-purple-600 hover:underline"
+          >
             Sign up
           </Link>
         </p>

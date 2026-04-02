@@ -1,7 +1,8 @@
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
 
-async function handleCreateNewUsers(req, res) {
+// 🔹 Signup
+export async function handleCreateNewUsers(req, res) {
   try {
     const { fullName, email, password, age, dob, phone, address } = req.body;
 
@@ -20,58 +21,50 @@ async function handleCreateNewUsers(req, res) {
       address,
       contacts: [],
     });
+
     return res.status(201).json({ message: "User created successfully" });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "Server error: " + err.message });
+    return res.status(500).json({ message: "Server error" });
   }
 }
 
-async function handleSignin(req, res) {
+// 🔹 Login
+export async function handleSignin(req, res) {
   try {
     const { email, password } = req.body;
-    // 1. Find user by email
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-    // 2. Compare password with hashed password
+
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // 3. Generate JWT
     const token = jwt.sign(
-      {
-        id: user._id,
-        email: user.email,
-      },
+      { id: user._id, email: user.email },
       process.env.JWT_SECRET || "defaultsecret",
-      { expiresIn: "1h" },
+      { expiresIn: "1h" }
     );
 
+    // ✅ Cookie
     res.cookie("access-token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      secure: false, // ⚠️ true only in production
+      sameSite: "lax",
       path: "/",
     });
-
-    // 4. Exclude password from response
-    const { password: _, ...userData } = user.toObject();
-    // const userObj = user.toObject();
 
     return res.status(200).json({
       message: "Login successful",
       user: {
-        id: userData._id.toString(), // Add this - it convert ObjectId to string
-        fullName: userData.fullName,
-        email: userData.email,
-        age: userData.age,
-        phone: userData.phone,
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
       },
-      // token,
     });
   } catch (err) {
     console.error(err);
@@ -79,17 +72,14 @@ async function handleSignin(req, res) {
   }
 }
 
-async function handleLogout(req, res) {
+// 🔹 Logout
+export function handleLogout(req, res) {
   res.clearCookie("access-token", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    secure: false,
+    sameSite: "lax",
     path: "/",
   });
-  res.json({
-    message: "Logged out successfully",
-    success: true,
-  });
-}
 
-export { handleCreateNewUsers, handleSignin, handleLogout };
+  res.json({ message: "Logged out successfully" });
+}

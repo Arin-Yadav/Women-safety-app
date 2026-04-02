@@ -1,8 +1,8 @@
 import express from "express";
 import {
   handleCreateNewUsers,
-  handleLogout,
   handleSignin,
+  handleLogout,
 } from "../controllers/authControllers.js";
 
 const router = express.Router();
