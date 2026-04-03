@@ -4,9 +4,11 @@ import { schema } from "../validation/signupSchema.js";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteLogin } from "../helpers/RouteName.js";
 import axios from "axios";
+import { useState } from "react";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [submitError, setSubmitError] = useState("");
   const {
     register,
     handleSubmit,
@@ -15,172 +17,153 @@ const SignUp = () => {
     resolver: yupResolver(schema),
   });
 
-  // submit handler
   const onSubmit = async (data) => {
     try {
+      setSubmitError("");
       await axios.post(`${import.meta.env.VITE_API_URL}/signup`, data, {
         withCredentials: true,
       });
       navigate(RouteLogin);
     } catch (err) {
-      console.error("Error:", err); // Debug log
-      alert("Something went wrong");
+      console.error("Error:", err);
+      setSubmitError(
+        err.response?.data?.message || "Signup failed. Please try again.",
+      );
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-pink-500 to-purple-700">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-4xl">
-        <h2 className="text-2xl font-bold text-center mb-6 text-purple-700">
+    <div className="flex min-h-screen items-center justify-center bg-stone-100 px-4 py-10 dark:bg-slate-950">
+      <div className="w-full max-w-4xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <h2 className="mb-6 text-center text-2xl font-semibold text-slate-900 dark:text-white">
           Create Your Account
         </h2>
 
+        {submitError && (
+          <p className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {submitError}
+          </p>
+        )}
+
         <form
           onSubmit={handleSubmit(onSubmit)}
-          action=""
-          className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* fullName */}
+          className="grid grid-cols-1 gap-6 md:grid-cols-2"
+        >
           <div>
-            <label
-              htmlFor="fullName"
-              className="block text-sm font-medium text-gray-700">
+            <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
               Full Name
             </label>
             <input
               {...register("fullName")}
               type="text"
-              className="mt-1 w-full border rounded-md px-3 py-2"
+              className="mt-1 w-full rounded-md border px-3 py-2 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
               placeholder="Enter your full name"
             />
             {errors.fullName && (
-              <p className="text-red-500 text-sm">{errors.fullName.message}</p>
+              <p className="text-sm text-red-500">{errors.fullName.message}</p>
             )}
           </div>
 
-          {/* email */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
               Email
             </label>
             <input
               {...register("email")}
               type="email"
-              className="mt-1 w-full border rounded-md px-3 py-2"
+              className="mt-1 w-full rounded-md border px-3 py-2 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
               placeholder="Enter your email"
             />
             {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
+              <p className="text-sm text-red-500">{errors.email.message}</p>
             )}
           </div>
 
-          {/* password */}
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
               Password
             </label>
             <input
               {...register("password")}
               type="password"
-              className="mt-1 w-full border rounded-md px-3 py-2"
+              className="mt-1 w-full rounded-md border px-3 py-2 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
               placeholder="Enter your password"
             />
             {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password.message}</p>
+              <p className="text-sm text-red-500">{errors.password.message}</p>
             )}
           </div>
 
-          {/* age */}
           <div>
-            <label
-              htmlFor="age"
-              className="block text-sm font-medium text-gray-700">
+            <label htmlFor="age" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
               Age
             </label>
             <input
               {...register("age")}
               type="number"
-              className="mt-1 w-full border rounded-md px-3 py-2"
+              className="mt-1 w-full rounded-md border px-3 py-2 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
               placeholder="Enter your age"
             />
             {errors.age && (
-              <p className="text-red-500 text-sm">{errors.age.message}</p>
+              <p className="text-sm text-red-500">{errors.age.message}</p>
             )}
           </div>
 
-          {/* Date of birth */}
           <div>
-            <label
-              htmlFor="dob"
-              className="block text-sm font-medium text-gray-700">
+            <label htmlFor="dob" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
               Date of Birth
             </label>
             <input
               {...register("dob")}
               type="date"
-              className="mt-1 w-full border rounded-md px-3 py-2"
+              className="mt-1 w-full rounded-md border px-3 py-2 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
               placeholder="Enter your date of birth"
             />
-            {errors.dateofbirth && (
-              <p className="text-red-500 text-sm">
-                {errors.dateofbirth.message}
-              </p>
-            )}
+            {errors.dob && <p className="text-sm text-red-500">{errors.dob.message}</p>}
           </div>
 
-          {/* phone number */}
           <div>
-            <label
-              htmlFor="phone"
-              className="block text-sm font-medium text-gray-700">
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
               Phone Number
             </label>
             <input
               {...register("phone")}
               type="tel"
-              className="mt-1 w-full border rounded-md px-3 py-2"
+              className="mt-1 w-full rounded-md border px-3 py-2 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
               placeholder="Enter your phone number"
             />
             {errors.phone && (
-              <p className="text-red-500 text-sm">{errors.phone.message}</p>
+              <p className="text-sm text-red-500">{errors.phone.message}</p>
             )}
           </div>
 
-          {/* address */}
           <div>
-            <label
-              htmlFor="address"
-              className="block text-sm font-medium text-gray-700">
+            <label htmlFor="address" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
               Address
             </label>
             <input
               {...register("address")}
               type="text"
-              className="mt-1 w-full border rounded-md px-3 py-2"
+              className="mt-1 w-full rounded-md border px-3 py-2 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
               placeholder="Enter your address"
             />
             {errors.address && (
-              <p className="text-red-500 text-sm">{errors.address.message}</p>
+              <p className="text-sm text-red-500">{errors.address.message}</p>
             )}
           </div>
 
-          {/* button  */}
-          <div className="md:col-span-2 text-center">
+          <div className="text-center md:col-span-2">
             <button
               type="submit"
-              className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-semibold transition duration-300 cursor-pointer">
+              className="cursor-pointer rounded-xl bg-slate-900 px-6 py-2.5 font-medium text-white transition duration-300 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+            >
               Submit
             </button>
           </div>
-          <div className="md:col-span-2 text-center">
-            <p className="text-sm text-black">
+          <div className="text-center md:col-span-2">
+            <p className="text-sm text-black dark:text-slate-300">
               Already have an account?{" "}
-              <Link
-                to={RouteLogin}
-                className="text-purple-600 hover:underline font-medium">
+              <Link to={RouteLogin} className="font-medium text-slate-900 hover:underline dark:text-white">
                 Login
               </Link>
             </p>

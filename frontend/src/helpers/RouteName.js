@@ -1,4 +1,6 @@
 export const RouteIndex = "/";
+export const RouteFeatures = "/features";
+export const RoutePublicAbout = "/about-us";
 export const RouteSignup = "/signup";
 export const RouteLogin = "/login";
 export const RouteWelcome = "/welcome";
@@ -7,3 +9,4 @@ export const RouteContacts = "/contacts";
 export const RouteHomepage = "/homepage";
 export const RouteProfile = "/profile";
 export const RouteChatLayout = "/chatLayout";
+export const RouteAbout = "/about";
