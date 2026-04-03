@@ -1,68 +1,33 @@
-import ContactList from "../components/ContactList";
-import SafetyTips from "../components/SafetyTips";
-import RecentActivity from "../components/RecentActivity";
-
 export default function Dashboard() {
-
+  const items = [
+    "Use Home for quick SOS access.",
+    "Use Chat to coordinate with trusted contacts.",
+    "Use Profile to keep your information current.",
+    "Use the public site pages to review the platform overview and feature explanation.",
+  ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-lg px-6 py-4 flex justify-between items-center border-b">
-        <h1 className="text-2xl font-bold text-red-600 tracking-wide">
-          Women Safety Dashboard
-        </h1>
-        {/* {user && (
-          <div className="flex items-center space-x-4">
-            <img
-              src={"#"}
-              alt="profile"
-              className="w-12 h-12 rounded-full border-2 border-red-500 shadow-sm"
-            />
-            <div>
-              <p className="font-semibold text-gray-900">Name</p>
-              <p className="text-sm text-gray-500">Email</p>
-            </div>
-          </div>
-        )} */}
-      </header>
-
-      {/* Main Content */}
-      <main className="grow px-8 py-10">
-        {/* Grid Layout */}
-        <div className="grid lg:grid-cols-2 gap-10">
-          {/* Contacts Section */}
-          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
-              Emergency Contacts
-            </h2>
-            <ContactList />
-          </div>
-
-          {/* Recent Activity */}
-          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
-              Recent Activity
-            </h2>
-            <RecentActivity/>
-          </div>
-        </div>
-
-        {/* Safety Tips Section */}
-        <div className="mt-10 bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
-            Safety Tips
-          </h2>
-          <SafetyTips />
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="w-full bg-gray-100 border-t p-6 text-center text-gray-600 mt-auto">
-        <p className="text-sm">
-          © 2025 Women Safety WebApp · <span className="text-red-600">Privacy Policy</span> · Terms
+    <div className="space-y-10">
+      <div>
+        <p className="text-sm uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+          Overview
         </p>
-      </footer>
+        <h1 className="mt-3 text-4xl font-semibold text-slate-900 dark:text-white">
+          Clear overview, no clutter
+        </h1>
+        <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">
+          This area keeps the workspace simple. Use the navigation on the left
+          to move through the app without stacked cards and extra distractions.
+        </p>
+      </div>
+
+      <div className="space-y-4">
+        {items.map((item) => (
+          <div key={item} className="border-b border-slate-200 pb-4 text-slate-700 dark:border-slate-800 dark:text-slate-300">
+            {item}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

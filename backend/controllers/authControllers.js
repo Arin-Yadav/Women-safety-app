@@ -4,15 +4,20 @@ import jwt from "jsonwebtoken";
 async function handleCreateNewUsers(req, res) {
   try {
     const { fullName, email, password, age, dob, phone, address } = req.body;
+    const normalizedEmail = email?.trim().toLowerCase();
 
-    const existingUser = await User.findOne({ email });
+    if (!fullName || !normalizedEmail || !password || !dob) {
+      return res.status(400).json({ message: "Please fill all required fields" });
+    }
+
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered" });
     }
 
     await User.create({
       fullName,
-      email,
+      email: normalizedEmail,
       password,
       age,
       dob,
@@ -23,6 +28,15 @@ async function handleCreateNewUsers(req, res) {
     return res.status(201).json({ message: "User created successfully" });
   } catch (err) {
     console.error(err);
+    if (err.name === "ValidationError") {
+      const firstError = Object.values(err.errors)[0]?.message;
+      return res.status(400).json({ message: firstError || "Invalid signup data" });
+    }
+
+    if (err.code === 11000) {
+      return res.status(400).json({ message: "Email already registered" });
+    }
+
     return res.status(500).json({ message: "Server error: " + err.message });
   }
 }

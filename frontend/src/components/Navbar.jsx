@@ -1,86 +1,91 @@
 import { useState } from "react";
-import { Link as ScrollLink } from "react-scroll";
-import { Link } from "react-router-dom";
-import { RouteIndex, RouteLogin } from "../helpers/RouteName";
+import { Link, NavLink } from "react-router-dom";
+import {
+  RouteFeatures,
+  RouteIndex,
+  RouteLogin,
+  RoutePublicAbout,
+} from "../helpers/RouteName";
+import ThemeToggle from "./ThemeToggle";
+
+const navItems = [
+  { label: "Home", to: RouteIndex },
+  { label: "Features", to: RouteFeatures },
+  { label: "About", to: RoutePublicAbout },
+];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-purple-700 text-white shadow-lg fixed top-0 h-16 w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Link
-            to={RouteIndex}
-            className="shrink-0 text-2xl font-bold cursor-pointer">
-            🛡️Suraksha
-          </Link>
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <Link to={RouteIndex} className="text-2xl font-semibold text-slate-900 dark:text-white">
+          Suraksha
+        </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-6">
-            <ScrollLink
-              to="home"
-              smooth={true}
-              duration={500}
-              offset={-70}
-              className="px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-600 transition cursor-pointer">
-              Home
-            </ScrollLink>
-            <ScrollLink
-              to="features"
-              smooth={true}
-              duration={500}
-              offset={-70}
-              className="px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-600 transition cursor-pointer">
-              Features
-            </ScrollLink>
-            <ScrollLink
-              to="aboutus"
-              smooth={true}
-              duration={500}
-              offset={-70}
-              className="px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-600 transition cursor-pointer">
-              About us
-            </ScrollLink>
-            <Link
-              to={RouteLogin}
-              className="block bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-semibold transition cursor-pointer">
-              Login
-            </Link>
-          </div>
+        <nav className="hidden items-center gap-8 md:flex">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `text-sm font-medium ${
+                  isActive
+                    ? "text-slate-900 dark:text-white"
+                    : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                }`
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="focus:outline-none text-2xl">
-              {isOpen ? "✖" : "☰"}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Dropdown */}
-      {isOpen && (
-        <div className="md:hidden bg-purple-800 px-4 pb-4 space-y-2">
-          <Link
-            to="home"
-            className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-600 transition cursor-pointer">
-            Home
-          </Link>
-          <Link className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-600 transition cursor-pointer">
-            Features
-          </Link>
-          <Link className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-600 transition cursor-pointer">
-            About us
-          </Link>
+        <div className="hidden items-center gap-3 md:flex">
           <Link
             to={RouteLogin}
-            className="block bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-semibold transition">
+            className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+          >
             Login
           </Link>
+
+        <ThemeToggle />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setIsOpen((prev) => !prev)}
+          className="text-sm font-medium text-slate-700 dark:text-slate-200 md:hidden"
+        >
+          {isOpen ? "Close" : "Menu"}
+        </button>
+      </div>
+
+      {isOpen && (
+        <div className="border-t border-slate-200 bg-white px-6 py-4 dark:border-slate-800 dark:bg-slate-950 md:hidden">
+          <div className="flex flex-col gap-4">
+            <ThemeToggle />
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                onClick={() => setIsOpen(false)}
+                className="text-sm font-medium text-slate-600 dark:text-slate-400"
+              >
+                {item.label}
+              </NavLink>
+            ))}
+            <NavLink
+              to={RouteLogin}
+              onClick={() => setIsOpen(false)}
+              className="text-sm font-medium text-slate-600 dark:text-slate-400"
+            >
+              Login
+            </NavLink>
+          </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 }

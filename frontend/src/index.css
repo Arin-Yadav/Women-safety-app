@@ -1,4 +1,26 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+body {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  color: #0f172a;
+  background: #f5f5f4;
+}
+
+html.dark body {
+  color: #e5e7eb;
+  background: #020617;
+  color-scheme: dark;
+}
+
+html:not(.dark) body {
+  color-scheme: light;
+}
+
+#root {
+  min-height: 100vh;
+}
 
 @keyframes marquee {
   0% { transform: translateX(100%); }

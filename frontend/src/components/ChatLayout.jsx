@@ -1,53 +1,31 @@
 import React, { useState } from "react";
 import ChatSidebar from "./ChatSidebar";
 import ChatArea from "./ChatArea";
-import { Link } from "react-router-dom";
-import { RouteHomepage } from "../helpers/RouteName";
-import { IoMdClose } from "react-icons/io";
-import { RxHamburgerMenu } from "react-icons/rx";
 
 const ChatLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Navbar */}
-      <div className="h-16 bg-blue-600 text-white flex fixed top-0 z-50 w-full items-center justify-between px-4">
-        <h1 className="font-bold">My Chat App</h1>
-        {/* Hamburger button only on small screens */}
-        <div className="flex items-center gap-2 justify-center">
-          <Link
-            to={RouteHomepage}
-            className="bg-red-600 rounded-md hover:bg-red-700 px-5 py-2 cursor-pointer">
-            Back
-          </Link>
-          <button
-            className={`lg:hidden p-2 text-white rounded-md cursor-pointer`}
-            onClick={function () {
-              setSidebarOpen(!sidebarOpen);
-            }}>
-            {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
-          </button>
-        </div>
+    <div className="space-y-10">
+      <div>
+        <p className="text-sm uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+          Chat
+        </p>
+        <h1 className="mt-3 text-4xl font-semibold text-slate-900 dark:text-white">
+          Conversations
+        </h1>
       </div>
 
-      {/* Body */}
-      <div className="flex flex-1 mt-16 h-[calc(100vh-64px)]">
-        {/* Sidebar */}
-        <ChatSidebar
-          onSelectRoom={setSelectedRoom}
-          isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-        />
-        {/* Main content - Chatting Area */}
-        <div className="flex-1 flex flex-col overflow-y-auto">
+      <div className="grid gap-10 lg:grid-cols-[260px_minmax(0,1fr)]">
+        <div>
+          <ChatSidebar onSelectRoom={setSelectedRoom} isOpen onClose={() => {}} />
+        </div>
+
+        <div>
           {!selectedRoom ? (
-            <div className="flex flex-col items-center justify-center flex-1">
-              <p className="text-gray-600 mb-4">
-                Select to chat with your contacts.
-              </p>
-            </div>
+            <p className="text-base text-slate-600 dark:text-slate-300">
+              Select a group to start chatting.
+            </p>
           ) : (
             <ChatArea room={selectedRoom} />
           )}

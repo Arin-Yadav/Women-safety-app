@@ -1,33 +1,39 @@
-# 🛡️ Women Safety Web App
+# Women Safety Web App
 
-A full-stack **Women Safety Web Application** built with **React.js, Tailwind CSS, Node.js, Express, and MongoDB**, designed to provide emergency support through **live location sharing** and **email alerts**. The Webapp empowers users to quickly alert emergency contacts with their live location via SMS/email.
+This repository contains a full-stack women safety app with:
 
----
+- `frontend`: React + Vite
+- `backend`: Node.js + Express + Socket.IO
+- `database`: MongoDB
 
-## ✨ Features
+## Quick Start
 
-- 📍 **Live Location Sharing**  
-  Captures user’s geolocation and sends it to emergency contacts.
+Read [SETUP.md](/c:/Users/Rahul/Desktop/gitContros/Women-safety-app/SETUP.md) for the complete setup guide.
 
-- 📧 **Alert System**  
-  Sends Email notifications to pre-configured contacts using services like **Nodemailer**.
+### Backend
 
-- 👤 **User Management**  
-  Secure authentication with **JWT** and role-based access control.
+```powershell
+cd backend
+npm install
+npm run dev
+```
 
-- 🎨 **Responsive UI**  
-  Built with **React.js** and styled using **Tailwind CSS** for a clean, mobile-first design.
+### Frontend
 
----
+```powershell
+cd frontend
+npm install
+npm run dev
+```
 
-## 🏗️ Tech Stack
+## Default Local URLs
 
-| Layer             | Technology                        |
-|-------------------|-----------------------------------|
-| Frontend          | React.js, Tailwind CSS            |
-| Backend           | Node.js, Express.js               |
-| Database          | MongoDB                           |
-| Authentication    | JWT, Cookies                      |
-| Notifications     | SendGrid/Nodemailer (Email)       |
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:5000`
 
----
+## Environment Files
+
+Example env files are included:
+
+- [backend/.env.example](/c:/Users/Rahul/Desktop/gitContros/Women-safety-app/backend/.env.example)
+- [frontend/.env.example](/c:/Users/Rahul/Desktop/gitContros/Women-safety-app/frontend/.env.example)
