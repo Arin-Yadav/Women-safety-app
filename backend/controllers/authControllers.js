@@ -47,7 +47,7 @@ export async function handleSignin(req, res) {
     const token = jwt.sign(
       { id: user._id, email: user.email },
       process.env.JWT_SECRET || "defaultsecret",
-      { expiresIn: "1h" }
+      { expiresIn: "1h" },
     );
 
     // ✅ Cookie
@@ -64,6 +64,9 @@ export async function handleSignin(req, res) {
         id: user._id,
         fullName: user.fullName,
         email: user.email,
+        age: user.age,
+        phone: user.phone,
+        address: user.address,
       },
     });
   } catch (err) {

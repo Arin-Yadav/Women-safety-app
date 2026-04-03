@@ -109,7 +109,7 @@ export default function HomePage() {
 
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="md:hidden text-2xl"
+          className="md:hidden text-2xl cursor-pointer"
         >
           {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
         </button>
@@ -152,7 +152,7 @@ export default function HomePage() {
           <div className="p-4 border-t mt-auto">
             <button
               onClick={handleLogout}
-              className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+              className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 cursor-pointer"
             >
               Logout
             </button>
@@ -172,7 +172,7 @@ export default function HomePage() {
           <section className="mt-12 flex flex-col items-center">
             <button
               onClick={handleSOS}
-              className="bg-red-600 text-white font-bold rounded-full w-48 h-48 shadow-2xl hover:bg-red-700 transition transform hover:scale-110"
+              className="bg-red-600 text-white font-bold rounded-full w-48 h-48 shadow-2xl hover:bg-red-700 transition transform hover:scale-110 cursor-pointer"
             >
               SOS
             </button>
@@ -204,14 +204,14 @@ export default function HomePage() {
                 <div className="flex justify-center gap-4">
                   <button
                     onClick={playAlarm}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105"
+                    className="bg-yellow-500 hover:bg-yellow-600 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105"
                   >
                     Start
                   </button>
 
                   <button
                     onClick={stopAlarm}
-                    className="bg-gray-700 hover:bg-gray-800 text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105"
+                    className="bg-gray-700 hover:bg-gray-800 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105"
                   >
                     Stop
                   </button>
@@ -230,14 +230,14 @@ export default function HomePage() {
                 <div className="flex justify-center gap-4">
                   <button
                     onClick={startFakeCall}
-                    className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105"
+                    className="bg-green-500 hover:bg-green-600 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105"
                   >
                     Start
                   </button>
 
                   <button
                     onClick={stopFakeCall}
-                    className="bg-gray-700 hover:bg-gray-800 text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105"
+                    className="bg-gray-700 hover:bg-gray-800 text-white cursor-pointer px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105"
                   >
                     Stop
                   </button>
