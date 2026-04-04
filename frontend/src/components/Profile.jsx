@@ -6,7 +6,7 @@ import { RouteHomepage } from "../helpers/RouteName";
 
 const Profile = () => {
   const user = useSelector((state) => state.user?.user?.user);
-  console.log(user)
+  // console.log(user)
 
   const {
     register,
