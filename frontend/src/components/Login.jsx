@@ -85,6 +85,7 @@ export default function Login() {
               Email
             </label>
             <input
+            placeholder="Enter your email"
               type="email"
               {...register("email")}
               className="mt-1 w-full border rounded-md px-3 py-2"
@@ -102,6 +103,7 @@ export default function Login() {
               Password
             </label>
             <input
+            placeholder="Enter your password"
               type="password"
               {...register("password")}
               className="mt-1 w-full border rounded-md px-3 py-2"

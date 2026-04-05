@@ -1,14 +1,55 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChatSidebar from "./ChatSidebar";
 import ChatArea from "./ChatArea";
 import { Link } from "react-router-dom";
 import { RouteHomepage } from "../helpers/RouteName";
 import { IoMdClose } from "react-icons/io";
 import { RxHamburgerMenu } from "react-icons/rx";
+import CreateRoomModal from "./CreateRoomModal";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 const ChatLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [rooms, setRooms] = useState([]);
+
+  const fullUser = useSelector((state) => state.user);
+  const user = fullUser?.user?.user;
+  const userId = user?.id;
+  // console.log(userId)
+
+  useEffect(() => {
+    // fetching rooms with fitered
+    const fetchRooms = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/rooms/getRooms`,
+          { params: { userId }, withCredentials: true },
+        );
+        setRooms(response.data.rooms);
+      } catch (error) {
+        console.error("Fetch Rooms Error:", error);
+      }
+    };
+    fetchRooms();
+  }, [userId]);
+
+  const handleCreateRoom = async (roomData) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/rooms/create`, // ✅ FIXED
+        roomData,
+        { withCredentials: true },
+      );
+      const newRooms = response.data.room;
+      setRooms((prev) => [...prev, newRooms]);
+      setShowModal(false);
+    } catch (error) {
+      console.error("Create Room Error:", error);
+    }
+  };
 
   return (
     <div className="flex flex-col h-screen">
@@ -24,7 +65,7 @@ const ChatLayout = () => {
           </Link>
           <button
             className={`lg:hidden p-2 text-white rounded-md cursor-pointer`}
-            onClick={function () {
+            onClick={() => {
               setSidebarOpen(!sidebarOpen);
             }}>
             {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
@@ -36,9 +77,11 @@ const ChatLayout = () => {
       <div className="flex flex-1 mt-16 h-[calc(100vh-64px)]">
         {/* Sidebar */}
         <ChatSidebar
+          rooms={rooms}
           onSelectRoom={setSelectedRoom}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
+          onOpenModal={() => setShowModal(true)}
         />
         {/* Main content - Chatting Area */}
         <div className="flex-1 flex flex-col overflow-y-auto">
@@ -53,6 +96,14 @@ const ChatLayout = () => {
           )}
         </div>
       </div>
+
+      {/* Modal overlay (on top of everything) */}
+      {showModal && (
+        <CreateRoomModal
+          onClose={() => setShowModal(false)}
+          onCreate={handleCreateRoom}
+        />
+      )}
     </div>
   );
 };

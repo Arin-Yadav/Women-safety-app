@@ -1,8 +1,32 @@
 import Message from "../models/messages.models.js";
+import Room from "../models/rooms.models.js";
 
 async function handleGetMessages(req, res) {
   try {
-    const messages = await Message.find({ room: req.params.roomId })
+    const { roomId } = req.params;
+    const userId = req.query.userId;
+
+    // console.log(roomId);
+    // console.log(userId);
+
+    const room = await Room.findById(roomId);
+    // console.log(room);
+
+    if (!room)
+      return res.status(404).json({ success: false, message: "No room found" });
+
+    // Block outsiders
+    if (
+      room.roomType === "private" &&
+      !room.roomMembers.includes(userId) &&
+      room.createdBy.toString() !== userId
+    ) {
+      return res
+        .status(403)
+        .json({ success: false, message: "Not authorized" });
+    }
+
+    const messages = await Message.find({ room: roomId })
       .populate("sender", "username")
       .sort({ createdAt: 1 });
     res.json({ success: true, messages });

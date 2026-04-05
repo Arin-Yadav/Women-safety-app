@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
-const contactSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  phone: { type: String, required: true },
-  relation: { type: String, required: true },
-});
+// const contactSchema = new mongoose.Schema({
+//   name: { type: String, required: true },
+//   email: { type: String, required: true },
+//   phone: { type: String, required: true },
+//   relation: { type: String, required: true },
+// });
 
 const userSchema = new mongoose.Schema(
   {
@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
     dob: { type: Date, required: true },
     phone: { type: String },
     address: { type: String, trim: true },
-    contacts: [contactSchema], // 👈 emergency contacts stored here
+    // contacts: [contactSchema], // 👈 emergency contacts stored here
   },
   { timestamps: true },
 );

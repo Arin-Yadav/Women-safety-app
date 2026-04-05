@@ -7,3 +7,4 @@ export const RouteContacts = "/contacts";
 export const RouteHomepage = "/homepage";
 export const RouteProfile = "/profile";
 export const RouteChatLayout = "/chatLayout";
+export const RouteCreateRoomModal = "/createRoomModal";

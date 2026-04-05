@@ -4,6 +4,7 @@ import WelcomeScreen from "./components/WelcomeScreen";
 import HomePage from "./components/HomePage";
 import {
   RouteChatLayout,
+  RouteCreateRoomModal,
   RouteHomepage,
   RouteIndex,
   RouteLogin,
@@ -15,6 +16,7 @@ import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import ChatLayout from "./components/ChatLayout";
 import Profile from "./components/Profile";
+import CreateRoomModal from "./components/CreateRoomModal";
 
 const App = () => {
   return (
@@ -27,6 +29,7 @@ const App = () => {
         <Route path={RouteHomepage} element={<HomePage />} />
         <Route path={RouteChatLayout} element={<ChatLayout />}></Route>
         <Route path={RouteProfile} element={<Profile />} />
+        <Route path={RouteCreateRoomModal} element={<CreateRoomModal />} />
       </Routes>
     </BrowserRouter>
   );

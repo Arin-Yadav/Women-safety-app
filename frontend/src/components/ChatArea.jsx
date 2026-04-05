@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useSocket } from "../hooks/useSocket";
 import axios from "axios";
 import dayjs from "dayjs";
+import ManageMembersModal from "./ManageMembersModal";
 
 const MessageBubble = React.memo(({ msg, userId }) => {
   const isOwnMessage = msg?.sender?._id === userId;
@@ -70,6 +71,7 @@ const ChatArea = ({ room }) => {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
+  const [showManageModal, setShowManageModal] = useState(false);
 
   // Socket hook
   const { sendMessage, startTyping, stopTyping } = useSocket(
@@ -88,7 +90,7 @@ const ChatArea = ({ room }) => {
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/messages/${room._id}`,
-          { withCredentials: true },
+          { params: { userId }, withCredentials: true },
         );
         setMessages(res.data.messages);
       } catch (error) {
@@ -96,7 +98,7 @@ const ChatArea = ({ room }) => {
       }
     };
     if (room?._id) fetchMessages();
-  }, [room]);
+  }, [room._id, userId]);
 
   const handleInputChange = (e) => {
     let typingTimeout;
@@ -122,9 +124,10 @@ const ChatArea = ({ room }) => {
 
   return (
     <div className="flex flex-col h-full w-full bg-gray-100">
-      <div className="p-4 bg-white border-b flex items-center h-16">
+      <div className="p-4 bg-white border-b flex items-center h-16 justify-between">
         <div className="flex flex-col justify-center">
           <h2 className="font-semibold text-sm">Chatting in {room.roomName}</h2>
+          {/* Typing indicator */}
           <div className="h-4">
             {typingUsers.length > 0 && (
               <span className="text-xs text-green-500">
@@ -134,6 +137,15 @@ const ChatArea = ({ room }) => {
             )}
           </div>
         </div>
+
+        {/* Private room */}
+        {room.roomType === "private" && room.createdBy === userId && (
+          <button
+            onClick={() => setShowManageModal(true)}
+            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer">
+            Manage Members
+          </button>
+        )}
       </div>
 
       <MessageList messages={messages} userId={userId} />
@@ -154,6 +166,13 @@ const ChatArea = ({ room }) => {
           Send
         </button>
       </form>
+
+      {showManageModal && (
+        <ManageMembersModal
+          roomId={room._id}
+          onClose={() => setShowManageModal(false)}
+        />
+      )}
     </div>
   );
 };
