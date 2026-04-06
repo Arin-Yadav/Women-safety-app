@@ -15,6 +15,8 @@ import { IoMdClose } from "react-icons/io";
 export default function HomePage() {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user?.user);
+  const currentRoomId = useSelector((state) => state?.room?.currentRoomId);
+  // console.log(currentRoomId);
 
   const userName = user?.user?.fullName;
   const userId = user?.user?.id;
@@ -63,7 +65,7 @@ export default function HomePage() {
   const handleSOS = () => {
     playAlarm();
 
-    navigator.geolocation.getCurrentPosition((position) => {
+    navigator.geolocation.getCurrentPosition(async (position) => {
       const locationMessage = {
         type: "location",
         userId: userId,
@@ -72,16 +74,20 @@ export default function HomePage() {
         timestamp: new Date().toISOString(),
       };
 
-      fetch(`${import.meta.env.VITE_API_URL}/sos`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          roomId: `${import.meta.env.VITE_ROOM_ID}`,
-          message: locationMessage,
-        }),
-      });
+      try {
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/sos`,
+          {
+            roomId: currentRoomId, // later replace with Redux currentRoomId
+            message: locationMessage,
+          },
+          { withCredentials: true },
+        );
+
+        window.alert("🚨 SOS sent successfully!");
+      } catch (error) {
+        console.error("SOS Error:", error);
+      }
     });
   };
 
@@ -91,7 +97,7 @@ export default function HomePage() {
       await axios.post(
         `${import.meta.env.VITE_API_URL}/logout`,
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       );
       navigate(RouteIndex);
     } catch (error) {
@@ -109,8 +115,7 @@ export default function HomePage() {
 
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="md:hidden text-2xl cursor-pointer"
-        >
+          className="md:hidden text-2xl cursor-pointer">
           {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
         </button>
       </nav>
@@ -128,23 +133,18 @@ export default function HomePage() {
         <aside
           className={`fixed md:sticky top-16 left-0 h-[calc(100vh-4rem)] w-64 transform ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0 transition bg-white shadow-lg z-40 flex flex-col`}
-        >
-          <h1 className="text-xl font-bold p-3 text-blue-600">
-            Quick Links
-          </h1>
+          } md:translate-x-0 transition bg-white shadow-lg z-40 flex flex-col`}>
+          <h1 className="text-xl font-bold p-3 text-blue-600">Quick Links</h1>
 
           <div className="flex flex-col p-3 space-y-2">
             <Link
               to={RouteChatLayout}
-              className="px-3 py-2 rounded bg-gray-100 hover:bg-blue-50"
-            >
+              className="px-3 py-2 rounded bg-gray-100 hover:bg-blue-50">
               Chat
             </Link>
             <Link
               to={RouteProfile}
-              className="px-3 py-2 rounded bg-gray-100 hover:bg-blue-50"
-            >
+              className="px-3 py-2 rounded bg-gray-100 hover:bg-blue-50">
               Profile
             </Link>
           </div>
@@ -152,8 +152,7 @@ export default function HomePage() {
           <div className="p-4 border-t mt-auto">
             <button
               onClick={handleLogout}
-              className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 cursor-pointer"
-            >
+              className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 cursor-pointer">
               Logout
             </button>
           </div>
@@ -163,17 +162,14 @@ export default function HomePage() {
         <main className="flex-1 p-6 md:p-12">
           {/* Welcome */}
           <section className="text-center mt-6">
-            <h2 className="text-3xl font-bold">
-              Welcome, {userName} 👋
-            </h2>
+            <h2 className="text-3xl font-bold">Welcome, {userName} 👋</h2>
           </section>
 
           {/* 🚨 SOS */}
           <section className="mt-12 flex flex-col items-center">
             <button
               onClick={handleSOS}
-              className="bg-red-600 text-white font-bold rounded-full w-48 h-48 shadow-2xl hover:bg-red-700 transition transform hover:scale-110 cursor-pointer"
-            >
+              className="bg-red-600 text-white font-bold rounded-full w-48 h-48 shadow-2xl hover:bg-red-700 transition transform hover:scale-110 cursor-pointer">
               SOS
             </button>
             <p className="mt-4 text-gray-600">
@@ -204,15 +200,13 @@ export default function HomePage() {
                 <div className="flex justify-center gap-4">
                   <button
                     onClick={playAlarm}
-                    className="bg-yellow-500 hover:bg-yellow-600 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105"
-                  >
+                    className="bg-yellow-500 hover:bg-yellow-600 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105">
                     Start
                   </button>
 
                   <button
                     onClick={stopAlarm}
-                    className="bg-gray-700 hover:bg-gray-800 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105"
-                  >
+                    className="bg-gray-700 hover:bg-gray-800 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105">
                     Stop
                   </button>
                 </div>
@@ -230,15 +224,13 @@ export default function HomePage() {
                 <div className="flex justify-center gap-4">
                   <button
                     onClick={startFakeCall}
-                    className="bg-green-500 hover:bg-green-600 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105"
-                  >
+                    className="bg-green-500 hover:bg-green-600 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105">
                     Start
                   </button>
 
                   <button
                     onClick={stopFakeCall}
-                    className="bg-gray-700 hover:bg-gray-800 text-white cursor-pointer px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105"
-                  >
+                    className="bg-gray-700 hover:bg-gray-800 text-white cursor-pointer px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105">
                     Stop
                   </button>
                 </div>

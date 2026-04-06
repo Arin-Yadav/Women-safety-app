@@ -7,7 +7,8 @@ import { IoMdClose } from "react-icons/io";
 import { RxHamburgerMenu } from "react-icons/rx";
 import CreateRoomModal from "./CreateRoomModal";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentRoomId } from "../redux/slices/roomSlice";
 
 const ChatLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -19,6 +20,8 @@ const ChatLayout = () => {
   const user = fullUser?.user?.user;
   const userId = user?.id;
   // console.log(userId)
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     // fetching rooms with fitered
@@ -43,9 +46,14 @@ const ChatLayout = () => {
         roomData,
         { withCredentials: true },
       );
+      console.log(response.data.room._id)
+      const roomId = response.data.room._id
+      dispatch(setCurrentRoomId(roomId))
+      
       const newRooms = response.data.room;
       setRooms((prev) => [...prev, newRooms]);
       setShowModal(false);
+      
     } catch (error) {
       console.error("Create Room Error:", error);
     }

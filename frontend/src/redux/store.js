@@ -1,10 +1,12 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import userReducer from "./slices/userSlice";
+import roomReducer from './slices/roomSlice'
 import sessionStorage from "redux-persist/lib/storage/session";
 import { persistStore, persistReducer } from "redux-persist";
 
 const rootReducer = combineReducers({
   user: userReducer,
+  room: roomReducer,
 });
 
 const persistConfig = {
