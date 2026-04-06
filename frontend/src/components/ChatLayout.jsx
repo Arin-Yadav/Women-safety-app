@@ -8,52 +8,61 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import CreateRoomModal from "./CreateRoomModal";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentRoomId } from "../redux/slices/roomSlice";
+import { addRoom, setCurrentRoomId, setRoom } from "../redux/slices/roomSlice";
 
 const ChatLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [rooms, setRooms] = useState([]);
+  const rooms = useSelector((state) => state.room.rooms); // ✅ use Redux
 
   const fullUser = useSelector((state) => state.user);
   const user = fullUser?.user?.user;
   const userId = user?.id;
   // console.log(userId)
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // fetching rooms with fitered
     const fetchRooms = async () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/api/rooms/getRooms`,
-          { params: { userId }, withCredentials: true },
+          {
+            params: { userId }, // ✅ userId passed as query param
+            withCredentials: true,
+          },
         );
-        setRooms(response.data.rooms);
+
+        const rooms = response.data.rooms;
+        // console.log("Fetched Rooms:", rooms);
+
+        // ✅ Dispatch plain array into Redux
+        dispatch(setRoom(rooms));
       } catch (error) {
         console.error("Fetch Rooms Error:", error);
       }
     };
+
     fetchRooms();
-  }, [userId]);
+  }, [dispatch, userId]);
 
   const handleCreateRoom = async (roomData) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/rooms/create`, // ✅ FIXED
+        `${import.meta.env.VITE_BASE_URL}/api/rooms/create`,
         roomData,
         { withCredentials: true },
       );
-      console.log(response.data.room._id)
-      const roomId = response.data.room._id
-      dispatch(setCurrentRoomId(roomId))
-      
-      const newRooms = response.data.room;
-      setRooms((prev) => [...prev, newRooms]);
+
+      const newRoom = response.data.room;
+      const roomId = newRoom._id;
+
+      // ✅ Update Redux
+      dispatch(setCurrentRoomId(roomId));
+      dispatch(addRoom(newRoom)); // add to rooms array in Redux
+
       setShowModal(false);
-      
     } catch (error) {
       console.error("Create Room Error:", error);
     }

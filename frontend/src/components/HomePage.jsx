@@ -13,15 +13,23 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { IoMdClose } from "react-icons/io";
 
 export default function HomePage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user?.user);
-  const currentRoomId = useSelector((state) => state?.room?.currentRoomId);
-  // console.log(currentRoomId);
-
+  const user = useSelector((state) => state?.user?.user);
   const userName = user?.user?.fullName;
   const userId = user?.user?.id;
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  // all rooms
+  const rooms = useSelector((state) => state?.room?.rooms);
+  // console.log(rooms);
+
+  // private rooms
+  const privateRooms = rooms.filter((room) => room.roomType === "private");
+  // console.log(privateRooms)
+
+  // last created room by user
+  // const currentRoomId = useSelector((state) => state?.room?.currentRoomId);
+  // console.log(currentRoomId);
 
   // 🔊 Alarm Ref
   const alarmRef = useRef(null);
@@ -63,7 +71,10 @@ export default function HomePage() {
 
   // 🚨 SOS Feature
   const handleSOS = () => {
-    playAlarm();
+    if (privateRooms.length === 0) {
+      alert("No private rooms available for SOS");
+      return;
+    }
 
     navigator.geolocation.getCurrentPosition(async (position) => {
       const locationMessage = {
@@ -75,15 +86,17 @@ export default function HomePage() {
       };
 
       try {
-        await axios.post(
-          `${import.meta.env.VITE_API_URL}/sos`,
-          {
-            roomId: currentRoomId, // later replace with Redux currentRoomId
-            message: locationMessage,
-          },
-          { withCredentials: true },
-        );
-
+        // ✅ Loop through all private rooms
+        for (const room of privateRooms) {
+          await axios.post(
+            `${import.meta.env.VITE_API_URL}/sos`,
+            {
+              roomId: room._id, // send to each private room
+              message: locationMessage,
+            },
+            { withCredentials: true },
+          );
+        }
         window.alert("🚨 SOS sent successfully!");
       } catch (error) {
         console.error("SOS Error:", error);
@@ -91,7 +104,7 @@ export default function HomePage() {
     });
   };
 
-  // 🚪 Logout
+  // Logout
   const handleLogout = async () => {
     try {
       await axios.post(

@@ -1,22 +1,21 @@
 // roomSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  currentRoomId: null,
-};
-
 const roomSlice = createSlice({
   name: "room",
-  initialState,
+  initialState: { rooms: [], currentRoomId: null },
   reducers: {
+    setRoom: (state, action) => {
+      state.rooms = action.payload; // replace with full array
+    },
+    addRoom: (state, action) => {
+      state.rooms.push(action.payload); // add new room
+    },
     setCurrentRoomId: (state, action) => {
       state.currentRoomId = action.payload;
-    },
-    clearRoomId: (state) => {
-      state.currentRoomId = null;
     },
   },
 });
 
-export const { setCurrentRoomId, clearRoomId } = roomSlice.actions;
+export const { setRoom, addRoom, setCurrentRoomId } = roomSlice.actions;
 export default roomSlice.reducer;
