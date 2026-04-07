@@ -1,3 +1,4 @@
+// New Homepage testing
 import axios from "axios";
 import SafetyTips from "../components/SafetyTips";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,7 +17,7 @@ export default function HomePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const user = useSelector((state) => state?.user?.user);
-  const userName = user?.user?.fullName;
+  // const userName = user?.user?.fullName;
   const userId = user?.user?.id;
 
   // all rooms
@@ -122,10 +123,11 @@ export default function HomePage() {
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Navbar */}
       <nav className="w-full bg-white shadow-md px-6 py-4 h-16 flex justify-between items-center sticky top-0 z-50">
-        <Link to={RouteHomepage} className="font-bold text-2xl">
+        <Link
+          to={RouteHomepage}
+          className="font-bold text-2xl text-blue-700 flex items-center gap-2">
           🛡️ Suraksha
         </Link>
-
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="md:hidden text-2xl cursor-pointer">
@@ -134,10 +136,10 @@ export default function HomePage() {
       </nav>
 
       <div className="flex flex-1">
-        {/* Overlay */}
+        {/* Overlay for mobile */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 md:hidden"
+            className="fixed inset-0 bg-black/20 md:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
@@ -146,19 +148,34 @@ export default function HomePage() {
         <aside
           className={`fixed md:sticky top-16 left-0 h-[calc(100vh-4rem)] w-64 transform ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0 transition bg-white shadow-lg z-40 flex flex-col`}>
+          } md:translate-x-0 transition-transform duration-300 bg-white shadow-lg z-40 flex flex-col`}>
           <h1 className="text-xl font-bold p-3 text-blue-600">Quick Links</h1>
 
           <div className="flex flex-col p-3 space-y-2">
             <Link
               to={RouteChatLayout}
-              className="px-3 py-2 rounded bg-gray-100 hover:bg-blue-50">
-              Chat
+              className="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50">
+              💬 Chat Room
             </Link>
             <Link
               to={RouteProfile}
-              className="px-3 py-2 rounded bg-gray-100 hover:bg-blue-50">
-              Profile
+              className="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50">
+              👤 Profile
+            </Link>
+            <Link
+              to="/safezones"
+              className="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50">
+              🗺️ Safe Zones
+            </Link>
+            <Link
+              to="/awareness"
+              className="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50">
+              📚 Awareness
+            </Link>
+            <Link
+              to="/report"
+              className="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50">
+              📝 Report Unsafe Area
             </Link>
           </div>
 
@@ -171,86 +188,122 @@ export default function HomePage() {
           </div>
         </aside>
 
-        {/* Main */}
-        <main className="flex-1 p-6 md:p-12">
-          {/* Welcome */}
-          <section className="text-center mt-6">
-            <h2 className="text-3xl font-bold">Welcome, {userName} 👋</h2>
-          </section>
-
-          {/* 🚨 SOS */}
-          <section className="mt-12 flex flex-col items-center">
+        {/* Main Content */}
+        <main className="flex-1 p-4 sm:p-6 md:p-12">
+          {/* SOS Section */}
+          <section className="flex flex-col items-center text-center">
+            <p className="mb-4 font-bold text-gray-600 flex items-center gap-2">
+              Tap SOS to alert contacts instantly.
+            </p>
             <button
               onClick={handleSOS}
-              className="bg-red-600 text-white font-bold rounded-full w-48 h-48 shadow-2xl hover:bg-red-700 transition transform hover:scale-110 cursor-pointer">
+              className="bg-red-600 text-white text-2xl font-bold rounded-full w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 shadow-md hover:bg-red-700 transition-transform hover:scale-110 cursor-pointer">
               SOS
             </button>
-            <p className="mt-4 text-gray-600">
-              Tap SOS to alert contacts instantly
-            </p>
           </section>
 
-          {/* 🔊 Alarm Section */}
-          <section className="mt-12 w-full max-w-2xl mx-auto">
-            <div className="bg-white shadow-xl rounded-2xl p-6 text-center border">
-              <h3 className="text-xl font-bold text-gray-800 mb-2">
-                🚨 Emergency Sound Tools
+          {/* Audio */}
+          <audio ref={alarmRef} src="/alarm.mp3" />
+          <audio ref={ringtoneRef} src="/ringtone.mp3" />
+
+          {/* Alarm Section */}
+          <section className="mt-12 w-full max-w-6xl mx-auto px-2">
+            <div className="bg-white shadow-xl rounded-2xl p-6 border">
+              <h3 className="text-2xl font-bold text-gray-800 mb-2 text-center">
+                🚨 Emergency Tools
               </h3>
-              <p className="text-sm text-gray-500 mb-6">
-                Tap to quickly attract attention in unsafe situations
+              <p className="text-sm text-gray-500 mb-8 text-center">
+                Quick actions to attract attention or confirm safety
               </p>
 
-              {/* Audio */}
-              <audio ref={alarmRef} src="/alarm.mp3" />
-              <audio ref={ringtoneRef} src="/ringtone.mp3" />
-
-              {/* Siren */}
-              <div className="mb-6">
-                <h4 className="font-semibold text-gray-700 mb-3">
-                  🔊 Police Siren
-                </h4>
-
-                <div className="flex justify-center gap-4">
-                  <button
-                    onClick={playAlarm}
-                    className="bg-yellow-500 hover:bg-yellow-600 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105">
-                    Start
-                  </button>
-
-                  <button
-                    onClick={stopAlarm}
-                    className="bg-gray-700 hover:bg-gray-800 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105">
-                    Stop
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Check-in */}
+                <div className="bg-gray-50 rounded-xl p-6 shadow-sm flex flex-col items-center">
+                  <h4 className="font-semibold text-gray-700 mb-4">
+                    ✅ Check-in
+                  </h4>
+                  <button className="bg-green-500 hover:bg-green-600 text-white cursor-pointer px-6 py-3 rounded-lg shadow-md transition-transform hover:scale-105 w-full">
+                    I'm Safe
                   </button>
                 </div>
-              </div>
 
-              {/* Divider */}
-              <div className="border-t my-4"></div>
+                {/* Fake Call */}
+                <div className="bg-gray-50 rounded-xl p-6 shadow-sm flex flex-col items-center">
+                  <h4 className="font-semibold text-gray-700 mb-4">
+                    📞 Fake Call
+                  </h4>
+                  <div className="flex gap-4 flex-wrap justify-center">
+                    <button
+                      onClick={startFakeCall}
+                      className="bg-green-500 hover:bg-green-600 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition-transform hover:scale-105">
+                      Start
+                    </button>
+                    <button
+                      onClick={stopFakeCall}
+                      className="bg-gray-700 hover:bg-gray-800 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition-transform hover:scale-105">
+                      Stop
+                    </button>
+                  </div>
+                </div>
 
-              {/* Fake Call */}
-              <div>
-                <h4 className="font-semibold text-gray-700 mb-3">
-                  📞 Fake Call Sound
-                </h4>
-
-                <div className="flex justify-center gap-4">
-                  <button
-                    onClick={startFakeCall}
-                    className="bg-green-500 hover:bg-green-600 cursor-pointer text-white px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105">
-                    Start
-                  </button>
-
-                  <button
-                    onClick={stopFakeCall}
-                    className="bg-gray-700 hover:bg-gray-800 text-white cursor-pointer px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105">
-                    Stop
-                  </button>
+                {/* Siren */}
+                <div className="bg-gray-50 rounded-xl p-6 shadow-sm flex flex-col items-center">
+                  <h4 className="font-semibold text-gray-700 mb-4">
+                    🔊 Police Siren
+                  </h4>
+                  <div className="flex gap-4 flex-wrap justify-center">
+                    <button
+                      onClick={playAlarm}
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white cursor-pointer px-5 py-2 rounded-lg shadow-md transition-transform hover:scale-105">
+                      Start
+                    </button>
+                    <button
+                      onClick={stopAlarm}
+                      className="bg-gray-700 hover:bg-gray-800 text-white cursor-pointer px-5 py-2 rounded-lg shadow-md transition-transform hover:scale-105">
+                      Stop
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
-
+          {/* Feature Cards */}
+          <section className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-2">
+            <div className="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-lg transition">
+              <h3 className="text-xl font-bold mb-2">🗺️ Safe Zone Map</h3>
+              <p className="text-gray-500 mb-4">
+                Find nearby safe places like shops, hospitals, and police
+                stations.
+              </p>
+              <Link
+                to="/safezones"
+                className="text-blue-600 font-semibold hover:underline">
+                View Map
+              </Link>
+            </div>
+            <div className="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-lg transition">
+              <h3 className="text-xl font-bold mb-2">📚 Awareness Articles</h3>
+              <p className="text-gray-500 mb-4">
+                Learn self-defense tips, legal rights, and emergency contacts.
+              </p>
+              <Link
+                to="/awareness"
+                className="text-blue-600 font-semibold hover:underline">
+                Read Articles
+              </Link>
+            </div>
+            <div className="bg-white shadow-md rounded-xl p-6 text-center hover:shadow-lg transition">
+              <h3 className="text-xl font-bold mb-2">📝 Anonymous Reporting</h3>
+              <p className="text-gray-500 mb-4">
+                Report unsafe areas or incidents anonymously to help others.
+              </p>
+              <Link
+                to="/report"
+                className="text-blue-600 font-semibold hover:underline">
+                Report Now
+              </Link>
+            </div>
+          </section>
           {/* Safety Tips */}
           <div className="mt-20">
             <SafetyTips />
