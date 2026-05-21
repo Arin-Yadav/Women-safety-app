@@ -1,4 +1,6 @@
 import LandingPage from "./components/LandingPage";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import WelcomeScreen from "./components/WelcomeScreen";
 import HomePage from "./components/HomePage";
@@ -22,6 +24,12 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+
+<Route
+  path="/reset-password/:token"
+  element={<ResetPassword />}
+/>
         <Route path={RouteIndex} element={<LandingPage />} />
         <Route path={RouteSignup} element={<SignUp />} />
         <Route path={RouteLogin} element={<Login />} />
