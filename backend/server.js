@@ -3,19 +3,16 @@ import cors from "cors";
 import http from "http";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.js";
-import contactRoutes from "./routes/contactRoute.js";
-import activityRoutes from "./routes/activityRoute.js";
-import { authMiddleware } from "./middlewares/authMiddleware.js";
 import initSocket from "./helpers/socket.js";
 import roomRoutes from "./routes/roomRoutes.js";
 import messageRoutes from "./routes/messageRoute.js";
 import sosRoutes from "./routes/liveLocationMessage.js";
+import { authMiddleware } from "./middlewares/authMiddleware.js";
+
 
 dotenv.config();
-
 const app = express();
 const server = http.createServer(app);
 
@@ -37,10 +34,6 @@ app.use("/api/rooms", roomRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api", sosRoutes);
 
-// 🔐 Protected routes
-app.use("/api", authMiddleware, contactRoutes);
-app.use("/api", authMiddleware, activityRoutes);
-
 // ✅ DB
 connectDB();
 
@@ -48,7 +41,7 @@ connectDB();
 initSocket(server);
 
 // ✅ Server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () =>
   console.log(`Server running on port ${PORT}`)
 );

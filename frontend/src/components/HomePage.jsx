@@ -21,7 +21,6 @@ export default function HomePage() {
 
   // all rooms
   const rooms = useSelector((state) => state?.room?.rooms);
-  // console.log(rooms);
 
   // private rooms
   const privateRooms = rooms.filter((room) => room.roomType === "private");
