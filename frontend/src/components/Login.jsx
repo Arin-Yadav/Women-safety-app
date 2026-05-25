@@ -29,12 +29,11 @@ export default function Login() {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/login`,
         data,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       dispatch(setUser(response.data));
       navigate(RouteHomepage);
-
     } catch (err) {
       console.error("FULL ERROR:", err);
 
@@ -62,13 +61,16 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-purple-600 to-pink-500">
-      <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
-
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-purple-600 to-pink-500 px-4">
+      <div className="bg-white shadow-xl rounded-lg p-4 sm:p-6 md:p-8 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
         {/* Title */}
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-purple-700">Welcome Back</h1>
-          <p className="text-gray-500">Login to continue to SafetyApp</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-purple-700">
+            Welcome Back
+          </h1>
+          <p className="text-gray-500 text-sm sm:text-base">
+            Login to continue to Suraksha
+          </p>
         </div>
 
         {/* 🔴 Server Error */}
@@ -77,21 +79,22 @@ export default function Login() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4 sm:space-y-6">
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Email
             </label>
             <input
-            placeholder="Enter your email"
+              placeholder="Enter your email"
               type="email"
               {...register("email")}
-              className="mt-1 w-full border rounded-md px-3 py-2"
+              className="mt-1 w-full border rounded-md px-3 py-2 text-sm sm:text-base"
             />
             {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="text-red-500 text-xs sm:text-sm mt-1">
                 {errors.email.message}
               </p>
             )}
@@ -103,42 +106,38 @@ export default function Login() {
               Password
             </label>
             <input
-            placeholder="Enter your password"
+              placeholder="Enter your password"
               type="password"
               {...register("password")}
-              className="mt-1 w-full border rounded-md px-3 py-2"
+              className="mt-1 w-full border rounded-md px-3 py-2 text-sm sm:text-base"
             />
             {errors.password && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="text-red-500 text-xs sm:text-sm mt-1">
                 {errors.password.message}
               </p>
             )}
           </div>
-          
+
           <div className="flex justify-end mt-2">
-  <Link
-    to="/forgot-password"
-    className="text-sm text-purple-600 hover:underline"
-  >
-    Forgot Password?
-  </Link>
-</div>
+            <Link
+              to="/forgot-password"
+              className="text-xs sm:text-sm text-purple-600 hover:underline">
+              Forgot Password?
+            </Link>
+          </div>
+
           {/* Button */}
           <button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg"
-          >
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg text-sm sm:text-base font-semibold transition duration-300">
             Login
           </button>
         </form>
 
         {/* Footer */}
-        <p className="mt-6 text-center text-sm text-gray-500">
+        <p className="mt-6 text-center text-xs sm:text-sm text-gray-500">
           Don't have an account?{" "}
-          <Link
-            to={RouteSignup}
-            className="text-purple-600 hover:underline"
-          >
+          <Link to={RouteSignup} className="text-purple-600 hover:underline">
             Sign up
           </Link>
         </p>

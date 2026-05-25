@@ -10,14 +10,10 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
 
 const SignUp = () => {
-
   const navigate = useNavigate();
 
   // 👁 Password Toggle
-  const [
-    showPassword,
-    setShowPassword
-  ] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -26,7 +22,6 @@ const SignUp = () => {
     setError,
     formState: { errors },
   } = useForm({
-
     resolver: yupResolver(schema),
 
     mode: "onChange",
@@ -34,521 +29,218 @@ const SignUp = () => {
 
   // ✅ Age calculation
   const calculateAge = (dob) => {
-
     const today = new Date();
-
     const birthDate = new Date(dob);
-
-    let age =
-      today.getFullYear() -
-      birthDate.getFullYear();
-
-    const monthDiff =
-      today.getMonth() -
-      birthDate.getMonth();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
 
     if (
       monthDiff < 0 ||
-
-      (
-        monthDiff === 0 &&
-        today.getDate() <
-        birthDate.getDate()
-      )
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
     ) {
       age--;
     }
-
     return age;
   };
 
   // ✅ Submit handler
   const onSubmit = async (data) => {
-
     try {
-
-      await axios.post(
-
-        `${import.meta.env.VITE_API_URL}/signup`,
-
-        data,
-
-        {
-          withCredentials: true,
-        }
-      );
-
+      await axios.post(`${import.meta.env.VITE_API_URL}/signup`, data, {
+        withCredentials: true,
+      });
       navigate(RouteLogin);
-
     } catch (err) {
-
-      console.error(
-        "FULL ERROR:",
-        err
-      );
+      console.error("FULL ERROR:", err);
 
       if (err.response) {
-
-        const message =
-          err.response.data.message;
+        const message = err.response.data.message;
 
         // Email error
-        if (
-          message
-            ?.toLowerCase()
-            .includes("email")
-        ) {
-
+        if (message?.toLowerCase().includes("email")) {
           setError("email", {
-
             type: "manual",
 
             message: message,
           });
-
         } else {
-
           alert(message);
         }
-
       } else {
-
         alert("Network error");
       }
     }
   };
 
   return (
-
-    <div
-      className="
-        min-h-screen
-        flex
-        items-center
-        justify-center
-        bg-linear-to-r
-        from-pink-500
-        to-purple-700
-      "
-    >
-
-      <div
-        className="
-          bg-white
-          shadow-lg
-          rounded-lg
-          p-8
-          w-full
-          max-w-4xl
-        "
-      >
-
-        <h2
-          className="
-            text-2xl
-            font-bold
-            text-center
-            mb-6
-            text-purple-700
-          "
-        >
+    <div className="min-h-screen flex justify-center items-center bg-linear-to-r from-pink-500 to-purple-700 p-4">
+      <div className="bg-white shadow-lg rounded-lg p-4 sm:p-6 md:p-8 w-full max-w-md sm:max-w-2xl md:max-w-4xl">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-6 text-purple-700">
           Create Your Account
         </h2>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-
-          className="
-            grid
-            grid-cols-1
-            md:grid-cols-2
-            gap-6
-          "
-        >
-
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {/* Full Name */}
           <div>
-
-            <label
-              className="
-                block
-                text-sm
-                font-medium
-                text-gray-700
-              "
-            >
+            <label className="block text-sm font-medium text-gray-700">
               Full Name
             </label>
 
             <input
               {...register("fullName")}
-
               type="text"
-
-              className="
-                mt-1
-                w-full
-                border
-                rounded-md
-                px-3
-                py-2
-              "
-
+              className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your full name"
             />
 
             {errors.fullName && (
-
-              <p className="text-red-500 text-sm">
-                {errors.fullName.message}
-              </p>
+              <p className="text-red-500 text-sm">{errors.fullName.message}</p>
             )}
-
           </div>
 
           {/* Email */}
           <div>
-
-            <label
-              className="
-                block
-                text-sm
-                font-medium
-                text-gray-700
-              "
-            >
+            <label className="block text-sm font-medium text-gray-700">
               Email
             </label>
 
             <input
               {...register("email")}
-
               type="email"
-
-              className="
-                mt-1
-                w-full
-                border
-                rounded-md
-                px-3
-                py-2
-              "
-
+              className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your email"
             />
 
             {errors.email && (
-
-              <p className="text-red-500 text-sm">
-                {errors.email.message}
-              </p>
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
-
           </div>
 
           {/* Password */}
           <div>
-
-            <label
-              className="
-                block
-                text-sm
-                font-medium
-                text-gray-700
-              "
-            >
+            <label className="block text-sm font-medium text-gray-700">
               Password
             </label>
 
             <div className="relative">
-
               <input
                 {...register("password")}
-
-                type={
-                  showPassword
-                    ? "text"
-                    : "password"
-                }
-
-                className="
-                  mt-1
-                  w-full
-                  border
-                  rounded-md
-                  px-3
-                  py-2
-                  pr-10
-                "
-
+                type={showPassword ? "text" : "password"}
+                className="mt-1 w-full border rounded-md px-3 py-2 pr-10"
                 placeholder="Enter your password"
               />
 
               <button
                 type="button"
-
-                onClick={() =>
-                  setShowPassword(
-                    !showPassword
-                  )
-                }
-
-                className="
-                  absolute
-                  right-3
-                  top-4
-                  text-gray-500
-                "
-              >
-
-                {
-                  showPassword
-                    ? <FaEyeSlash />
-                    : <FaEye />
-                }
-
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-4 text-gray-500">
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
-
             </div>
 
             {errors.password && (
-
-              <p className="text-red-500 text-sm">
-                {errors.password.message}
-              </p>
+              <p className="text-red-500 text-sm">{errors.password.message}</p>
             )}
-
-          </div>
-
-          {/* Age */}
-          <div>
-
-            <label
-              className="
-                block
-                text-sm
-                font-medium
-                text-gray-700
-              "
-            >
-              Age
-            </label>
-
-            <input
-              {...register("age")}
-
-              type="number"
-
-              readOnly
-
-              className="
-                mt-1
-                w-full
-                border
-                rounded-md
-                px-3
-                py-2
-                bg-gray-100
-              "
-
-              placeholder="Auto-calculated"
-            />
-
-            {errors.age && (
-
-              <p className="text-red-500 text-sm">
-                {errors.age.message}
-              </p>
-            )}
-
           </div>
 
           {/* DOB */}
           <div>
-
-            <label
-              className="
-                block
-                text-sm
-                font-medium
-                text-gray-700
-              "
-            >
+            <label className="block text-sm font-medium text-gray-700">
               Date of Birth
             </label>
 
             <input
               {...register("dob")}
-
               type="date"
-
-              className="
-                mt-1
-                w-full
-                border
-                rounded-md
-                px-3
-                py-2
-              "
-
+              className="mt-1 w-full border rounded-md px-3 py-2"
               onChange={(e) => {
-
-                const dob =
-                  e.target.value;
-
-                const age =
-                  calculateAge(dob);
-
-                setValue(
-                  "age",
-                  age,
-                  {
-                    shouldValidate: true,
-                  }
-                );
+                const dob = e.target.value;
+                const age = calculateAge(dob);
+                setValue("age", age, {
+                  shouldValidate: true,
+                });
               }}
             />
-
             {errors.dob && (
-
-              <p className="text-red-500 text-sm">
-                {errors.dob.message}
-              </p>
+              <p className="text-red-500 text-sm">{errors.dob.message}</p>
             )}
+          </div>
 
+          {/* Age */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Age
+            </label>
+
+            <input
+              {...register("age")}
+              type="number"
+              readOnly
+              className="mt-1 w-full border rounded-md px-3 py-2 bg-gray-100"
+              placeholder="Auto-calculated"
+            />
+            {errors.age && (
+              <p className="text-red-500 text-sm">{errors.age.message}</p>
+            )}
           </div>
 
           {/* Phone */}
           <div>
-
-            <label
-              className="
-                block
-                text-sm
-                font-medium
-                text-gray-700
-              "
-            >
+            <label className="block text-sm font-medium text-gray-700">
               Phone Number
             </label>
-
             <input
               {...register("phone")}
-
               type="tel"
-
-              className="
-                mt-1
-                w-full
-                border
-                rounded-md
-                px-3
-                py-2
-              "
-
+              className="mt-1 w-full border rounded-md px-3 py-2 "
               placeholder="Enter your phone number"
             />
-
             {errors.phone && (
-
-              <p className="text-red-500 text-sm">
-                {errors.phone.message}
-              </p>
+              <p className="text-red-500 text-sm">{errors.phone.message}</p>
             )}
-
           </div>
 
           {/* Address */}
           <div>
-
-            <label
-              className="
-                block
-                text-sm
-                font-medium
-                text-gray-700
-              "
-            >
+            <label className="block text-sm font-medium text-gray-700">
               Address
             </label>
 
             <input
               {...register("address")}
-
               type="text"
-
-              className="
-                mt-1
-                w-full
-                border
-                rounded-md
-                px-3
-                py-2
-              "
-
+              className="mt-1 w-full border rounded-md px-3 py-2"
               placeholder="Enter your address"
             />
-
             {errors.address && (
-
-              <p className="text-red-500 text-sm">
-                {errors.address.message}
-              </p>
+              <p className="text-red-500 text-sm">{errors.address.message}</p>
             )}
-
           </div>
 
           {/* Submit */}
           <div className="md:col-span-2 text-center">
-
             <button
               type="submit"
-
-              className="
-                bg-purple-600
-                hover:bg-purple-700
-                text-white
-                px-6
-                py-2
-                rounded-lg
-                font-semibold
-                transition
-                duration-300
-                cursor-pointer
-              "
-            >
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold transition duration-300 cursor-pointer w-full sm:w-auto">
               Submit
             </button>
-
           </div>
 
           {/* Login Link */}
           <div className="md:col-span-2 text-center">
-
-            <p className="text-sm text-black">
-
+            <p className="text-xs sm:text-sm text-black">
               Already have an account?{" "}
-
               <Link
                 to={RouteLogin}
-
-                className="
-                  text-purple-600
-                  hover:underline
-                  font-medium
-                "
-              >
+                className="text-purple-600 hover:underline font-medium">
                 Login
               </Link>
-
             </p>
-
           </div>
-
         </form>
-
       </div>
-
     </div>
   );
 };
