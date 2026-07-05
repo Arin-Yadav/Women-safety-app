@@ -5,49 +5,58 @@ import { useSelector } from "react-redux";
 function ManageMembersModal({ roomId, onClose }) {
   const [email, setEmail] = useState("");
   const [members, setMembers] = useState([]);
+  const [emergencyEmails, setEmergencyEmails] = useState([]);
 
   const fullUser = useSelector((state) => state.user);
   const user = fullUser?.user?.user;
   const userId = user?.id;
 
-  useEffect(() => {
-    const fetchMembers = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/rooms/${roomId}/members`,
-          { withCredentials: true },
-        );
-        setMembers(response.data.members);
-      } catch (error) {
-        console.error("Fetch Members Error:", error);
-      }
-    };
+  const fetchMembers = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/rooms/${roomId}/members`,
+        { withCredentials: true }
+      );
 
+      setMembers(response.data.members || []);
+      setEmergencyEmails(response.data.emergencyEmails || []);
+    } catch (error) {
+      console.error("Fetch Members Error:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchMembers();
   }, [roomId]);
 
   const handleAddMember = async () => {
     try {
+      if (!email.trim()) return;
+
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/rooms/${roomId}/addMember`,
         { email, userId },
-        { withCredentials: true },
+        { withCredentials: true }
       );
-      setMembers(response.data.members); // update members list
+
+      setMembers(response.data.members || []);
+      setEmergencyEmails(response.data.emergencyEmails || []);
       setEmail("");
     } catch (error) {
       console.error("Add Member Error:", error);
     }
   };
 
-  const handleRemoveMember = async (memberId) => {
+  const handleRemoveMember = async (memberId, type = "registered") => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/rooms/${roomId}/removeMember`,
-        { memberId, userId },
-        { withCredentials: true },
+        { memberId, userId, type },
+        { withCredentials: true }
       );
-      setMembers(response.data.members);
+
+      setMembers(response.data.members || []);
+      setEmergencyEmails(response.data.emergencyEmails || []);
     } catch (error) {
       console.error("Remove Member Error:", error);
     }
@@ -56,59 +65,89 @@ function ManageMembersModal({ roomId, onClose }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-50 bg-opacity-40 z-50">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 sm:mx-0 p-6 sm:p-8">
-        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">Manage Members</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 transition">
+            className="text-gray-500 hover:text-gray-700 transition"
+          >
             ✕
           </button>
         </div>
 
-        {/* Add Member */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter user email"
+            placeholder="Enter registered user or emergency email"
             className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
           <button
             onClick={handleAddMember}
-            className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition cursor-pointer">
+            className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition cursor-pointer"
+          >
             Add
           </button>
         </div>
 
-        {/* Members List */}
         <div className="max-h-64 overflow-y-auto">
           <ul className="divide-y divide-gray-200">
-            {members.length > 0 ? (
-              members.map((m) => (
-                <li
-                  key={m._id}
-                  className="flex justify-between items-center py-3 px-2 hover:bg-gray-50 rounded-lg transition">
-                  <span className="text-gray-700">{m.email}</span>
-                  <button
-                    onClick={() => handleRemoveMember(m._id)}
-                    className="text-sm text-red-600 hover:text-red-800 transition cursor-pointer">
-                    Remove
-                  </button>
-                </li>
-              ))
-            ) : (
+            {members.length === 0 && emergencyEmails.length === 0 ? (
               <li className="text-gray-400 italic py-3">No members yet</li>
+            ) : (
+              <>
+                {members.map((m) => (
+                  <li
+                    key={m._id}
+                    className="flex justify-between items-center py-3 px-2 hover:bg-gray-50 rounded-lg transition"
+                  >
+                    <div>
+                      <span className="text-gray-700">{m.email}</span>
+                      <p className="text-xs text-green-600">Registered user</p>
+                    </div>
+
+                    <button
+                      onClick={() => handleRemoveMember(m._id, "registered")}
+                      className="text-sm text-red-600 hover:text-red-800 transition cursor-pointer"
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+
+                {emergencyEmails.map((item) => (
+                  <li
+                    key={item._id || item.email}
+                    className="flex justify-between items-center py-3 px-2 hover:bg-gray-50 rounded-lg transition"
+                  >
+                    <div>
+                      <span className="text-gray-700">{item.email}</span>
+                      <p className="text-xs text-orange-600">
+                        Emergency email
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        handleRemoveMember(item._id || item.email, "emergency")
+                      }
+                      className="text-sm text-red-600 hover:text-red-800 transition cursor-pointer"
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </>
             )}
           </ul>
         </div>
 
-        {/* Footer */}
         <div className="flex justify-end mt-6">
           <button
             onClick={onClose}
-            className="px-5 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+            className="px-5 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition cursor-pointer"
+          >
             Close
           </button>
         </div>

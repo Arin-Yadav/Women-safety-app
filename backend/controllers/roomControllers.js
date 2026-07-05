@@ -67,43 +67,64 @@ async function handleAddnewMemebersToRoom(req, res) {
     const { roomId } = req.params;
     const { email, userId } = req.body;
 
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Email is required" });
+    }
+
     let room = await Room.findById(roomId);
 
     if (!room) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Room not found" });
+      return res.status(404).json({ success: false, message: "Room not found" });
     }
 
-    // only admin can add members
     if (room.createdBy.toString() !== userId) {
-      return res.status(403).json({ message: "Not authorized" });
+      return res.status(403).json({ success: false, message: "Not authorized" });
     }
 
-    const userToAdd = await User.findOne({ email });
-    if (!userToAdd) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const userToAdd = await User.findOne({ email: normalizedEmail });
+
+    if (userToAdd) {
+      const alreadyMember = room.roomMembers.some(
+        (id) => id.toString() === userToAdd._id.toString()
+      );
+
+      if (alreadyMember) {
+        return res.status(400).json({
+          success: false,
+          message: "User already a member",
+        });
+      }
+
+      room.roomMembers.push(userToAdd._id);
+    } else {
+      const alreadyEmergencyEmail = room.emergencyEmails?.some(
+        (item) => item.email === normalizedEmail
+      );
+
+      if (alreadyEmergencyEmail) {
+        return res.status(400).json({
+          success: false,
+          message: "Email already added",
+        });
+      }
+
+      room.emergencyEmails.push({ email: normalizedEmail });
     }
 
-    if (room.roomMembers.includes(userToAdd._id)) {
-      return res.status(400).json({ message: "User already a member" });
-    }
-
-    room.roomMembers.push(userToAdd._id);
     await room.save();
 
-    // ✅ re-fetch with populate so you get email + _id
     room = await Room.findById(roomId).populate("roomMembers", "email _id");
 
     res.json({
       success: true,
-      message: "Member added",
+      message: userToAdd ? "Registered member added" : "Emergency email added",
       members: room.roomMembers,
+      emergencyEmails: room.emergencyEmails,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Add member error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 }
@@ -115,22 +136,21 @@ async function getRoomWithPrivateMembers(req, res) {
 
     const room = await Room.findById(roomId).populate(
       "roomMembers",
-      "email _id",
-    ); // populate email + id
+      "email _id"
+    );
 
     if (!room) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Room not found" });
+      return res.status(404).json({ success: false, message: "Room not found" });
     }
 
     res.json({
-      success: true,
-      roomName: room.roomName,
-      roomType: room.roomType,
-      createdBy: room.createdBy,
-      members: room.roomMembers, // now contains [{ _id, email }]
-    });
+  success: true,
+  roomName: room.roomName,
+  roomType: room.roomType,
+  createdBy: room.createdBy,
+  members: room.roomMembers,
+  emergencyEmails: room.emergencyEmails || [],
+});
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
@@ -140,31 +160,41 @@ async function getRoomWithPrivateMembers(req, res) {
 async function handleRemovePrivateGroupMembers(req, res) {
   try {
     const { roomId } = req.params;
-    const { memberId, userId } = req.body;
+    const { memberId, userId, type } = req.body;
 
     let room = await Room.findById(roomId);
-    if (!room) return res.status(404).json({ message: "Room not found" });
 
-    // only admin can remove members
-    if (room.createdBy.toString() !== userId) {
-      return res.status(403).json({ message: "Not authorized" });
+    if (!room) {
+      return res.status(404).json({ success: false, message: "Room not found" });
     }
 
-    room.roomMembers = room.roomMembers.filter(
-      (id) => id.toString() !== memberId,
-    );
+    if (room.createdBy.toString() !== userId) {
+      return res.status(403).json({ success: false, message: "Not authorized" });
+    }
+
+    if (type === "emergency") {
+      room.emergencyEmails = room.emergencyEmails.filter(
+        (item) =>
+          item._id?.toString() !== memberId && item.email !== memberId
+      );
+    } else {
+      room.roomMembers = room.roomMembers.filter(
+        (id) => id.toString() !== memberId
+      );
+    }
+
     await room.save();
 
-    // ✅ re-fetch with populate so frontend gets email + _id
     room = await Room.findById(roomId).populate("roomMembers", "email _id");
 
     res.json({
       success: true,
       message: "Member removed",
       members: room.roomMembers,
+      emergencyEmails: room.emergencyEmails || [],
     });
   } catch (error) {
-    console.error(error);
+    console.error("Remove member error:", error);
     res.status(500).json({ success: false, message: "Server error", error });
   }
 }

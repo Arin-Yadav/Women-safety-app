@@ -8,7 +8,7 @@ const ChatSidebar = ({ rooms, isOpen, onSelectRoom, onClose, onOpenModal }) => {
 
       {/* Sidebar */}
       <div
-        className={`fixed lg:static top-16 left-0 h-[calc(100vh-64px)] lg:h-auto w-64 bg-linear-to-b from-white to-gray-50 text-gray-800 border-r shadow-sm p-4 flex flex-col transform transition-transform duration-300 z-40
+  className={`fixed lg:static top-16 left-0 h-[calc(100vh-64px)] lg:h-auto w-64 bg-gradient-to-b from-white to-gray-50 text-gray-800 border-r shadow-sm p-4 flex flex-col transform transition-transform duration-300 z-40
         ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
         {/* Header */}
         <h4 className="text-sm font-semibold text-gray-700 tracking-wide mb-3">

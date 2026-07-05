@@ -4,34 +4,43 @@ import Room from "../models/rooms.models.js";
 async function handleGetMessages(req, res) {
   try {
     const { roomId } = req.params;
-    const userId = req.query.userId;
-
-    // console.log(roomId);
-    // console.log(userId);
+    const { userId } = req.query;
 
     const room = await Room.findById(roomId);
-    // console.log(room);
 
-    if (!room)
-      return res.status(404).json({ success: false, message: "No room found" });
+    if (!room) {
+      return res.status(404).json({
+        success: false,
+        message: "No room found",
+      });
+    }
 
-    // Block outsiders
-    if (
-      room.roomType === "private" &&
-      !room.roomMembers.includes(userId) &&
-      room.createdBy.toString() !== userId
-    ) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Not authorized" });
+    const isMember = room.roomMembers.some(
+      (memberId) => memberId.toString() === userId
+    );
+
+    const isCreator = room.createdBy.toString() === userId;
+
+    if (room.roomType === "private" && !isMember && !isCreator) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized",
+      });
     }
 
     const messages = await Message.find({ room: roomId })
-      .populate("sender", "username")
+      .populate("sender", "username fullName")
       .sort({ createdAt: 1 });
-    res.json({ success: true, messages });
+
+    res.json({
+      success: true,
+      messages,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
   }
 }
 
@@ -40,19 +49,23 @@ async function handleCreateMessage(req, res) {
     const { roomId, senderId, text } = req.body;
 
     let message = await Message.create({
-      room: roomId, // ✅ correct field
-      sender: senderId, // ObjectId
+      room: roomId,
+      sender: senderId,
       text,
+      type: "text",
     });
 
-    message = await message.populate("sender", "username");
+    message = await message.populate("sender", "username fullName");
 
-    // ✅ unified event name
-    io.to(roomId).emit("receiveMessage", message);
-
-    res.status(201).json({ success: true, message });
+    res.status(201).json({
+      success: true,
+      message,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
   }
 }
 

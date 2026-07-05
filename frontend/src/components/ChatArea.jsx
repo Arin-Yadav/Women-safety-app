@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSocket } from "../hooks/useSocket";
 import axios from "axios";
 import dayjs from "dayjs";
 import ManageMembersModal from "./ManageMembersModal";
+import { IoSend, IoPeopleOutline } from "react-icons/io5";
+import { CiLocationOn } from "react-icons/ci";
 
 const MessageBubble = React.memo(({ msg, userId }) => {
   const isOwnMessage = msg?.sender?._id === userId;
@@ -11,33 +13,41 @@ const MessageBubble = React.memo(({ msg, userId }) => {
   return (
     <div className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}>
       <div
-        className={`relative px-3 py-2 rounded-lg text-sm wrap-break-word ${
+        className={`relative px-4 py-3 rounded-2xl text-sm break-words shadow-sm ${
           isOwnMessage
-            ? "bg-blue-500 text-white rounded-br-none"
-            : "bg-gray-200 text-gray-800 rounded-bl-none"
-        } max-w-[75%] sm:max-w-[60%] md:max-w-[50%]`}>
-        {/* Handle location vs text */}
+            ? "bg-gradient-to-r from-pink-500 to-purple-700 text-white rounded-br-md"
+            : "bg-white text-gray-800 border border-gray-100 rounded-bl-md"
+        } max-w-[85%] sm:max-w-[70%] md:max-w-[55%]`}
+      >
         {msg?.type === "location" ? (
           <>
-            <p>{msg?.sender?.username} shared live location</p>
-            <div className="mt-2 w-full">
-              {/* Responsive iframe wrapper */}
-              <div className="relative w-full pb-[75%] max-h-64 rounded-lg overflow-hidden">
+            <p className="font-medium flex items-center gap-1">
+              <CiLocationOn className="text-lg" />
+              {msg?.sender?.username} shared live location
+            </p>
+
+            <div className="mt-3 overflow-hidden rounded-xl border border-white/20">
+              <div className="relative w-full pb-[75%] max-h-64">
                 <iframe
                   src={`https://maps.google.com/maps?q=${msg.lat},${msg.lng}&z=15&output=embed`}
-                  className="absolute top-0 left-0 w-full h-full rounded-lg"
+                  className="absolute top-0 left-0 w-full h-full"
                   style={{ border: 0 }}
                   allowFullScreen
-                  loading="lazy"></iframe>
+                  loading="lazy"
+                />
               </div>
             </div>
           </>
         ) : (
-          <p className="whitespace-pre-wrap">{msg?.text}</p>
+          <p className="whitespace-pre-wrap leading-relaxed">{msg?.text}</p>
         )}
 
-        <div className="flex gap-2 justify-between items-center mt-1 text-xs opacity-70">
-          <span>{msg?.sender?.username}</span>
+        <div
+          className={`flex gap-3 justify-end items-center mt-2 text-[11px] ${
+            isOwnMessage ? "text-white/75" : "text-gray-400"
+          }`}
+        >
+          {!isOwnMessage && <span>{msg?.sender?.username}</span>}
           <span>{dayjs(msg?.createdAt).format("h:mm A")}</span>
         </div>
       </div>
@@ -45,15 +55,15 @@ const MessageBubble = React.memo(({ msg, userId }) => {
   );
 });
 
-// Messages list
 const MessageList = React.memo(({ messages, userId }) => {
-  const bottomRef = React.useRef(null);
+  const bottomRef = useRef(null);
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-2">
+    <div className="flex-1 overflow-y-auto px-4 md:px-6 py-5 space-y-3 bg-gray-50">
       {messages.map((msg) => (
         <MessageBubble key={msg._id} msg={msg} userId={userId} />
       ))}
@@ -73,42 +83,51 @@ const ChatArea = ({ room }) => {
   const [typingUsers, setTypingUsers] = useState([]);
   const [showManageModal, setShowManageModal] = useState(false);
 
-  // Socket hook
+  const typingTimeoutRef = useRef(null);
+
   const { sendMessage, startTyping, stopTyping } = useSocket(
     room._id,
     userId,
     (message) => {
       setMessages((prev) => [...prev, message]);
     },
-    (username) => setTypingUsers((prev) => [...new Set([...prev, username])]),
-    (username) => setTypingUsers((prev) => prev.filter((u) => u !== username)),
+    (typingUsername) =>
+      setTypingUsers((prev) => [...new Set([...prev, typingUsername])]),
+    (typingUsername) =>
+      setTypingUsers((prev) => prev.filter((u) => u !== typingUsername))
   );
 
-  // Fetch history when room changes
   useEffect(() => {
     const fetchMessages = async () => {
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/messages/${room._id}`,
-          { params: { userId }, withCredentials: true },
+          { params: { userId }, withCredentials: true }
         );
-        setMessages(res.data.messages);
+
+        setMessages(res.data.messages || []);
       } catch (error) {
         console.log(error);
       }
     };
+
     if (room?._id) fetchMessages();
   }, [room._id, userId]);
 
   const handleInputChange = (e) => {
-    let typingTimeout;
     const value = e.target.value;
     setText(value);
 
-    if (value) {
+    if (value.trim()) {
       startTyping(username);
-      clearTimeout(typingTimeout);
-      typingTimeout = setTimeout(() => stopTyping(username), 1000);
+
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+
+      typingTimeoutRef.current = setTimeout(() => {
+        stopTyping(username);
+      }, 1000);
     } else {
       stopTyping(username);
     }
@@ -116,54 +135,78 @@ const ChatArea = ({ room }) => {
 
   const handleSend = (e) => {
     e.preventDefault();
+
     if (!text.trim()) return;
-    sendMessage(text);
+
+    sendMessage(text.trim());
     setText("");
     stopTyping(username);
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-gray-100">
-      <div className="p-4 bg-white border-b flex items-center h-16 justify-between">
-        <div className="flex flex-col justify-center">
-          <h2 className="font-semibold text-sm">Chatting in {room.roomName}</h2>
-          {/* Typing indicator */}
-          <div className="h-4">
-            {typingUsers.length > 0 && (
-              <span className="text-xs text-green-500">
-                {typingUsers.join(", ")} {typingUsers.length > 1 ? "are" : "is"}{" "}
-                typing...
-              </span>
-            )}
+    <div className="flex flex-col h-full w-full bg-gray-50">
+      {/* Chat Header */}
+      <div className="h-16 px-4 md:px-6 bg-white border-b border-gray-200 flex items-center justify-between shadow-sm">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="h-10 w-10 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+            {room?.roomName?.charAt(0)?.toUpperCase() || "C"}
+          </div>
+
+          <div className="min-w-0">
+            <h2 className="font-bold text-gray-800 truncate">
+              {room.roomName}
+            </h2>
+
+            <div className="h-4">
+              {typingUsers.length > 0 ? (
+                <span className="text-xs text-green-600">
+                  {typingUsers.join(", ")}{" "}
+                  {typingUsers.length > 1 ? "are" : "is"} typing...
+                </span>
+              ) : (
+                <span className="text-xs text-gray-400">
+                  Secure conversation
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Private room */}
         {room.roomType === "private" && room.createdBy === userId && (
           <button
             onClick={() => setShowManageModal(true)}
-            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer">
-            Manage Members
+            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-full font-medium hover:bg-purple-100 transition"
+          >
+            <IoPeopleOutline />
+            Manage
           </button>
         )}
       </div>
 
       <MessageList messages={messages} userId={userId} />
 
+      {/* Message Input */}
       <form
         onSubmit={handleSend}
-        className="p-4 bg-white border-t flex items-center gap-2">
+        className="p-3 md:p-4 bg-white border-t border-gray-200 flex items-center gap-3"
+      >
         <input
           type="text"
           value={text}
           onChange={handleInputChange}
-          placeholder="Type a message"
-          className="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          placeholder="Type a message..."
+          className="flex-1 bg-gray-100 border border-gray-200 rounded-full px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 focus:bg-white transition"
         />
+
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition">
-          Send
+          className="h-12 w-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-700 text-white flex items-center justify-center hover:opacity-90 transition shadow-md"
+        >
+          <IoSend className="text-xl" />
         </button>
       </form>
 
