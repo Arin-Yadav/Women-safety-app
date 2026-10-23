@@ -11,8 +11,7 @@ import { useSelector } from "react-redux";
 import { useState, useRef } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoMdClose } from "react-icons/io";
-import { HiOutlineBellAlert } from "react-icons/hi2";
-import { CiLocationOn, CiUser } from "react-icons/ci";
+import { CiUser } from "react-icons/ci";
 import { IoChatbubbleOutline, IoLogOutOutline } from "react-icons/io5";
 import { motion } from "framer-motion";
 
@@ -21,7 +20,7 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   const user = useSelector((state) => state?.user?.user);
-  const userName = user?.user?.fullName;
+  // const userName = user?.user?.fullName;
   const userId = user?.user?.id;
 
   const rooms = useSelector((state) => state?.room?.rooms) || [];
@@ -58,58 +57,58 @@ export default function HomePage() {
     }
   };
 
- const handleSOS = () => {
-  if (privateRooms.length === 0) {
-    alert("No private rooms available for SOS");
-    return;
-  }
-
-  if (!navigator.geolocation) {
-    alert("Geolocation is not supported by your browser");
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    async (position) => {
-      const locationMessage = {
-        type: "location",
-        userId,
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-        timestamp: new Date().toISOString(),
-      };
-
-      try {
-        for (const room of privateRooms) {
-          await axios.post(
-            `${import.meta.env.VITE_API_URL}/sos`,
-            {
-              roomId: room._id,
-              message: locationMessage,
-            },
-            { withCredentials: true }
-          );
-        }
-
-        alert("🚨 SOS sent successfully!");
-      } catch (error) {
-        console.error("SOS Error:", error.response?.data || error.message);
-        alert("SOS failed. Please check backend/email setup.");
-      }
-    },
-    (error) => {
-      console.error("Location Error:", error);
-      alert("Please allow location permission to send SOS.");
+  const handleSOS = () => {
+    if (privateRooms.length === 0) {
+      alert("No private rooms available for SOS");
+      return;
     }
-  );
-};
+
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const locationMessage = {
+          type: "location",
+          userId,
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          timestamp: new Date().toISOString(),
+        };
+
+        try {
+          for (const room of privateRooms) {
+            await axios.post(
+              `${import.meta.env.VITE_API_URL}/sos`,
+              {
+                roomId: room._id,
+                message: locationMessage,
+              },
+              { withCredentials: true },
+            );
+          }
+
+          alert("🚨 SOS sent successfully!");
+        } catch (error) {
+          console.error("SOS Error:", error.response?.data || error.message);
+          alert("SOS failed. Please check backend/email setup.");
+        }
+      },
+      (error) => {
+        console.error("Location Error:", error);
+        alert("Please allow location permission to send SOS.");
+      },
+    );
+  };
 
   const handleLogout = async () => {
     try {
       await axios.post(
         `${import.meta.env.VITE_API_URL}/logout`,
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       );
       navigate(RouteIndex);
     } catch (error) {
@@ -126,33 +125,32 @@ export default function HomePage() {
       {/* Top Navbar */}
       <nav className="fixed top-0 left-0 w-full h-16 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
         <div className="h-full px-5 md:px-8 flex justify-between items-center">
-          <Link
-            to={RouteHomepage}
-            className="flex items-center gap-2 text-2xl font-bold text-purple-700"
-          >
-            <span>🛡️</span>
-            <span>Suraksha</span>
-          </Link>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="md:hidden text-2xl text-purple-700">
+              {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
+            </button>
 
-          <div className="hidden md:flex items-center gap-4">
+            <Link
+              to={RouteHomepage}
+              className="flex items-center gap-2 text-2xl font-bold text-purple-700">
+              <span>🛡️</span>
+              <span>Suraksha</span>
+            </Link>
+          </div>
+
+          {/* <div className="hidden md:flex items-center gap-4">
             <div className="text-right">
               <p className="text-sm font-semibold text-gray-800">
                 {userName || "User"}
               </p>
-              <p className="text-xs text-gray-500">Protected Dashboard</p>
             </div>
 
-            <div className="h-10 w-10 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+            <div className="h-10 w-10 rounded-full bg-purple-100 cursor-pointer text-purple-700 flex items-center justify-center font-bold">
               {userName?.charAt(0)?.toUpperCase() || "U"}
             </div>
-          </div>
-
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="md:hidden text-2xl text-purple-700"
-          >
-            {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
-          </button>
+          </div> */}
         </div>
       </nav>
 
@@ -169,21 +167,19 @@ export default function HomePage() {
         <aside
           className={`fixed md:sticky top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-white border-r border-gray-200 shadow-lg md:shadow-none z-40 transform transition-transform duration-300 flex flex-col ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0`}
-        >
-          <div className="p-5 border-b">
+          } md:translate-x-0`}>
+          {/* <div className="p-5 border-b">
             <h2 className="text-lg font-bold text-gray-800">Quick Links</h2>
             <p className="text-sm text-gray-500 mt-1">
               Manage your safety tools
             </p>
-          </div>
+          </div> */}
 
           <div className="flex flex-col p-4 gap-3">
             <Link
               to={RouteChatLayout}
               onClick={() => setSidebarOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-purple-50 text-purple-700 font-medium hover:bg-purple-100 transition"
-            >
+              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-purple-50 text-purple-700 font-medium hover:bg-purple-100 transition">
               <IoChatbubbleOutline className="text-xl" />
               Chat
             </Link>
@@ -191,26 +187,24 @@ export default function HomePage() {
             <Link
               to={RouteProfile}
               onClick={() => setSidebarOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 transition"
-            >
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 transition">
               <CiUser className="text-xl" />
               Profile
             </Link>
           </div>
 
-          <div className="mx-4 mt-4 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-700 p-5 text-white">
+          {/* <div className="mx-4 mt-4 rounded-2xl bg-linear-to-r from-pink-500 to-purple-700 p-5 text-white">
             <HiOutlineBellAlert className="text-3xl mb-3" />
             <h3 className="font-bold text-lg">Stay Alert</h3>
             <p className="text-sm text-white/80 mt-1">
               Use SOS only during real emergency situations.
             </p>
-          </div>
+          </div> */}
 
-          <div className="p-4 border-t mt-auto">
+          <div className="p-4 border-t border-gray-300 mt-auto">
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 transition"
-            >
+              className="w-full flex items-center justify-center cursor-pointer gap-2 bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 transition">
               <IoLogOutOutline className="text-xl" />
               Logout
             </button>
@@ -218,9 +212,9 @@ export default function HomePage() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-5 md:p-8 lg:p-12">
+        <main className="flex-1 px-5 md:px-8 lg:px-12 py-5">
           {/* Welcome Card */}
-          <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-700 text-white p-8 md:p-10 shadow-xl">
+          {/* <section className="relative overflow-hidden rounded-3xl bg-linear-to-r from-pink-500 via-purple-600 to-indigo-700 text-white p-8 md:p-10 shadow-xl">
             <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white/20 blur-3xl" />
 
             <div className="relative">
@@ -236,11 +230,11 @@ export default function HomePage() {
                 contacts.
               </p>
             </div>
-          </section>
+          </section> */}
 
           {/* Status Cards */}
-          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
-            <div className="bg-white rounded-2xl p-6 shadow-md border">
+          {/* <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200">
               <div className="h-12 w-12 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center mb-4">
                 <IoChatbubbleOutline className="text-2xl" />
               </div>
@@ -255,7 +249,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-md border">
+            <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200">
               <div className="h-12 w-12 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center mb-4">
                 <CiLocationOn className="text-2xl" />
               </div>
@@ -270,7 +264,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-md border">
+            <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200">
               <div className="h-12 w-12 rounded-xl bg-red-100 text-red-600 flex items-center justify-center mb-4">
                 <HiOutlineBellAlert className="text-2xl" />
               </div>
@@ -284,7 +278,7 @@ export default function HomePage() {
                 Siren and fake call available
               </p>
             </div>
-          </section>
+          </section> */}
 
           {/* SOS Section */}
           <section className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
@@ -292,8 +286,7 @@ export default function HomePage() {
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
-              className="bg-white rounded-3xl shadow-xl border p-8 text-center"
-            >
+              className="bg-white rounded-3xl shadow-xl border border-gray-200 p-12 text-center">
               <h2 className="text-2xl font-bold text-gray-800">
                 Emergency SOS
               </h2>
@@ -303,9 +296,8 @@ export default function HomePage() {
 
               <button
                 onClick={handleSOS}
-                className="relative mt-8 bg-red-600 text-white font-extrabold rounded-full w-52 h-52 shadow-2xl hover:bg-red-700 transition hover:scale-105"
-              >
-                <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-20" />
+                className="relative mt-8 bg-red-600 cursor-pointer text-white font-extrabold rounded-full w-52 h-52 shadow-2xl hover:bg-red-700 transition hover:scale-105">
+                {/* <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-20" /> */}
                 <span className="relative text-4xl">SOS</span>
               </button>
 
@@ -315,7 +307,7 @@ export default function HomePage() {
             </motion.div>
 
             {/* Sound Tools */}
-            <div className="bg-white rounded-3xl shadow-xl border p-8">
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-200 p-8">
               <h3 className="text-2xl font-bold text-gray-800">
                 Emergency Sound Tools
               </h3>
@@ -333,15 +325,13 @@ export default function HomePage() {
                   <div className="flex gap-3">
                     <button
                       onClick={playAlarm}
-                      className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-3 rounded-xl font-semibold transition"
-                    >
+                      className="flex-1 bg-yellow-500 hover:bg-yellow-600 cursor-pointer text-white px-5 py-3 rounded-xl font-semibold transition">
                       Start
                     </button>
 
                     <button
                       onClick={stopAlarm}
-                      className="flex-1 bg-gray-800 hover:bg-gray-900 text-white px-5 py-3 rounded-xl font-semibold transition"
-                    >
+                      className="flex-1 bg-gray-800 hover:bg-gray-900 cursor-pointer text-white px-5 py-3 rounded-xl font-semibold transition">
                       Stop
                     </button>
                   </div>
@@ -355,15 +345,13 @@ export default function HomePage() {
                   <div className="flex gap-3">
                     <button
                       onClick={startFakeCall}
-                      className="flex-1 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-semibold transition"
-                    >
+                      className="flex-1 bg-green-600 hover:bg-green-700 cursor-pointer text-white px-5 py-3 rounded-xl font-semibold transition">
                       Start
                     </button>
 
                     <button
                       onClick={stopFakeCall}
-                      className="flex-1 bg-gray-800 hover:bg-gray-900 text-white px-5 py-3 rounded-xl font-semibold transition"
-                    >
+                      className="flex-1 bg-gray-800 hover:bg-gray-900 cursor-pointer text-white px-5 py-3 rounded-xl font-semibold transition">
                       Stop
                     </button>
                   </div>

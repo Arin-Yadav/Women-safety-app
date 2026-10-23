@@ -13,9 +13,9 @@ const MessageBubble = React.memo(({ msg, userId }) => {
   return (
     <div className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}>
       <div
-        className={`relative px-4 py-3 rounded-2xl text-sm break-words shadow-sm ${
+        className={`relative px-4 py-3 rounded-2xl text-sm wrap-break-words shadow-sm ${
           isOwnMessage
-            ? "bg-gradient-to-r from-pink-500 to-purple-700 text-white rounded-br-md"
+            ? "bg-linear-to-r from-pink-500 to-purple-700 text-white rounded-br-md"
             : "bg-white text-gray-800 border border-gray-100 rounded-bl-md"
         } max-w-[85%] sm:max-w-[70%] md:max-w-[55%]`}
       >
@@ -204,7 +204,7 @@ const ChatArea = ({ room }) => {
 
         <button
           type="submit"
-          className="h-12 w-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-700 text-white flex items-center justify-center hover:opacity-90 transition shadow-md"
+          className="h-12 w-12 rounded-full bg-linear-to-r from-pink-500 to-purple-700 text-white flex items-center justify-center hover:opacity-90 transition shadow-md"
         >
           <IoSend className="text-xl" />
         </button>

@@ -132,7 +132,7 @@ const ChatLayout = () => {
 
               <button
                 onClick={() => setShowModal(true)}
-                className="mt-6 bg-gradient-to-r from-pink-500 to-purple-700 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:opacity-90 transition"
+                className="mt-6 bg-linear-to-r from-pink-500 to-purple-700 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:opacity-90 transition"
               >
                 Create New Room
               </button>
