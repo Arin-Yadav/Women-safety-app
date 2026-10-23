@@ -18,14 +18,27 @@ const roomSchema = new mongoose.Schema(
       enum: ["public", "private"],
       default: "public",
     },
+
+    // Registered users
     roomMembers: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
+
+    // Unregistered emergency contacts
+    emergencyEmails: [
+      {
+        email: {
+          type: String,
+          trim: true,
+          lowercase: true,
+        },
+      },
+    ],
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default mongoose.model("Room", roomSchema);

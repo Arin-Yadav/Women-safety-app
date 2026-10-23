@@ -9,36 +9,35 @@ import CreateRoomModal from "./CreateRoomModal";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addRoom, setCurrentRoomId, setRoom } from "../redux/slices/roomSlice";
+import { IoChatbubbleOutline } from "react-icons/io5";
 
 const ChatLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const rooms = useSelector((state) => state.room.rooms); // ✅ use Redux
+
+  const rooms = useSelector((state) => state.room.rooms) || [];
 
   const fullUser = useSelector((state) => state.user);
   const user = fullUser?.user?.user;
   const userId = user?.id;
-  // console.log(userId)
 
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (!userId) return;
+
     const fetchRooms = async () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/api/rooms/getRooms`,
           {
-            params: { userId }, // ✅ userId passed as query param
+            params: { userId },
             withCredentials: true,
-          },
+          }
         );
 
-        const rooms = response.data.rooms;
-        // console.log("Fetched Rooms:", rooms);
-
-        // ✅ Dispatch plain array into Redux
-        dispatch(setRoom(rooms));
+        dispatch(setRoom(response.data.rooms || []));
       } catch (error) {
         console.error("Fetch Rooms Error:", error);
       }
@@ -52,16 +51,15 @@ const ChatLayout = () => {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/rooms/create`,
         roomData,
-        { withCredentials: true },
+        { withCredentials: true }
       );
 
       const newRoom = response.data.room;
-      const roomId = newRoom._id;
 
-      // ✅ Update Redux
-      dispatch(setCurrentRoomId(roomId));
-      dispatch(addRoom(newRoom)); // add to rooms array in Redux
+      dispatch(setCurrentRoomId(newRoom._id));
+      dispatch(addRoom(newRoom));
 
+      setSelectedRoom(newRoom);
       setShowModal(false);
     } catch (error) {
       console.error("Create Room Error:", error);
@@ -69,52 +67,82 @@ const ChatLayout = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="h-screen bg-gray-50 overflow-hidden">
       {/* Navbar */}
-      <div className="h-16 bg-blue-600 text-white flex fixed top-0 z-50 w-full items-center justify-between px-4">
-        <h1 className="font-bold">My Chat App</h1>
-        {/* Hamburger button only on small screens */}
-        <div className="flex items-center gap-2 justify-center">
+      <nav className="fixed top-0 left-0 w-full h-16 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
+        <div className="h-full px-4 md:px-8 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              className="lg:hidden text-2xl text-purple-700"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+              {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
+            </button>
+
+            <h1 className="flex items-center gap-2 text-xl md:text-2xl font-bold text-purple-700">
+              <IoChatbubbleOutline />
+              Suraksha Chat
+            </h1>
+          </div>
+
           <Link
             to={RouteHomepage}
-            className="bg-red-600 rounded-md hover:bg-red-700 px-5 py-2 cursor-pointer">
-            Back
+            className="bg-purple-700 text-white rounded-full hover:bg-purple-800 px-5 py-2 text-sm font-semibold transition"
+          >
+            Back Home
           </Link>
-          <button
-            className={`lg:hidden p-2 text-white rounded-md cursor-pointer`}
-            onClick={() => {
-              setSidebarOpen(!sidebarOpen);
-            }}>
-            {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
-          </button>
         </div>
-      </div>
+      </nav>
 
       {/* Body */}
-      <div className="flex flex-1 mt-16 h-[calc(100vh-64px)]">
-        {/* Sidebar */}
+      <div className="flex pt-16 h-screen">
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
         <ChatSidebar
           rooms={rooms}
-          onSelectRoom={setSelectedRoom}
+          onSelectRoom={(room) => {
+            setSelectedRoom(room);
+            setSidebarOpen(false);
+          }}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           onOpenModal={() => setShowModal(true)}
         />
-        {/* Main content - Chatting Area */}
-        <div className="flex-1 flex flex-col overflow-y-auto">
+
+        <main className="flex-1 flex flex-col overflow-hidden bg-gray-50">
           {!selectedRoom ? (
-            <div className="flex flex-col items-center justify-center flex-1">
-              <p className="text-gray-600 mb-4">
-                Select to chat with your contacts.
+            <div className="flex flex-col items-center justify-center flex-1 px-6 text-center">
+              <div className="h-20 w-20 rounded-3xl bg-purple-100 text-purple-700 flex items-center justify-center mb-5">
+                <IoChatbubbleOutline className="text-4xl" />
+              </div>
+
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+                Welcome to Suraksha Chat
+              </h2>
+
+              <p className="text-gray-500 mt-3 max-w-md">
+                Select a room from the sidebar to start chatting with your
+                trusted contacts.
               </p>
+
+              <button
+                onClick={() => setShowModal(true)}
+                className="mt-6 bg-gradient-to-r from-pink-500 to-purple-700 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:opacity-90 transition"
+              >
+                Create New Room
+              </button>
             </div>
           ) : (
             <ChatArea room={selectedRoom} />
           )}
-        </div>
+        </main>
       </div>
 
-      {/* Modal overlay (on top of everything) */}
       {showModal && (
         <CreateRoomModal
           onClose={() => setShowModal(false)}
