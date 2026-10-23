@@ -9,7 +9,6 @@ import initSocket from "./helpers/socket.js";
 import roomRoutes from "./routes/roomRoutes.js";
 import messageRoutes from "./routes/messageRoute.js";
 import sosRoutes from "./routes/liveLocationMessage.js";
-import { authMiddleware } from "./middlewares/authMiddleware.js";
 
 
 dotenv.config();
@@ -35,7 +34,7 @@ app.use("/api/messages", messageRoutes);
 app.use("/api", sosRoutes);
 
 // ✅ DB
-connectDB();
+await connectDB(); // default - connectDB()
 
 // ✅ Socket
 initSocket(server);
