@@ -1,10 +1,15 @@
 export const RouteIndex = "/";
 export const RouteSignup = "/signup";
 export const RouteLogin = "/login";
-export const RouteWelcome = "/welcome";
-export const RouteDashboard = "/dashboard";
-export const RouteContacts = "/contacts";
-export const RouteHomepage = "/homepage";
-export const RouteProfile = "/profile";
-export const RouteChatLayout = "/chatLayout";
+export const RouteHomepageLayout = "/homepage";
+export const RouteProfile = "/homepage/profile";
+export const RouteChatLayout = "/chat";
 export const RouteCreateRoomModal = "/createRoomModal";
+export const RouteForgotPassword = "/forgot-password";
+export const RouteResetPassword = (token) => {
+    if(token) {
+        return `/reset-password/:${token}`
+    } else {
+        return "/reset-password/:token"
+    }
+};

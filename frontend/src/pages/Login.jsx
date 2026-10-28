@@ -3,10 +3,14 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signinSchema } from "../validation/signinSchema";
 import { Link, useNavigate } from "react-router-dom";
-import { RouteHomepage, RouteSignup } from "../helpers/RouteName";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/slices/userSlice";
 import { useState } from "react";
+import {
+  RouteForgotPassword,
+  RouteHomepageLayout,
+  RouteSignup,
+} from "../helpers/RouteName";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,7 +21,7 @@ export default function Login() {
   const {
     register,
     handleSubmit,
-    setError, // ✅ IMPORTANT
+    setError,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(signinSchema),
@@ -33,14 +37,14 @@ export default function Login() {
       );
 
       dispatch(setUser(response.data));
-      navigate(RouteHomepage);
+      navigate(RouteHomepageLayout);
     } catch (err) {
       console.error("FULL ERROR:", err);
 
       if (err.response) {
         const message = err.response.data.message;
 
-        // ✅ Show under fields
+        // Show under fields
         if (message.toLowerCase().includes("email")) {
           setError("email", {
             type: "manual",
@@ -61,8 +65,8 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-purple-600 to-pink-500 px-4">
-      <div className="bg-white shadow-xl rounded-lg p-4 sm:p-6 md:p-8 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
+    <div className="min-h-screen flex items-center bg-gray-50 justify-center px-4">
+      <div className="bg-white border border-gray-200 shadow-xl rounded-lg p-4 sm:p-6 md:p-8 w-full max-w-sm md:max-w-md">
         {/* Title */}
         <div className="text-center mb-6">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-purple-700">
@@ -73,7 +77,7 @@ export default function Login() {
           </p>
         </div>
 
-        {/* 🔴 Server Error */}
+        {/* Server Error */}
         {serverError && (
           <p className="text-red-500 text-center mb-3">{serverError}</p>
         )}
@@ -91,7 +95,7 @@ export default function Login() {
               placeholder="Enter your email"
               type="email"
               {...register("email")}
-              className="mt-1 w-full border rounded-md px-3 py-2 text-sm sm:text-base"
+              className="mt-1 w-full border border-gray-300 outline-purple-400 rounded-md px-3 py-2 text-sm sm:text-base"
             />
             {errors.email && (
               <p className="text-red-500 text-xs sm:text-sm mt-1">
@@ -109,7 +113,7 @@ export default function Login() {
               placeholder="Enter your password"
               type="password"
               {...register("password")}
-              className="mt-1 w-full border rounded-md px-3 py-2 text-sm sm:text-base"
+              className="mt-1 w-full border border-gray-300 outline-purple-400 rounded-md px-3 py-2 text-sm sm:text-base"
             />
             {errors.password && (
               <p className="text-red-500 text-xs sm:text-sm mt-1">
@@ -120,7 +124,7 @@ export default function Login() {
 
           <div className="flex justify-end mt-2">
             <Link
-              to="/forgot-password"
+              to={RouteForgotPassword}
               className="text-xs sm:text-sm text-purple-600 hover:underline">
               Forgot Password?
             </Link>
@@ -129,15 +133,17 @@ export default function Login() {
           {/* Button */}
           <button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg text-sm sm:text-base font-semibold transition duration-300">
+            className="w-full bg-purple-600 hover:bg-purple-700 cursor-pointer text-white py-2 rounded-lg text-sm sm:text-base font-semibold transition duration-300">
             Login
           </button>
         </form>
 
         {/* Footer */}
         <p className="mt-6 text-center text-xs sm:text-sm text-gray-500">
-          Don't have an account?{" "}
-          <Link to={RouteSignup} className="text-purple-600 hover:underline">
+          Don't have an account?
+          <Link
+            to={RouteSignup}
+            className="text-purple-600 pl-1 hover:underline">
             Sign up
           </Link>
         </p>

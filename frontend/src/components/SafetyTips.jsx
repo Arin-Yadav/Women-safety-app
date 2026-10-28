@@ -33,7 +33,7 @@ const tips = [
 
 export default function SafetyTips() {
   return (
-    <section className="bg-white shadow-md rounded-lg p-6 mt-12 max-w-5xl mx-auto">
+    <section className="bg-white shadow-md rounded-lg p-6 mt-12 max-w-6xl mx-auto">
       <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
         Safety Tips
       </h2>
@@ -41,7 +41,7 @@ export default function SafetyTips() {
         {tips.map((tip) => (
           <div
             key={tip.id}
-            className="flex items-start space-x-4 bg-gray-50 p-4 rounded-lg hover:shadow-lg transition">
+            className="flex items-start space-x-4 bg-gray-50 p-4 cursor-pointer rounded-lg hover:shadow-lg transition">
             <span className="text-3xl">{tip.icon}</span>
             <div>
               <h3 className="font-semibold text-lg text-gray-800">
