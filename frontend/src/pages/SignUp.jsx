@@ -5,15 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { RouteLogin } from "../helpers/RouteName.js";
 import axios from "axios";
 
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-
-import { useState } from "react";
-
 const SignUp = () => {
   const navigate = useNavigate();
-
-  // 👁 Password Toggle
-  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -23,11 +16,10 @@ const SignUp = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-
     mode: "onChange",
   });
 
-  // ✅ Age calculation
+  // Age calculation
   const calculateAge = (dob) => {
     const today = new Date();
     const birthDate = new Date(dob);
@@ -43,7 +35,7 @@ const SignUp = () => {
     return age;
   };
 
-  // ✅ Submit handler
+  // Submit handler
   const onSubmit = async (data) => {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/signup`, data, {
@@ -73,8 +65,8 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-linear-to-r from-pink-500 to-purple-700 p-4">
-      <div className="bg-white shadow-lg rounded-lg p-4 sm:p-6 md:p-8 w-full max-w-md sm:max-w-2xl md:max-w-4xl">
+    <div className="min-h-screen flex justify-center items-center bg-gray-50 p-4">
+      <div className="bg-white shadow-lg rounded-lg py-5 p-6 sm:p-6 md:p-8 w-full max-w-md sm:max-w-2xl md:max-w-4xl">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-6 text-purple-700">
           Create Your Account
         </h2>
@@ -91,7 +83,7 @@ const SignUp = () => {
             <input
               {...register("fullName")}
               type="text"
-              className="mt-1 w-full border rounded-md px-3 py-2"
+              className="mt-1 w-full border rounded-md border-gray-300 outline-purple-400 px-3 py-2"
               placeholder="Enter your full name"
             />
 
@@ -109,7 +101,7 @@ const SignUp = () => {
             <input
               {...register("email")}
               type="email"
-              className="mt-1 w-full border rounded-md px-3 py-2"
+              className="mt-1 w-full border rounded-md border-gray-300 outline-purple-400 px-3 py-2"
               placeholder="Enter your email"
             />
 
@@ -127,17 +119,11 @@ const SignUp = () => {
             <div className="relative">
               <input
                 {...register("password")}
-                type={showPassword ? "text" : "password"}
-                className="mt-1 w-full border rounded-md px-3 py-2 pr-10"
+                type="password"
+                // type={showPassword ? "text" : "password"}
+                className="mt-1 w-full border rounded-md border-gray-300 outline-purple-400 px-3 py-2 pr-10"
                 placeholder="Enter your password"
               />
-
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-4 text-gray-500">
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
             </div>
 
             {errors.password && (
@@ -154,7 +140,7 @@ const SignUp = () => {
             <input
               {...register("dob")}
               type="date"
-              className="mt-1 w-full border rounded-md px-3 py-2"
+              className="mt-1 w-full border rounded-md border-gray-300 outline-purple-400 px-3 py-2"
               onChange={(e) => {
                 const dob = e.target.value;
                 const age = calculateAge(dob);
@@ -178,7 +164,7 @@ const SignUp = () => {
               {...register("age")}
               type="number"
               readOnly
-              className="mt-1 w-full border rounded-md px-3 py-2 bg-gray-100"
+              className="mt-1 w-full border rounded-md border-gray-300 outline-purple-400 px-3 py-2 bg-gray-100"
               placeholder="Auto-calculated"
             />
             {errors.age && (
@@ -194,7 +180,7 @@ const SignUp = () => {
             <input
               {...register("phone")}
               type="tel"
-              className="mt-1 w-full border rounded-md px-3 py-2 "
+              className="mt-1 w-full border rounded-md px-3 border-gray-300 outline-purple-400 py-2 "
               placeholder="Enter your phone number"
             />
             {errors.phone && (
@@ -208,10 +194,10 @@ const SignUp = () => {
               Address
             </label>
 
-            <input
+            <textarea
               {...register("address")}
               type="text"
-              className="mt-1 w-full border rounded-md px-3 py-2"
+              className="mt-1 w-full border rounded-md border-gray-300 outline-purple-400 px-3 py-2"
               placeholder="Enter your address"
             />
             {errors.address && (
@@ -220,21 +206,21 @@ const SignUp = () => {
           </div>
 
           {/* Submit */}
-          <div className="md:col-span-2 text-center">
+          <div className="md:col-span-2 mt-5 text-center">
             <button
               type="submit"
               className="bg-purple-600 hover:bg-purple-700 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold transition duration-300 cursor-pointer w-full sm:w-auto">
-              Submit
+              Sign up
             </button>
           </div>
 
           {/* Login Link */}
           <div className="md:col-span-2 text-center">
             <p className="text-xs sm:text-sm text-black">
-              Already have an account?{" "}
+              Already have an account?
               <Link
                 to={RouteLogin}
-                className="text-purple-600 hover:underline font-medium">
+                className="text-purple-600 hover:underline pl-1 font-medium">
                 Login
               </Link>
             </p>

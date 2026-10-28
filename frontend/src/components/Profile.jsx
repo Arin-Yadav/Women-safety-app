@@ -1,12 +1,10 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { RouteHomepage } from "../helpers/RouteName";
+// import { RouteHomepage } from "../helpers/RouteName";
 
 const Profile = () => {
   const user = useSelector((state) => state.user?.user?.user);
-  // console.log(user)
 
   const {
     register,
@@ -15,24 +13,15 @@ const Profile = () => {
     reset,
   } = useForm();
 
-  // Fetching previous info
-
-  // Form submitting
   const onSubmit = (data) => {
     console.log(data);
     reset;
   };
 
   return (
-    <div className="w-full min-h-screen flex justify-center items-center p-4 sm:p-6 bg-gray-100">
-      <div className="w-full max-w-3xl flex flex-col gap-6 rounded-xl shadow-lg bg-white border p-5">
+    <div className="w-full h-[calc(100vh-4rem)] flex justify-center items-center p-4 sm:p-6">
+      <div className="w-full max-w-2xl flex flex-col gap-6 rounded-xl shadow-lg border border-gray-300 p-5">
         {/* Heading */}
-        <Link 
-        to={RouteHomepage}
-        className="hover:underline text-blue-600 text-right">
-          Go back
-        </Link>
-
         <h1 className="text-center text-2xl sm:text-3xl font-bold text-blue-600 tracking-tight">
           Profile
         </h1>

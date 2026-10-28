@@ -17,8 +17,7 @@ const MessageBubble = React.memo(({ msg, userId }) => {
           isOwnMessage
             ? "bg-linear-to-r from-pink-500 to-purple-700 text-white rounded-br-md"
             : "bg-white text-gray-800 border border-gray-100 rounded-bl-md"
-        } max-w-[85%] sm:max-w-[70%] md:max-w-[55%]`}
-      >
+        } max-w-[85%] sm:max-w-[70%] md:max-w-[55%]`}>
         {msg?.type === "location" ? (
           <>
             <p className="font-medium flex items-center gap-1">
@@ -45,8 +44,7 @@ const MessageBubble = React.memo(({ msg, userId }) => {
         <div
           className={`flex gap-3 justify-end items-center mt-2 text-[11px] ${
             isOwnMessage ? "text-white/75" : "text-gray-400"
-          }`}
-        >
+          }`}>
           {!isOwnMessage && <span>{msg?.sender?.username}</span>}
           <span>{dayjs(msg?.createdAt).format("h:mm A")}</span>
         </div>
@@ -94,7 +92,7 @@ const ChatArea = ({ room }) => {
     (typingUsername) =>
       setTypingUsers((prev) => [...new Set([...prev, typingUsername])]),
     (typingUsername) =>
-      setTypingUsers((prev) => prev.filter((u) => u !== typingUsername))
+      setTypingUsers((prev) => prev.filter((u) => u !== typingUsername)),
   );
 
   useEffect(() => {
@@ -102,7 +100,7 @@ const ChatArea = ({ room }) => {
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/messages/${room._id}`,
-          { params: { userId }, withCredentials: true }
+          { params: { userId }, withCredentials: true },
         );
 
         setMessages(res.data.messages || []);
@@ -161,7 +159,7 @@ const ChatArea = ({ room }) => {
               {room.roomName}
             </h2>
 
-            <div className="h-4">
+            {/* <div className="h-4">
               {typingUsers.length > 0 ? (
                 <span className="text-xs text-green-600">
                   {typingUsers.join(", ")}{" "}
@@ -172,6 +170,15 @@ const ChatArea = ({ room }) => {
                   Secure conversation
                 </span>
               )}
+            </div> */}
+
+            <div className="h-4">
+              {typingUsers.length > 0 && (
+                <span className="text-xs text-green-600">
+                  {typingUsers.join(", ")}{" "}
+                  {typingUsers.length > 1 ? "are" : "is"} typing...
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -179,21 +186,25 @@ const ChatArea = ({ room }) => {
         {room.roomType === "private" && room.createdBy === userId && (
           <button
             onClick={() => setShowManageModal(true)}
-            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-full font-medium hover:bg-purple-100 transition"
-          >
+            className="hidden sm:flex items-center gap-2 cursor-pointer px-4 py-2 bg-purple-100 text-purple-700 rounded-full font-medium hover:bg-purple-200 transition">
             <IoPeopleOutline />
             Manage
           </button>
         )}
       </div>
 
-      <MessageList messages={messages} userId={userId} />
+      {messages.length > 0 ? (
+        <MessageList messages={messages} userId={userId} />
+      ) : (
+        <div className="flex justify-center items-center h-full">
+          <p>Nothing here, Say Hello</p>
+        </div>
+      )}
 
       {/* Message Input */}
       <form
         onSubmit={handleSend}
-        className="p-3 md:p-4 bg-white border-t border-gray-200 flex items-center gap-3"
-      >
+        className="p-3 md:p-4 bg-white border-t border-gray-200 flex items-center gap-3">
         <input
           type="text"
           value={text}
@@ -204,8 +215,7 @@ const ChatArea = ({ room }) => {
 
         <button
           type="submit"
-          className="h-12 w-12 rounded-full bg-linear-to-r from-pink-500 to-purple-700 text-white flex items-center justify-center hover:opacity-90 transition shadow-md"
-        >
+          className="h-12 w-12 rounded-full bg-linear-to-r from-pink-500 to-purple-700 text-white flex items-center justify-center hover:opacity-90 transition shadow-md">
           <IoSend className="text-xl" />
         </button>
       </form>

@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import ChatSidebar from "./ChatSidebar";
-import ChatArea from "./ChatArea";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { RouteHomepage } from "../helpers/RouteName";
 import { IoMdClose } from "react-icons/io";
 import { RxHamburgerMenu } from "react-icons/rx";
-import CreateRoomModal from "./CreateRoomModal";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addRoom, setCurrentRoomId, setRoom } from "../redux/slices/roomSlice";
-import { IoChatbubbleOutline } from "react-icons/io5";
+import { IoChatbubbleOutline, IoHome } from "react-icons/io5";
+import { RouteHomepageLayout } from "../helpers/RouteName";
+import CreateRoomModal from "../components/CreateRoomModal";
+import ChatSidebar from "../components/ChatSidebar";
+import ChatArea from "../components/ChatArea";
 
 const ChatLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -34,7 +34,7 @@ const ChatLayout = () => {
           {
             params: { userId },
             withCredentials: true,
-          }
+          },
         );
 
         dispatch(setRoom(response.data.rooms || []));
@@ -51,7 +51,7 @@ const ChatLayout = () => {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/rooms/create`,
         roomData,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       const newRoom = response.data.room;
@@ -71,25 +71,32 @@ const ChatLayout = () => {
       {/* Navbar */}
       <nav className="fixed top-0 left-0 w-full h-16 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
         <div className="h-full px-4 md:px-8 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              className="lg:hidden text-2xl text-purple-700"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-            >
-              {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
-            </button>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex justify-center items-center gap-3">
+              <button
+                className="lg:hidden text-2xl text-purple-700"
+                onClick={() => setSidebarOpen(!sidebarOpen)}>
+                {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
+              </button>
 
-            <h1 className="flex items-center gap-2 text-xl md:text-2xl font-bold text-purple-700">
-              <IoChatbubbleOutline />
-              Suraksha Chat
-            </h1>
+              <h1 className="flex items-center gap-2 text-xl md:text-2xl font-bold text-purple-700">
+                <IoChatbubbleOutline />
+                Suraksha
+              </h1>
+            </div>
+
+            {/* <Link
+              to={RouteHomepageLayout}
+              className="flex items-center gap-2 text-base text-purple-700">
+              Home
+              <IoHome />
+            </Link> */}
           </div>
 
           <Link
-            to={RouteHomepage}
-            className="bg-purple-700 text-white rounded-full hover:bg-purple-800 px-5 py-2 text-sm font-semibold transition"
-          >
-            Back Home
+            to={RouteHomepageLayout}
+            className="bg-purple-700 text-white rounded-full hover:bg-purple-800 px-5 py-2 text-sm font-semibold transition">
+            Home
           </Link>
         </div>
       </nav>
@@ -121,21 +128,20 @@ const ChatLayout = () => {
                 <IoChatbubbleOutline className="text-4xl" />
               </div>
 
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+              {/* <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
                 Welcome to Suraksha Chat
-              </h2>
+              </h2> */}
 
               <p className="text-gray-500 mt-3 max-w-md">
                 Select a room from the sidebar to start chatting with your
-                trusted contacts.
+                contacts or groups.
               </p>
 
-              <button
+              {/* <button
                 onClick={() => setShowModal(true)}
-                className="mt-6 bg-linear-to-r from-pink-500 to-purple-700 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:opacity-90 transition"
-              >
+                className="mt-6 bg-linear-to-r from-pink-500 to-purple-700 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:opacity-90 transition">
                 Create New Room
-              </button>
+              </button> */}
             </div>
           ) : (
             <ChatArea room={selectedRoom} />

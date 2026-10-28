@@ -8,12 +8,14 @@ const ChatSidebar = ({ rooms, isOpen, onSelectRoom, onClose, onOpenModal }) => {
 
       {/* Sidebar */}
       <div
-        className={`fixed lg:static top-16 left-0 h-[calc(100vh-64px)] lg:h-auto w-64 bg-linear-to-b from-white to-gray-50 text-gray-800 border-r shadow-sm p-4 flex flex-col transform transition-transform duration-300 z-40
+        className={`fixed lg:static top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-white text-gray-800 border-r border-gray-200 shadow-lg md:shadow-none flex flex-col transform transition-transform duration-300 z-40 p-4
         ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
         {/* Header */}
-        <h4 className="text-sm font-semibold text-gray-700 tracking-wide mb-3">
-          Contact Group
-        </h4>
+        {/* <div className="border-b mb-5">
+          <h4 className="text-base md:text-lg font-semibold text-gray-700 mb-5 tracking-wide px-3">
+            Contact Groups
+          </h4>
+        </div> */}
 
         {/* Rooms List */}
         <ul className="space-y-2 flex-1 overflow-y-auto">
@@ -25,7 +27,7 @@ const ChatSidebar = ({ rooms, isOpen, onSelectRoom, onClose, onOpenModal }) => {
                   onSelectRoom(room);
                   onClose();
                 }}
-                className="p-2 rounded-md bg-gray-100 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors duration-200">
+                className="py-3 px-3 rounded-xl text-purple-700 hover:bg-purple-100 transition cursor-pointer">
                 {room.roomName}
               </li>
             ))
@@ -62,7 +64,7 @@ const ChatSidebar = ({ rooms, isOpen, onSelectRoom, onClose, onOpenModal }) => {
 
         <button
           onClick={onOpenModal}
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 cursor-pointer">
+          className="mt-6 bg-linear-to-r from-pink-500 to-purple-700 cursor-pointer text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:opacity-90 transition">
           Create Group
         </button>
       </div>
