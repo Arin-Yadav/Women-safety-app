@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 
 export const useSocket = (
@@ -10,75 +10,81 @@ export const useSocket = (
   onSOSReceived // new callback
 ) => {
   const socketRef = useRef(null);
+  const callbacksRef = useRef({
+    onMessageReceived,
+    onTyping,
+    onStopTyping,
+    onSOSReceived,
+  });
 
   useEffect(() => {
-    if (!socketRef.current) {
-      socketRef.current = io(`${import.meta.env.VITE_BASE_URL}`);
-    }
+    callbacksRef.current = {
+      onMessageReceived,
+      onTyping,
+      onStopTyping,
+      onSOSReceived,
+    };
+  });
 
-    const socket = socketRef.current;
-
-    if (roomId) {
-      socket.emit("joinRoom", roomId);
-    }
+  useEffect(() => {
+    const socket = io(`${import.meta.env.VITE_BASE_URL}`);
+    socketRef.current = socket;
 
     socket.on("receiveMessage", (message) => {
-      if (onMessageReceived) {
-        onMessageReceived(message); // callback to update local state
-      }
+      callbacksRef.current.onMessageReceived?.(message);
     });
-
     socket.on("userTyping", ({ username }) => {
-      onTyping?.(username);
+      callbacksRef.current.onTyping?.(username);
     });
-
     socket.on("userStopTyping", ({ username }) => {
-      onStopTyping?.(username);
+      callbacksRef.current.onStopTyping?.(username);
     });
-
-    // 👇 SOS listener
     socket.on("receiveSOS", (data) => {
-      onSOSReceived?.(data);
+      callbacksRef.current.onSOSReceived?.(data);
     });
 
     return () => {
-      socket.off("receiveMessage");
-      socket.off("userTyping");
-      socket.off("userStopTyping");
-      socket.off("receiveSOS");
-    };
-  }, [roomId, userId, onMessageReceived, onTyping, onStopTyping, onSOSReceived]);
-
-  useEffect(() => {
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
+      socket.disconnect();
+      socketRef.current = null;
     };
   }, []);
 
-  const sendMessage = (text) => {
+  useEffect(() => {
+    const socket = socketRef.current;
+
+    if (!socket || !roomId) return undefined;
+
+    socket.emit("joinRoom", roomId);
+    return () => {
+      socket.emit("leaveRoom", roomId);
+    };
+  }, [roomId]);
+
+  const sendMessage = useCallback((text) => {
     if (roomId && userId && socketRef.current) {
       const msg = { roomId, sender: userId, text };
       socketRef.current.emit("sendMessage", msg);
     }
-  };
+  }, [roomId, userId]);
 
-  const startTyping = (username) => {
-    socketRef.current?.emit("typing", { roomId, username });
-  };
+  const startTyping = useCallback((username) => {
+    if (roomId && username) {
+      socketRef.current?.emit("typing", { roomId, username });
+    }
+  }, [roomId]);
 
-  const stopTyping = (username) => {
-    socketRef.current?.emit("stopTyping", { roomId, username });
-  };
+  const stopTyping = useCallback((username) => {
+    if (roomId && username) {
+      socketRef.current?.emit("stopTyping", { roomId, username });
+    }
+  }, [roomId]);
 
   // 👇 SOS emitter
-  const sendSOS = (location) => {
+  const sendSOS = useCallback((location) => {
     if (roomId && userId && socketRef.current) {
       socketRef.current.emit("sendSOS", { roomId, sender: userId, location });
     }
-  };
+  }, [roomId, userId]);
 
   return { sendMessage, startTyping, stopTyping, sendSOS };
 };

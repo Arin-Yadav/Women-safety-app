@@ -1,7 +1,6 @@
 import { HiOutlineBellAlert } from "react-icons/hi2";
 import { CiLocationOn, CiLock } from "react-icons/ci";
 import { IoChatbubbleOutline } from "react-icons/io5";
-import { motion } from "framer-motion";
 
 const KeyFeatures = () => {
   const features = [
@@ -17,36 +16,32 @@ const KeyFeatures = () => {
     },
     {
       title: "Chat Support",
-      desc: "Stay connected with your loved ones through secure chat support.",
+      desc: "Keep in touch with your trusted circle through in-app group messaging.",
       icon: <IoChatbubbleOutline className="h-8 w-8" />,
     },
     {
       title: "Privacy First",
-      desc: "Your data stays protected and is never shared without your consent.",
+      desc: "Choose who belongs in your trusted circle and when to share your location.",
       icon: <CiLock className="h-8 w-8" />,
     },
   ];
 
   return (
     <section id="features" className="py-24 px-6 bg-purple-50 w-full  ">
-      <div className="max-w-7xl md:px-10 mx-auto">
+      <div className="max-w-7xl  mx-auto">
         <div className="text-center max-w-2xl mx-auto">
-          <h2 className="text-4xl md:text-5xl text-purple-600 font-bold">
-            Key Features
-          </h2>
-          <p className="mt-4 text-gray-500">
+          <p className="text-3xl md:text-4xl font-bold w-full text-center uppercase tracking-[0.12em] text-violet-700">
+            Features
+          </p>
+          <p className="mt-4 text-sm md:text-base text-gray-500">
             Everything needed for quick action, communication, and safety.
           </p>
         </div>
 
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => (
-            <motion.div
+          {features.map((feature) => (
+            <div
               key={feature.title}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
               className="bg-white border border-gray-100 cursor-pointer shadow-lg rounded-2xl p-7 hover:-translate-y-2 hover:shadow-xl transition">
               <div className="flex items-center justify-center w-16 h-16 bg-purple-100 text-purple-600 rounded-2xl mb-6">
                 {feature.icon}
@@ -55,7 +50,7 @@ const KeyFeatures = () => {
                 {feature.title}
               </h3>
               <p className="text-gray-500 leading-relaxed">{feature.desc}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

@@ -1,28 +1,26 @@
-import React from "react";
-
 const Aboutus = () => {
   return (
-    <section id="aboutus" className="py-10 md:py-20 px-6 bg-purple-50">
-      <p className="text-purple-600 text-4xl sm:text-5xl font-bold mb-10 w-full text-center">
-        About us
+    <section id="aboutus" className="bg-[#fff8f6] px-6 py-20 sm:py-24">
+      <p className="text-3xl md:text-4xl mb-10 font-bold w-full text-center uppercase tracking-[0.12em] text-violet-700">
+        About Suraksha
       </p>
-      <div className="max-w-7xl lg:px-10 mx-auto grid lg:grid-cols-2 gap-10 items-center">
-        <h2 className="text-2xl md:text-5xl font-bold leading-tight">
-          A movement toward safety, confidence, and empowerment.
-        </h2>
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-2 lg:gap-20 items-center">
+        <div className="md:border-r border-gray-500">
+          <h2 className="text-xl md:text-3xl font-bold leading-tight tracking-tight text-slate-950 sm:text-4xl">
+            Support should feel close, wherever life takes you.
+          </h2>
+        </div>
 
-        <div className="text-gray-600 text-base sm:text-lg leading-relaxed space-y-6">
+        <div className="space-y-5 text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
           <p>
-            We are dedicated to creating a safer world for women through
-            technology. Our Women Safety WebApp empowers users with instant
-            emergency alerts, live location tracking, and trusted contact
-            support.
+            Suraksha brings together the people and tools that can help you feel
+            more connected:- trusted circles, location sharing, emergency
+            alerts, and messaging.
           </p>
           <p>
-            Beyond safety, our vision is to foster awareness, build supportive
-            communities, and promote equality. This project is more than just an
-            app - it is a movement toward security, confidence, and empowerment
-            for women everywhere.
+            It is designed to make reaching out simpler, not to replace local
+            emergency services. In an immediate emergency, contact your local
+            emergency number.
           </p>
         </div>
       </div>

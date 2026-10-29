@@ -67,51 +67,56 @@ const ChatLayout = () => {
   };
 
   return (
-    <div className="h-screen bg-gray-50 overflow-hidden">
-      {/* Navbar */}
-      <nav className="fixed top-0 left-0 w-full h-16 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
-        <div className="h-full px-4 md:px-8 flex items-center justify-between">
-          <div className="flex items-center justify-between w-full">
-            <div className="flex justify-center items-center gap-3">
-              <button
-                className="lg:hidden text-2xl text-purple-700"
-                onClick={() => setSidebarOpen(!sidebarOpen)}>
-                {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
-              </button>
+    <div className="h-dvh overflow-hidden bg-[#f7f7fc] text-slate-800">
+      <nav className="fixed block md:hidden inset-x-0 top-0 z-50 h-16 border-b border-violet-100/80 bg-white/95 shadow-[0_4px_24px_rgba(47,32,89,0.04)] backdrop-blur-xl">
+        <div className="flex h-full items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+            <button
+              aria-label={
+                sidebarOpen ? "Close conversations" : "Open conversations"
+              }
+              aria-expanded={sidebarOpen}
+              className="grid h-10 w-10 place-items-center rounded-xl text-xl text-violet-700 cursor-pointer transition hover:bg-violet-50 focus-visible:outline-2 focus-visible:outline-violet-500 lg:hidden"
+              onClick={() => setSidebarOpen(!sidebarOpen)}>
+              {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
+            </button>
 
-              <h1 className="flex items-center gap-2 text-xl md:text-2xl font-bold text-purple-700">
+            {/* <Link to={RouteHomepageLayout} className="flex items-center gap-3">
+              <span className="grid h-10 w-10 place-items-center rounded-2xl bg-linear-to-br from-fuchsia-500 to-violet-700 text-lg text-white shadow-md shadow-violet-200">
                 <IoChatbubbleOutline />
-                Suraksha
-              </h1>
-            </div>
-
-            {/* <Link
-              to={RouteHomepageLayout}
-              className="flex items-center gap-2 text-base text-purple-700">
-              Home
-              <IoHome />
+              </span>
+              <span>
+                <span className="block text-lg font-extrabold leading-tight tracking-tight text-slate-900 sm:text-xl">
+                  Suraksha
+                </span>
+                <span className="hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:block">
+                  Stay connected, stay safe
+                </span>
+              </span>
             </Link> */}
           </div>
 
           <Link
             to={RouteHomepageLayout}
-            className="bg-purple-700 text-white rounded-full hover:bg-purple-800 px-5 py-2 text-sm font-semibold transition">
-            Home
+            className="inline-flex items-center gap-2 rounded-full border border-violet-100 bg-violet-50/70 px-4 py-2 text-sm font-semibold text-violet-700 transition hover:border-violet-200 hover:bg-violet-100 focus-visible:outline-2 focus-visible:outline-violet-500 sm:px-5">
+            <IoHome className="text-base" />
+            <span>Home</span>
           </Link>
         </div>
       </nav>
 
-      {/* Body */}
-      <div className="flex pt-16 h-screen">
+      <div className="flex h-dvh pt-16 md:pt-0">
         {sidebarOpen && (
-          <div
-            className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+          <button
+            aria-label="Close conversations"
+            className="fixed inset-0 z-30 bg-slate-900/25 backdrop-blur-[2px] lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
 
         <ChatSidebar
           rooms={rooms}
+          selectedRoomId={selectedRoom?._id}
           onSelectRoom={(room) => {
             setSelectedRoom(room);
             setSidebarOpen(false);
@@ -121,30 +126,34 @@ const ChatLayout = () => {
           onOpenModal={() => setShowModal(true)}
         />
 
-        <main className="flex-1 flex flex-col overflow-hidden bg-gray-50">
+        <main className="min-w-0 flex-1 overflow-hidden bg-linear-to-br from-[#faf9ff] via-[#f8f8fc] to-[#f4f3fb]">
           {!selectedRoom ? (
-            <div className="flex flex-col items-center justify-center flex-1 px-6 text-center">
-              <div className="h-20 w-20 rounded-3xl bg-purple-100 text-purple-700 flex items-center justify-center mb-5">
-                <IoChatbubbleOutline className="text-4xl" />
+            <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+              <div className="relative mb-7">
+                <div className="absolute -inset-3 rounded-4xl bg-violet-200/50 blur-xl" />
+                <div className="relative grid h-24 w-24 place-items-center rounded-4xl border border-white bg-white text-violet-600 shadow-[0_16px_50px_rgba(91,61,161,0.14)]">
+                  <IoChatbubbleOutline className="text-4xl" />
+                </div>
               </div>
-
-              {/* <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
-                Welcome to Suraksha Chat
-              </h2> */}
-
-              <p className="text-gray-500 mt-3 max-w-md">
-                Select a room from the sidebar to start chatting with your
-                contacts or groups.
+              <span className="mb-3 rounded-full border border-violet-100 bg-white/80 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-violet-600">
+                Your safe space
+              </span>
+              <h1 className="max-w-lg text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+                Every check-in starts with a conversation.
+              </h1>
+              <p className="mt-3 max-w-md text-sm leading-6 text-slate-500 sm:text-base">
+                Choose a group to catch up with your people, or create a new
+                space for the ones who matter.
               </p>
-
               {/* <button
                 onClick={() => setShowModal(true)}
-                className="mt-6 bg-linear-to-r from-pink-500 to-purple-700 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:opacity-90 transition">
-                Create New Room
+                className="mt-7 inline-flex items-center gap-2 cursor-pointer rounded-full bg-linear-to-r from-fuchsia-600 to-violet-700 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
+                <IoChatbubbleOutline />
+                Create a group
               </button> */}
             </div>
           ) : (
-            <ChatArea room={selectedRoom} />
+            <ChatArea key={selectedRoom._id} room={selectedRoom} />
           )}
         </main>
       </div>
