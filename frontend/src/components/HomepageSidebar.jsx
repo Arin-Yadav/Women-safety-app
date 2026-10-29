@@ -1,7 +1,12 @@
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { CiUser } from "react-icons/ci";
-import { IoChatbubbleOutline, IoHome, IoHomeOutline, IoLogOutOutline } from "react-icons/io5";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  HiArrowRightOnRectangle,
+  HiOutlineChatBubbleLeftRight,
+  HiOutlineHome,
+  HiOutlineUserCircle,
+} from "react-icons/hi2";
 import {
   RouteChatLayout,
   RouteHomepageLayout,
@@ -11,8 +16,11 @@ import {
 
 const HomePageSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [logoutError, setLogoutError] = useState("");
 
   const handleLogout = async () => {
+    setLogoutError("");
     try {
       await axios.post(
         `${import.meta.env.VITE_API_URL}/logout`,
@@ -21,61 +29,81 @@ const HomePageSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       );
       navigate(RouteIndex);
     } catch (error) {
-      console.error(error.response?.data || error.message);
+      console.error("Logout failed:", error.response?.data || error.message);
+      setLogoutError("Could not log out. Please try again.");
     }
   };
+
+  const navItems = [
+    {
+      label: "Overview",
+      to: RouteHomepageLayout,
+      icon: <HiOutlineHome className="h-5 w-5" />,
+    },
+    {
+      label: "Messages",
+      to: RouteChatLayout,
+      icon: <HiOutlineChatBubbleLeftRight className="h-5 w-5" />,
+    },
+    {
+      label: "My profile",
+      to: RouteProfile,
+      icon: <HiOutlineUserCircle className="h-5 w-5" />,
+    },
+  ];
+
   return (
     <aside
-      className={`fixed md:sticky top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-white border-r border-gray-200 shadow-lg md:shadow-none z-40 transform transition-transform duration-300 flex flex-col ${
+      id="homepage-sidebar"
+      aria-label="Main navigation"
+      className={`fixed left-0 top-16 z-40 flex h-[calc(100vh-4rem)] w-[min(18rem,85vw)] flex-col border-r border-slate-200 bg-white px-4 py-5 shadow-xl transition-transform duration-300 md:sticky md:w-64 md:shrink-0 md:translate-x-0 md:shadow-none ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } md:translate-x-0`}>
-      {/* <div className="p-5 border-b">
-            <h2 className="text-lg font-bold text-gray-800">Quick Links</h2>
-            <p className="text-sm text-gray-500 mt-1">
-              Manage your safety tools
-            </p>
-          </div> */}
+      }`}>
+      {/* <div className="mb-6 rounded-2xl bg-linear-to-br from-violet-50 to-rose-50 p-4">
+        <p className="text-sm font-bold text-slate-900">Your support circle</p>
+        <p className="mt-1 text-xs leading-5 text-slate-600">
+          Keep your trusted people and safety tools close at hand.
+        </p>
+      </div> */}
 
-      <div className="flex flex-col p-4 gap-3">
-        <Link
-          to={RouteHomepageLayout}
-          onClick={() => setSidebarOpen(false)}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-purple-700 hover:bg-purple-100 transition">
-          <IoHomeOutline className="text-xl" />
-          Home
-        </Link>
+      <nav className="flex flex-col gap-1.5">
+        {navItems.map(({ label, to, icon }) => {
+          const isActive =
+            to === RouteHomepageLayout
+              ? location.pathname === RouteHomepageLayout
+              : location.pathname === to ||
+                location.pathname.startsWith(`${to}/`);
 
-        <Link
-          to={RouteChatLayout}
-          onClick={() => setSidebarOpen(false)}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-purple-700 hover:bg-purple-100 transition">
-          <IoChatbubbleOutline className="text-xl" />
-          Chat
-        </Link>
+          return (
+            <Link
+              key={to}
+              to={to}
+              onClick={() => setSidebarOpen(false)}
+              aria-current={isActive ? "page" : undefined}
+              className={`flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-semibold transition ${
+                isActive
+                  ? "bg-violet-100 text-violet-800"
+                  : "text-slate-600 hover:bg-slate-50 hover:text-violet-800"
+              }`}>
+              {icon}
+              {label}
+            </Link>
+          );
+        })}
+      </nav>
 
-        <Link
-          to={RouteProfile}
-          onClick={() => setSidebarOpen(false)}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-purple-700 hover:bg-purple-100 transition">
-          <CiUser className="text-xl" />
-          Profile
-        </Link>
-      </div>
-
-      {/* <div className="mx-4 mt-4 rounded-2xl bg-linear-to-r from-pink-500 to-purple-700 p-5 text-white">
-            <HiOutlineBellAlert className="text-3xl mb-3" />
-            <h3 className="font-bold text-lg">Stay Alert</h3>
-            <p className="text-sm text-white/80 mt-1">
-              Use SOS only during real emergency situations.
-            </p>
-          </div> */}
-
-      <div className="p-4 border-t border-gray-300 mt-auto">
+      <div className="mt-auto border-t border-slate-100 pt-4">
+        {logoutError && (
+          <p role="alert" className="mb-3 text-center text-sm text-rose-700">
+            {logoutError}
+          </p>
+        )}
         <button
+          type="button"
           onClick={handleLogout}
-          className="w-full flex items-center justify-center cursor-pointer gap-2 bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 transition">
-          <IoLogOutOutline className="text-xl" />
-          Logout
+          className="flex min-h-11 w-full items-center justify-center gap-2 cursor-pointer rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 transition hover:border-rose-200 hover:bg-rose-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600">
+          <HiArrowRightOnRectangle className="h-5 w-5" />
+          Log out
         </button>
       </div>
     </aside>

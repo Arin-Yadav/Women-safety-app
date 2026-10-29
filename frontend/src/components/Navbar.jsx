@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { RouteIndex, RouteLogin } from "../helpers/RouteName";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoMdClose } from "react-icons/io";
+import { IoShieldCheckmarkOutline } from "react-icons/io5";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,13 +13,13 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-purple-50 border-b border-gray-200 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-6 xl:px-0">
         <div className="flex justify-between items-center h-16">
           <Link
             to={RouteIndex}
-            className="flex items-center text-2xl font-bold text-purple-700">
-            <span>🛡️</span>
+            className="flex items-center text-2xl gap-2 font-bold text-purple-700">
             <span>Suraksha</span>
+            <IoShieldCheckmarkOutline />
           </Link>
 
           {/* Desktop Menu */}

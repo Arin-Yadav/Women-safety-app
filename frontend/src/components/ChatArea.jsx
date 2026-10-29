@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import { useSocket } from "../hooks/useSocket";
 import axios from "axios";
 import dayjs from "dayjs";
-import ManageMembersModal from "./ManageMembersModal";
+import { useSelector } from "react-redux";
+import { useSocket } from "../hooks/useSocket";
 import { IoSend, IoPeopleOutline } from "react-icons/io5";
 import { CiLocationOn } from "react-icons/ci";
+import ManageMembersModal from "./ManageMembersModal";
 
 const MessageBubble = React.memo(({ msg, userId }) => {
   const isOwnMessage = msg?.sender?._id === userId;
@@ -53,18 +53,53 @@ const MessageBubble = React.memo(({ msg, userId }) => {
   );
 });
 
-const MessageList = React.memo(({ messages, userId }) => {
+const MessageList = React.memo(({ messages, userId, typingUsers }) => {
   const bottomRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, typingUsers]);
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 md:px-6 py-5 space-y-3 bg-gray-50">
-      {messages.map((msg) => (
-        <MessageBubble key={msg._id} msg={msg} userId={userId} />
-      ))}
+    <div className="flex-1 overflow-y-auto bg-linear-to-b from-[#faf9ff] to-[#f6f5fb] px-3 py-5 sm:px-5 md:px-8">
+      {messages.length > 0 ? (
+        <div className="flex w-full flex-col gap-3">
+          {messages.map((msg) => (
+            <MessageBubble key={msg._id} msg={msg} userId={userId} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex h-full min-h-56 flex-col items-center justify-center px-4 text-center">
+          {/* <div className="grid h-16 w-16 place-items-center rounded-3xl border border-violet-100 bg-white text-2xl text-violet-500 shadow-sm">
+            <IoPeopleOutline />
+          </div> */}
+          {/* <p className="mt-4 text-base font-bold text-slate-700">
+            A fresh start
+          </p> */}
+          <p className="mt-1 max-w-xs text-sm leading-6 text-slate-400">
+            Send a hello and let your group know you're here.
+          </p>
+        </div>
+      )}
+
+      {typingUsers.length > 0 && (
+        <div className="mx-auto mt-3 flex max-w-4xl justify-start">
+          <div
+            role="status"
+            aria-live="polite"
+            className="inline-flex items-center gap-2 rounded-2xl rounded-bl-md border border-violet-100 bg-white px-4 py-3 text-xs font-medium text-slate-500 shadow-sm">
+            <span className="font-semibold text-violet-700">
+              {typingUsers.join(", ")}
+            </span>
+            <span>{typingUsers.length > 1 ? "are" : "is"} typing</span>
+            <span className="flex items-center gap-0.5" aria-hidden="true">
+              <span className="h-1 w-1 animate-bounce rounded-full bg-violet-500 [animation-delay:-0.2s]" />
+              <span className="h-1 w-1 animate-bounce rounded-full bg-violet-500 [animation-delay:-0.1s]" />
+              <span className="h-1 w-1 animate-bounce rounded-full bg-violet-500" />
+            </span>
+          </div>
+        </div>
+      )}
       <div ref={bottomRef} />
     </div>
   );
@@ -74,7 +109,7 @@ const ChatArea = ({ room }) => {
   const fullUser = useSelector((state) => state.user);
   const user = fullUser?.user?.user;
   const userId = user?.id;
-  const username = user?.fullName;
+  const username = user?.username || user?.fullName;
 
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
@@ -89,13 +124,19 @@ const ChatArea = ({ room }) => {
     (message) => {
       setMessages((prev) => [...prev, message]);
     },
+    (typingUsername) => {
+      if (typingUsername) {
+        setTypingUsers((prev) =>
+          prev.includes(typingUsername) ? prev : [...prev, typingUsername],
+        );
+      }
+    },
     (typingUsername) =>
-      setTypingUsers((prev) => [...new Set([...prev, typingUsername])]),
-    (typingUsername) =>
-      setTypingUsers((prev) => prev.filter((u) => u !== typingUsername)),
+      setTypingUsers((prev) => prev.filter((user) => user !== typingUsername)),
   );
 
   useEffect(() => {
+    let active = true;
     const fetchMessages = async () => {
       try {
         const res = await axios.get(
@@ -103,14 +144,26 @@ const ChatArea = ({ room }) => {
           { params: { userId }, withCredentials: true },
         );
 
-        setMessages(res.data.messages || []);
+        if (active) setMessages(res.data.messages || []);
       } catch (error) {
-        console.log(error);
+        if (active) console.error("Fetch Messages Error:", error);
       }
     };
 
     if (room?._id) fetchMessages();
+    return () => {
+      active = false;
+    };
   }, [room._id, userId]);
+
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+      stopTyping(username);
+    };
+  }, [room._id, stopTyping, username]);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -125,8 +178,13 @@ const ChatArea = ({ room }) => {
 
       typingTimeoutRef.current = setTimeout(() => {
         stopTyping(username);
+        typingTimeoutRef.current = null;
       }, 1000);
     } else {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = null;
+      }
       stopTyping(username);
     }
   };
@@ -142,81 +200,81 @@ const ChatArea = ({ room }) => {
 
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
     }
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-gray-50">
-      {/* Chat Header */}
-      <div className="h-16 px-4 md:px-6 bg-white border-b border-gray-200 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="h-10 w-10 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+    <div className="flex h-full min-w-0 flex-col bg-white">
+      <div className="flex min-h-18 items-center justify-between gap-3 border-b border-violet-100 bg-white/95 px-3 shadow-[0_4px_18px_rgba(47,32,89,0.035)] sm:px-5 md:px-7">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-linear-to-br from-fuchsia-500 to-violet-700 font-extrabold text-white shadow-md shadow-violet-200">
             {room?.roomName?.charAt(0)?.toUpperCase() || "C"}
           </div>
 
           <div className="min-w-0">
-            <h2 className="font-bold text-gray-800 truncate">
+            <h2 className="truncate text-sm font-extrabold text-slate-800 sm:text-base">
               {room.roomName}
             </h2>
-
-            {/* <div className="h-4">
+            <p
+              aria-live="polite"
+              className="mt-0.5 flex items-center gap-1.5 truncate text-[11px] text-slate-400 sm:text-xs">
               {typingUsers.length > 0 ? (
-                <span className="text-xs text-green-600">
-                  {typingUsers.join(", ")}{" "}
-                  {typingUsers.length > 1 ? "are" : "is"} typing...
-                </span>
+                <>
+                  <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-emerald-500" />
+                  <span className="truncate font-medium text-emerald-700">
+                    {typingUsers.join(", ")}{" "}
+                    {typingUsers.length > 1 ? "are" : "is"} typing...
+                  </span>
+                </>
               ) : (
-                <span className="text-xs text-gray-400">
-                  Secure conversation
-                </span>
+                <>
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
+                  <span>
+                    {room.roomType === "private"
+                      ? "Private group"
+                      : "Your community"}
+                  </span>
+                </>
               )}
-            </div> */}
-
-            <div className="h-4">
-              {typingUsers.length > 0 && (
-                <span className="text-xs text-green-600">
-                  {typingUsers.join(", ")}{" "}
-                  {typingUsers.length > 1 ? "are" : "is"} typing...
-                </span>
-              )}
-            </div>
+            </p>
           </div>
         </div>
 
         {room.roomType === "private" && room.createdBy === userId && (
           <button
             onClick={() => setShowManageModal(true)}
-            className="hidden sm:flex items-center gap-2 cursor-pointer px-4 py-2 bg-purple-100 text-purple-700 rounded-full font-medium hover:bg-purple-200 transition">
+            className="inline-flex shrink-0 items-center gap-2 rounded-full cursor-pointer border border-violet-100 bg-violet-50 px-3 py-2 text-xs font-bold text-violet-700 transition hover:bg-violet-100 focus-visible:outline-2 focus-visible:outline-violet-500 sm:px-4 sm:text-sm">
             <IoPeopleOutline />
-            Manage
+            <span className="hidden sm:inline">Manage</span>
           </button>
         )}
       </div>
 
-      {messages.length > 0 ? (
-        <MessageList messages={messages} userId={userId} />
-      ) : (
-        <div className="flex justify-center items-center h-full">
-          <p>Nothing here, Say Hello</p>
-        </div>
-      )}
+      <MessageList
+        messages={messages}
+        userId={userId}
+        typingUsers={typingUsers}
+      />
 
-      {/* Message Input */}
       <form
         onSubmit={handleSend}
-        className="p-3 md:p-4 bg-white border-t border-gray-200 flex items-center gap-3">
+        className="flex items-center gap-2 border-t border-violet-100 bg-white px-3 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:gap-3 sm:px-5 md:px-7">
         <input
           type="text"
           value={text}
           onChange={handleInputChange}
           placeholder="Type a message..."
-          className="flex-1 bg-gray-100 border border-gray-200 rounded-full px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 focus:bg-white transition"
+          aria-label="Type a message"
+          className="min-w-0 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition placeholder:text-slate-400 focus:border-violet-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-violet-100 sm:px-5"
         />
 
         <button
           type="submit"
-          className="h-12 w-12 rounded-full bg-linear-to-r from-pink-500 to-purple-700 text-white flex items-center justify-center hover:opacity-90 transition shadow-md">
-          <IoSend className="text-xl" />
+          aria-label="Send message"
+          disabled={!text.trim()}
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-linear-to-r from-fuchsia-600 to-violet-700 text-white shadow-md shadow-violet-200 transition hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600 disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0">
+          <IoSend className="text-lg" />
         </button>
       </form>
 

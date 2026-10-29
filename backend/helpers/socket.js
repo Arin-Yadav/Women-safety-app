@@ -15,6 +15,10 @@ export default function initSocket(server) {
       socket.join(roomId);
     });
 
+    socket.on("leaveRoom", (roomId) => {
+      socket.leave(roomId);
+    });
+
     // Send message
     socket.on("sendMessage", async (data) => {
       try {
