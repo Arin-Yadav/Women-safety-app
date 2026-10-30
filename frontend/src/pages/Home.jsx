@@ -20,7 +20,7 @@ const Home = () => {
   const [soundMessage, setSoundMessage] = useState("");
   const [playingSound, setPlayingSound] = useState(null);
 
-  const user = useSelector((state) => state?.user?.user?.user);
+  const user = useSelector((state) => state?.user?.user );
   const rooms = useSelector((state) => state?.room?.rooms) || [];
   const privateRooms = rooms.filter((room) => room.roomType === "private");
 

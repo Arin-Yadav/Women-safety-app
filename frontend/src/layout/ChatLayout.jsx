@@ -19,7 +19,7 @@ const ChatLayout = () => {
   const rooms = useSelector((state) => state.room.rooms) || [];
 
   const fullUser = useSelector((state) => state.user);
-  const user = fullUser?.user?.user;
+  const user = fullUser?.user;
   const userId = user?.id;
 
   const dispatch = useDispatch();

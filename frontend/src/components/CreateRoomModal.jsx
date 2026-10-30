@@ -5,7 +5,7 @@ function CreateRoomModal({ onClose, onCreate }) {
   const [roomName, setRoomName] = useState("");
   const [roomType, setRoomType] = useState("public");
   const userData = useSelector((state) => state.user.user);
-  const userId = userData?.user?.id; // ✅ safe access
+  const userId = userData?.id;
 
   const handleSubmit = async () => {
     await onCreate({ roomName, roomType, userId });

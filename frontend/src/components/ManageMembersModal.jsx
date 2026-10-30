@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 function ManageMembersModal({ roomId, onClose }) {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ function ManageMembersModal({ roomId, onClose }) {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/rooms/${roomId}/members`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setMembers(response.data.members || []);
@@ -36,12 +37,15 @@ function ManageMembersModal({ roomId, onClose }) {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/rooms/${roomId}/addMember`,
         { email, userId },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
-      setMembers(response.data.members || []);
-      setEmergencyEmails(response.data.emergencyEmails || []);
-      setEmail("");
+      if (response.data.success) {
+        setMembers(response.data.members || []);
+        setEmergencyEmails(response.data.emergencyEmails || []);
+        setEmail("");
+        toast.success(response.data.message)
+      }
     } catch (error) {
       console.error("Add Member Error:", error);
     }
@@ -52,7 +56,7 @@ function ManageMembersModal({ roomId, onClose }) {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/rooms/${roomId}/removeMember`,
         { memberId, userId, type },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setMembers(response.data.members || []);
@@ -69,8 +73,7 @@ function ManageMembersModal({ roomId, onClose }) {
           <h2 className="text-2xl font-bold text-gray-800">Manage Members</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 transition"
-          >
+            className="text-gray-500 hover:text-gray-700 transition">
             ✕
           </button>
         </div>
@@ -85,8 +88,7 @@ function ManageMembersModal({ roomId, onClose }) {
           />
           <button
             onClick={handleAddMember}
-            className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition cursor-pointer"
-          >
+            className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition cursor-pointer">
             Add
           </button>
         </div>
@@ -100,8 +102,7 @@ function ManageMembersModal({ roomId, onClose }) {
                 {members.map((m) => (
                   <li
                     key={m._id}
-                    className="flex justify-between items-center py-3 px-2 hover:bg-gray-50 rounded-lg transition"
-                  >
+                    className="flex justify-between items-center py-3 px-2 hover:bg-gray-50 rounded-lg transition">
                     <div>
                       <span className="text-gray-700">{m.email}</span>
                       <p className="text-xs text-green-600">Registered user</p>
@@ -109,8 +110,7 @@ function ManageMembersModal({ roomId, onClose }) {
 
                     <button
                       onClick={() => handleRemoveMember(m._id, "registered")}
-                      className="text-sm text-red-600 hover:text-red-800 transition cursor-pointer"
-                    >
+                      className="text-sm text-red-600 hover:text-red-800 transition cursor-pointer">
                       Remove
                     </button>
                   </li>
@@ -119,21 +119,17 @@ function ManageMembersModal({ roomId, onClose }) {
                 {emergencyEmails.map((item) => (
                   <li
                     key={item._id || item.email}
-                    className="flex justify-between items-center py-3 px-2 hover:bg-gray-50 rounded-lg transition"
-                  >
+                    className="flex justify-between items-center py-3 px-2 hover:bg-gray-50 rounded-lg transition">
                     <div>
                       <span className="text-gray-700">{item.email}</span>
-                      <p className="text-xs text-orange-600">
-                        Emergency email
-                      </p>
+                      <p className="text-xs text-orange-600">Emergency email</p>
                     </div>
 
                     <button
                       onClick={() =>
                         handleRemoveMember(item._id || item.email, "emergency")
                       }
-                      className="text-sm text-red-600 hover:text-red-800 transition cursor-pointer"
-                    >
+                      className="text-sm text-red-600 hover:text-red-800 transition cursor-pointer">
                       Remove
                     </button>
                   </li>
@@ -146,8 +142,7 @@ function ManageMembersModal({ roomId, onClose }) {
         <div className="flex justify-end mt-6">
           <button
             onClick={onClose}
-            className="px-5 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition cursor-pointer"
-          >
+            className="px-5 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition cursor-pointer">
             Close
           </button>
         </div>

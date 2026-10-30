@@ -107,7 +107,7 @@ const MessageList = React.memo(({ messages, userId, typingUsers }) => {
 
 const ChatArea = ({ room }) => {
   const fullUser = useSelector((state) => state.user);
-  const user = fullUser?.user?.user;
+  const user = fullUser?.user;
   const userId = user?.id;
   const username = user?.username || user?.fullName;
 
@@ -263,6 +263,7 @@ const ChatArea = ({ room }) => {
         <input
           type="text"
           value={text}
+          name="inputMessage"
           onChange={handleInputChange}
           placeholder="Type a message..."
           aria-label="Type a message"

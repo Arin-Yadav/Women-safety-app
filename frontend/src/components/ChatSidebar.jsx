@@ -18,7 +18,7 @@ const ChatSidebar = ({
 }) => {
   return (
     <aside
-      className={`fixed bottom-0 left-0 top-16 z-40 flex w-[min(21rem,86vw)] flex-col border-r border-violet-100 bg-white px-4 py-5 shadow-[12px_0_36px_rgba(47,32,89,0.08)] transition-transform duration-300 lg:static lg:z-auto lg:w-[18rem] lg:shrink-0 lg:translate-x-0 lg:shadow-none
+      className={`fixed bottom-0 left-0 top-16 z-40 flex w-[min(21rem,86vw)] flex-col border-r border-violet-100 bg-white px-4 py-5 shadow-[12px_0_36px_rgba(47,32,89,0.08)] transition-transform duration-300 sm:static sm:z-auto sm:w-[18rem] sm:shrink-0 sm:translate-x-0 sm:shadow-none
         ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
       {/* <div className="mb-5 flex items-center justify-between border-b border-gray-300 px-2">
         <div>

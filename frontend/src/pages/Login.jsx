@@ -36,7 +36,7 @@ export default function Login() {
         { withCredentials: true },
       );
 
-      dispatch(setUser(response.data));
+      dispatch(setUser(response.data.user));
       navigate(RouteHomepageLayout);
     } catch (err) {
       console.error("FULL ERROR:", err);

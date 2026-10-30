@@ -7,7 +7,7 @@ export const useSocket = (
   onMessageReceived,
   onTyping,
   onStopTyping,
-  onSOSReceived // new callback
+  onSOSReceived,
 ) => {
   const socketRef = useRef(null);
   const callbacksRef = useRef({
@@ -27,7 +27,9 @@ export const useSocket = (
   });
 
   useEffect(() => {
-    const socket = io(`${import.meta.env.VITE_BASE_URL}`);
+    const socket = io(`${import.meta.env.VITE_BASE_URL}`, {
+      withCredentials: true,
+    });
     socketRef.current = socket;
 
     socket.on("receiveMessage", (message) => {
@@ -60,31 +62,43 @@ export const useSocket = (
     };
   }, [roomId]);
 
-  const sendMessage = useCallback((text) => {
-    if (roomId && userId && socketRef.current) {
-      const msg = { roomId, sender: userId, text };
-      socketRef.current.emit("sendMessage", msg);
-    }
-  }, [roomId, userId]);
+  const sendMessage = useCallback(
+    (text) => {
+      if (roomId && userId && socketRef.current) {
+        const msg = { roomId, sender: userId, text };
+        socketRef.current.emit("sendMessage", msg);
+      }
+    },
+    [roomId, userId],
+  );
 
-  const startTyping = useCallback((username) => {
-    if (roomId && username) {
-      socketRef.current?.emit("typing", { roomId, username });
-    }
-  }, [roomId]);
+  const startTyping = useCallback(
+    (username) => {
+      if (roomId && username) {
+        socketRef.current?.emit("typing", { roomId, username });
+      }
+    },
+    [roomId],
+  );
 
-  const stopTyping = useCallback((username) => {
-    if (roomId && username) {
-      socketRef.current?.emit("stopTyping", { roomId, username });
-    }
-  }, [roomId]);
+  const stopTyping = useCallback(
+    (username) => {
+      if (roomId && username) {
+        socketRef.current?.emit("stopTyping", { roomId, username });
+      }
+    },
+    [roomId],
+  );
 
-  // 👇 SOS emitter
-  const sendSOS = useCallback((location) => {
-    if (roomId && userId && socketRef.current) {
-      socketRef.current.emit("sendSOS", { roomId, sender: userId, location });
-    }
-  }, [roomId, userId]);
+  // SOS emitter
+  const sendSOS = useCallback(
+    (location) => {
+      if (roomId && userId && socketRef.current) {
+        socketRef.current.emit("sendSOS", { roomId, sender: userId, location });
+      }
+    },
+    [roomId, userId],
+  );
 
   return { sendMessage, startTyping, stopTyping, sendSOS };
 };

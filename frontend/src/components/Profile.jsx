@@ -1,27 +1,75 @@
+import axios from "axios";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-// import { RouteHomepage } from "../helpers/RouteName";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../redux/slices/userSlice";
+import { toast } from "react-toastify";
 
 const Profile = () => {
-  const user = useSelector((state) => state.user?.user?.user);
+  const user = useSelector(
+    (state) => state.user?.user?.user ?? state.user?.user,
+  );
+  const dispatch = useDispatch();
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, dirtyFields, isDirty },
     reset,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      fullName: "",
+      email: "",
+      age: "",
+      phone: "",
+      address: "",
+    },
+  });
 
-  const onSubmit = (data) => {
-    console.log(data);
-    reset;
+  useEffect(() => {
+    reset({
+      fullName: user?.fullName ?? "",
+      email: user?.email ?? "",
+      age: user?.age ?? "",
+      phone: user?.phone ?? "",
+      address: user?.address ?? "",
+    });
+  }, [user, reset]);
+
+  const onSubmit = async (data) => {
+    try {
+      const updatedFields = {};
+
+      Object.keys(dirtyFields).forEach((field) => {
+        updatedFields[field] = data[field];
+      });
+
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/profile`,
+        updatedFields,
+        { withCredentials: true },
+      );
+
+      if (response.data.success) {
+        dispatch(setUser(response.data.user));
+        reset({
+          fullName: response.data.user.fullName ?? "",
+          email: response.data.user.email ?? "",
+          age: response.data.user.age ?? "",
+          phone: response.data.user.phone ?? "",
+          address: response.data.user.address ?? "",
+        });
+
+        toast.success(response.data.message)
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+    }
   };
 
   return (
     <div className="w-full h-[calc(100vh-4rem)] flex justify-center items-center p-4 sm:p-6">
       <div className="w-full max-w-2xl flex flex-col gap-6 rounded-xl shadow-lg border border-gray-300 p-5">
-        {/* Heading */}
         <h1 className="text-center text-2xl sm:text-3xl font-bold text-blue-600 tracking-tight">
           Profile
         </h1>
@@ -40,9 +88,9 @@ const Profile = () => {
             <input
               id="fullName"
               type="text"
-              placeholder={user.fullName}
-              className="mt-2 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-              {...register("fullName", { required: "Full name is required" })}
+              // placeholder={user.fullName}
+              className="mt-2 w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
+              {...register("fullName", { required: "Fullname is required" })}
             />
             {errors.fullName && (
               <p className="text-xs text-red-500 mt-1">
@@ -61,8 +109,8 @@ const Profile = () => {
             <input
               id="email"
               type="email"
-              placeholder={user.email}
-              className="mt-2 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              // placeholder={user.email}
+              className="mt-2 w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -89,8 +137,8 @@ const Profile = () => {
               id="age"
               type="number"
               min={18}
-              placeholder={user.age}
-              className="mt-2 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              // placeholder={user.age}
+              className="mt-2 w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
               {...register("age", {
                 required: "Age is required",
                 min: {
@@ -114,8 +162,8 @@ const Profile = () => {
             <input
               id="phone"
               type="tel"
-              placeholder={user.phone}
-              className="mt-2 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              // placeholder={user.phone}
+              className="mt-2 w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
               {...register("phone", {
                 pattern: {
                   value: /^[6-9]\d{9}$/,
@@ -140,11 +188,11 @@ const Profile = () => {
             </label>
             <textarea
               id="address"
-              placeholder={
-                user.address ? user.address : "Please enter address here..."
-              }
+              // placeholder={
+              //   user.address ? user.address : "Please enter address here..."
+              // }
               rows={4}
-              className="mt-2 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              className="mt-2 w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
               {...register("address", { required: "Address is required" })}
             />
             {errors.address && (
@@ -158,8 +206,9 @@ const Profile = () => {
           <div className="md:col-span-2">
             <button
               type="submit"
+              disabled={!isDirty}
               className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 transition-colors cursor-pointer">
-              Save Changes
+              Update Profile
             </button>
           </div>
         </form>
