@@ -102,7 +102,7 @@ export async function handleSignin(req, res) {
 }
 
 // LOGOUT
-export function handleLogout(req, res) {
+export async function handleLogout(req, res) {
   res.clearCookie("access-token", {
     httpOnly: true,
     secure: false,
@@ -112,6 +112,25 @@ export function handleLogout(req, res) {
 
   return res.json({
     message: "Logged out successfully",
+  });
+}
+
+// EDIT PROFILE
+export async function handleEditProfile(req, res) {
+  const userId = req.user.id;
+
+  const updates = req.body;
+
+  const updatedUserData = await User.findByIdAndUpdate(
+    userId,
+    { $set: updates },
+    { returnDocument: "after", runValidators: true },
+  ).select("-password");
+
+  return res.status(200).json({
+    success: true,
+    message: "Proflie updated successfully",
+    user: updatedUserData,
   });
 }
 

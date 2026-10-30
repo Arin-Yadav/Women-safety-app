@@ -15,31 +15,31 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// ✅ Middleware
+// Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   })
 );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser()); // ✅ IMPORTANT
+app.use(cookieParser());
 
-// ✅ Routes
+// Routes
 app.use("/api", authRoutes);
 app.use("/api/rooms", roomRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api", sosRoutes);
 
-// ✅ DB
+// DB
 await connectDB(); // default - connectDB()
 
-// ✅ Socket
+// Socket
 initSocket(server);
 
-// ✅ Server
+// Server
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () =>
   console.log(`Server running on port ${PORT}`)

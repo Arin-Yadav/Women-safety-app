@@ -37,7 +37,7 @@ async function handleCreateRooms(req, res) {
 
 async function handleGetRooms(req, res) {
   try {
-    const userId = req.query.userId; 
+    const userId = req.query.userId;
     // console.log(userId)
     // const rooms = await Room.find().populate("createdBy", "username");
 
@@ -68,26 +68,31 @@ async function handleAddnewMemebersToRoom(req, res) {
     const { email, userId } = req.body;
 
     if (!email) {
-      return res.status(400).json({ success: false, message: "Email is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Email is required" });
     }
 
     let room = await Room.findById(roomId);
 
     if (!room) {
-      return res.status(404).json({ success: false, message: "Room not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Room not found" });
     }
 
     if (room.createdBy.toString() !== userId) {
-      return res.status(403).json({ success: false, message: "Not authorized" });
+      return res
+        .status(403)
+        .json({ success: false, message: "Not authorized" });
     }
 
     const normalizedEmail = email.trim().toLowerCase();
-
     const userToAdd = await User.findOne({ email: normalizedEmail });
 
     if (userToAdd) {
       const alreadyMember = room.roomMembers.some(
-        (id) => id.toString() === userToAdd._id.toString()
+        (id) => id.toString() === userToAdd._id.toString(),
       );
 
       if (alreadyMember) {
@@ -100,7 +105,7 @@ async function handleAddnewMemebersToRoom(req, res) {
       room.roomMembers.push(userToAdd._id);
     } else {
       const alreadyEmergencyEmail = room.emergencyEmails?.some(
-        (item) => item.email === normalizedEmail
+        (item) => item.email === normalizedEmail,
       );
 
       if (alreadyEmergencyEmail) {
@@ -136,21 +141,23 @@ async function getRoomWithPrivateMembers(req, res) {
 
     const room = await Room.findById(roomId).populate(
       "roomMembers",
-      "email _id"
+      "email _id",
     );
 
     if (!room) {
-      return res.status(404).json({ success: false, message: "Room not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Room not found" });
     }
 
     res.json({
-  success: true,
-  roomName: room.roomName,
-  roomType: room.roomType,
-  createdBy: room.createdBy,
-  members: room.roomMembers,
-  emergencyEmails: room.emergencyEmails || [],
-});
+      success: true,
+      roomName: room.roomName,
+      roomType: room.roomType,
+      createdBy: room.createdBy,
+      members: room.roomMembers,
+      emergencyEmails: room.emergencyEmails || [],
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
@@ -165,21 +172,24 @@ async function handleRemovePrivateGroupMembers(req, res) {
     let room = await Room.findById(roomId);
 
     if (!room) {
-      return res.status(404).json({ success: false, message: "Room not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Room not found" });
     }
 
     if (room.createdBy.toString() !== userId) {
-      return res.status(403).json({ success: false, message: "Not authorized" });
+      return res
+        .status(403)
+        .json({ success: false, message: "Not authorized" });
     }
 
     if (type === "emergency") {
       room.emergencyEmails = room.emergencyEmails.filter(
-        (item) =>
-          item._id?.toString() !== memberId && item.email !== memberId
+        (item) => item._id?.toString() !== memberId && item.email !== memberId,
       );
     } else {
       room.roomMembers = room.roomMembers.filter(
-        (id) => id.toString() !== memberId
+        (id) => id.toString() !== memberId,
       );
     }
 

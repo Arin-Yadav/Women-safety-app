@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 export const authMiddleware = (req, res, next) => {
   try {
-    const token = req.cookies["access-token"]; // ✅ from cookie
+    const token = req.cookies["access-token"]; // from cookie
 
     if (!token) {
       return res.status(401).json({ message: "No token provided" });
@@ -10,7 +10,7 @@ export const authMiddleware = (req, res, next) => {
 
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || "defaultsecret"
+      process.env.JWT_SECRET
     );
 
     req.user = decoded;
