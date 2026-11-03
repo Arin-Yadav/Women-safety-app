@@ -1,6 +1,6 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import { toast } from "react-toastify";
 
 function ManageMembersModal({ roomId, onClose }) {
@@ -12,21 +12,26 @@ function ManageMembersModal({ roomId, onClose }) {
   const user = fullUser?.user?.user;
   const userId = user?.id;
 
-  const fetchMembers = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/rooms/${roomId}/members`,
-        { withCredentials: true },
-      );
-
-      setMembers(response.data.members || []);
-      setEmergencyEmails(response.data.emergencyEmails || []);
-    } catch (error) {
-      console.error("Fetch Members Error:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/rooms/${roomId}/members`,
+          { withCredentials: true },
+        );
+
+        if (response.data.success) {
+          setMembers(response.data.members || []);
+          setEmergencyEmails(response.data.emergencyEmails || []);
+        } else {
+          setMembers([]);
+          setEmergencyEmails([]);
+        }
+      } catch (error) {
+        console.error("Fetch Members Error:", error);
+      }
+    };
+
     fetchMembers();
   }, [roomId]);
 
@@ -44,7 +49,7 @@ function ManageMembersModal({ roomId, onClose }) {
         setMembers(response.data.members || []);
         setEmergencyEmails(response.data.emergencyEmails || []);
         setEmail("");
-        toast.success(response.data.message)
+        toast.success(response.data.message);
       }
     } catch (error) {
       console.error("Add Member Error:", error);
