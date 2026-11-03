@@ -67,8 +67,8 @@ const ChatLayout = () => {
   };
 
   return (
-    <div className="h-dvh overflow-hidden bg-[#f7f7fc] text-slate-800">
-      <nav className="fixed block md:hidden inset-x-0 top-0 z-50 h-16 border-b border-violet-100/80 bg-white/95 shadow-[0_4px_24px_rgba(47,32,89,0.04)] backdrop-blur-xl">
+    <div className="h-dvh overflow-hidden bg-[rgb(247,247,252)] text-slate-800">
+      <nav className="fixed block sm:hidden inset-x-0 top-0 z-50 h-16 border-b border-violet-100/80 bg-white/95 shadow-[0_4px_24px_rgba(47,32,89,0.04)] backdrop-blur-xl">
         <div className="flex h-full items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <button
@@ -76,7 +76,7 @@ const ChatLayout = () => {
                 sidebarOpen ? "Close conversations" : "Open conversations"
               }
               aria-expanded={sidebarOpen}
-              className="grid h-10 w-10 place-items-center rounded-xl text-xl text-violet-700 cursor-pointer transition hover:bg-violet-50 focus-visible:outline-2 focus-visible:outline-violet-500 lg:hidden"
+              className="grid h-10 w-10 place-items-center rounded-xl text-xl text-violet-700 cursor-pointer transition hover:bg-violet-50 focus-visible:outline-2 focus-visible:outline-violet-500 sm:hidden"
               onClick={() => setSidebarOpen(!sidebarOpen)}>
               {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
             </button>

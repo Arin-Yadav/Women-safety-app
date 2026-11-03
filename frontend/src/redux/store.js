@@ -1,8 +1,13 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import userReducer from "./slices/userSlice";
-import roomReducer from './slices/roomSlice'
-import sessionStorage from "redux-persist/lib/storage/session";
+import roomReducer from "./slices/roomSlice";
+import storageSession from "redux-persist/lib/storage/session";
 import { persistStore, persistReducer } from "redux-persist";
+
+const sessionStorage = storageSession.default ?? storageSession;
+
+// console.log("sessionStorage =", sessionStorage);
+// console.log("typeof getItem =", typeof sessionStorage?.getItem);
 
 const rootReducer = combineReducers({
   user: userReducer,

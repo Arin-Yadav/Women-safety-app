@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import { useSocket } from "../hooks/useSocket";
 import { IoSend, IoPeopleOutline } from "react-icons/io5";
-import { CiLocationOn } from "react-icons/ci";
+// import { CiLocationOn } from "react-icons/ci";
 import ManageMembersModal from "./ManageMembersModal";
 
 const MessageBubble = React.memo(({ msg, userId }) => {
@@ -20,12 +20,7 @@ const MessageBubble = React.memo(({ msg, userId }) => {
         } max-w-[85%] sm:max-w-[70%] md:max-w-[55%]`}>
         {msg?.type === "location" ? (
           <>
-            <p className="font-medium flex items-center gap-1">
-              <CiLocationOn className="text-lg" />
-              {msg?.sender?.username} shared live location
-            </p>
-
-            <div className="mt-3 overflow-hidden rounded-xl border border-white/20">
+            <div className="mt-3 overflow-hidden rounded-xl border border-gray-300">
               <div className="relative w-full pb-[75%] max-h-64">
                 <iframe
                   src={`https://maps.google.com/maps?q=${msg.lat},${msg.lng}&z=15&output=embed`}
@@ -36,6 +31,23 @@ const MessageBubble = React.memo(({ msg, userId }) => {
                 />
               </div>
             </div>
+
+            <p className="font-medium flex items-center gap-1 mt-2">
+              {/* <CiLocationOn className="text-lg" /> */}
+              {isOwnMessage ? (
+                <>
+                  <span>{msg?.sender?.fullName}</span>
+                  <span className="font-normal">shared live location</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-blue-600">{msg?.sender?.fullName}</span>
+                  <span className="text-gray-500 font-normal">
+                    shared live location
+                  </span>
+                </>
+              )}
+            </p>
           </>
         ) : (
           <p className="whitespace-pre-wrap leading-relaxed">{msg?.text}</p>
@@ -43,7 +55,7 @@ const MessageBubble = React.memo(({ msg, userId }) => {
 
         <div
           className={`flex gap-3 justify-end items-center mt-2 text-[11px] ${
-            isOwnMessage ? "text-white/75" : "text-gray-400"
+            isOwnMessage ? "text-white/75" : "text-gray-500"
           }`}>
           {!isOwnMessage && <span>{msg?.sender?.username}</span>}
           <span>{dayjs(msg?.createdAt).format("h:mm A")}</span>
@@ -61,7 +73,7 @@ const MessageList = React.memo(({ messages, userId, typingUsers }) => {
   }, [messages, typingUsers]);
 
   return (
-    <div className="flex-1 overflow-y-auto bg-linear-to-b from-[#faf9ff] to-[#f6f5fb] px-3 py-5 sm:px-5 md:px-8">
+    <div className="flex-1 overflow-y-auto relative bg-linear-to-b from-[#faf9ff] to-[#f6f5fb] px-3 py-5 sm:px-5 md:px-8">
       {messages.length > 0 ? (
         <div className="flex w-full flex-col gap-3">
           {messages.map((msg) => (
@@ -83,19 +95,19 @@ const MessageList = React.memo(({ messages, userId, typingUsers }) => {
       )}
 
       {typingUsers.length > 0 && (
-        <div className="mx-auto mt-3 flex max-w-4xl justify-start">
+        <div className="mx-auto mt-3 flex max-w-4xl justify-start absolute bottom-5">
           <div
             role="status"
             aria-live="polite"
             className="inline-flex items-center gap-2 rounded-2xl rounded-bl-md border border-violet-100 bg-white px-4 py-3 text-xs font-medium text-slate-500 shadow-sm">
-            <span className="font-semibold text-violet-700">
+            <span className="font-semibold text-green-500">
               {typingUsers.join(", ")}
             </span>
             <span>{typingUsers.length > 1 ? "are" : "is"} typing</span>
             <span className="flex items-center gap-0.5" aria-hidden="true">
-              <span className="h-1 w-1 animate-bounce rounded-full bg-violet-500 [animation-delay:-0.2s]" />
-              <span className="h-1 w-1 animate-bounce rounded-full bg-violet-500 [animation-delay:-0.1s]" />
-              <span className="h-1 w-1 animate-bounce rounded-full bg-violet-500" />
+              <span className="h-1 w-1 animate-bounce rounded-full bg-green-500 [animation-delay:-0.2s]" />
+              <span className="h-1 w-1 animate-bounce rounded-full bg-green-500 [animation-delay:-0.1s]" />
+              <span className="h-1 w-1 animate-bounce rounded-full bg-green-500" />
             </span>
           </div>
         </div>
@@ -108,7 +120,7 @@ const MessageList = React.memo(({ messages, userId, typingUsers }) => {
 const ChatArea = ({ room }) => {
   const fullUser = useSelector((state) => state.user);
   const user = fullUser?.user;
-  const userId = user?.id;
+  const userId = user?._id;
   const username = user?.username || user?.fullName;
 
   const [messages, setMessages] = useState([]);
@@ -222,7 +234,7 @@ const ChatArea = ({ room }) => {
               {typingUsers.length > 0 ? (
                 <>
                   <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-emerald-500" />
-                  <span className="truncate font-medium text-emerald-700">
+                  <span className="truncate font-medium text-emerald-400">
                     {typingUsers.join(", ")}{" "}
                     {typingUsers.length > 1 ? "are" : "is"} typing...
                   </span>

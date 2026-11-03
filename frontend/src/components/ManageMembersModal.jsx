@@ -9,7 +9,7 @@ function ManageMembersModal({ roomId, onClose }) {
   const [emergencyEmails, setEmergencyEmails] = useState([]);
 
   const fullUser = useSelector((state) => state.user);
-  const user = fullUser?.user?.user;
+  const user = fullUser?.user;
   const userId = user?.id;
 
   useEffect(() => {

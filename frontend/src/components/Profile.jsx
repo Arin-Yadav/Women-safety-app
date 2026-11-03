@@ -2,19 +2,72 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../redux/slices/userSlice";
 import { toast } from "react-toastify";
+import { setUser } from "../redux/slices/userSlice";
+import {
+  FiCalendar,
+  FiMapPin,
+  FiMail,
+  FiPhone,
+  FiSave,
+  FiUser,
+} from "react-icons/fi";
+
+const fields = [
+  {
+    name: "fullName",
+    label: "Full name",
+    type: "text",
+    icon: FiUser,
+    rules: { required: "Full name is required" },
+  },
+  {
+    name: "email",
+    label: "Email address",
+    type: "email",
+    icon: FiMail,
+    rules: {
+      required: "Email is required",
+      pattern: {
+        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: "Please enter a valid email address",
+      },
+    },
+  },
+  {
+    name: "age",
+    label: "Age",
+    type: "number",
+    icon: FiCalendar,
+    rules: {
+      required: "Age is required",
+      min: { value: 18, message: "You must be at least 18 years old" },
+    },
+  },
+  {
+    name: "phone",
+    label: "Phone number",
+    type: "tel",
+    icon: FiPhone,
+    rules: {
+      required: "Phone number is required",
+      pattern: {
+        value: /^[6-9]\d{9}$/,
+        message: "Please enter a valid Indian mobile number",
+      },
+    },
+  },
+];
 
 const Profile = () => {
   const user = useSelector(
     (state) => state.user?.user?.user ?? state.user?.user,
   );
   const dispatch = useDispatch();
-
   const {
     register,
     handleSubmit,
-    formState: { errors, dirtyFields, isDirty },
+    formState: { errors, dirtyFields, isDirty, isSubmitting },
     reset,
   } = useForm({
     defaultValues: {
@@ -37,13 +90,12 @@ const Profile = () => {
   }, [user, reset]);
 
   const onSubmit = async (data) => {
+    const updatedFields = Object.keys(dirtyFields).reduce((updates, field) => {
+      updates[field] = data[field];
+      return updates;
+    }, {});
+
     try {
-      const updatedFields = {};
-
-      Object.keys(dirtyFields).forEach((field) => {
-        updatedFields[field] = data[field];
-      });
-
       const response = await axios.patch(
         `${import.meta.env.VITE_API_URL}/profile`,
         updatedFields,
@@ -59,159 +111,147 @@ const Profile = () => {
           phone: response.data.user.phone ?? "",
           address: response.data.user.address ?? "",
         });
-
-        toast.success(response.data.message)
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message || "Unable to update your profile.");
       }
     } catch (error) {
-      console.log("Error: ", error);
+      toast.error(
+        error.response?.data?.message || "Unable to update your profile.",
+      );
     }
   };
 
+  const initials =
+    user?.fullName
+      ?.trim()
+      .split(/\s+/)
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "U";
+
   return (
-    <div className="w-full h-[calc(100vh-4rem)] flex justify-center items-center p-4 sm:p-6">
-      <div className="w-full max-w-2xl flex flex-col gap-6 rounded-xl shadow-lg border border-gray-300 p-5">
-        <h1 className="text-center text-2xl sm:text-3xl font-bold text-blue-600 tracking-tight">
-          Profile
-        </h1>
+    <div className="min-h-[calc(100vh-4rem)] w-full min-w-0 bg-slate-50 mt-5 sm:mt-0 px-3 py-6 sm:px-5  lg:px-8 lg:py-10">
+      <div className="mx-auto w-full max-w-6xl min-w-0">
+        <header className="mb-6 sm:mb-8">
+          <p className="mb-2 text-2xl sm:text-3xl text-center font-semibold uppercase tracking-[0.16em] text-violet-700">
+            Profile
+          </p>
+        </header>
 
-        {/* Form */}
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8">
-          {/* Full Name */}
-          <div className="flex flex-col">
-            <label
-              htmlFor="fullName"
-              className="text-sm font-semibold text-gray-700">
-              Fullname
-            </label>
-            <input
-              id="fullName"
-              type="text"
-              // placeholder={user.fullName}
-              className="mt-2 w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
-              {...register("fullName", { required: "Fullname is required" })}
-            />
-            {errors.fullName && (
-              <p className="text-xs text-red-500 mt-1">
-                {errors.fullName.message}
-              </p>
-            )}
-          </div>
+        <div className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-start xl:gap-6">
+          <section className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="flex min-w-0 gap-4 border-b border-slate-100 p-4 items-center lg:p-7">
+              <div
+                aria-label={`${user?.fullName || "Your"} profile avatar`}
+                className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-violet-100 text-xl font-bold text-violet-800 ring-4 ring-violet-50">
+                {initials}
+              </div>
+              <div className="min-w-0 flex-1">
+                <h2 className="wrap-break-word text-xl font-semibold text-slate-900">
+                  {user?.fullName || "Your account"}
+                </h2>
+                <p className="mt-1 break-all text-sm text-slate-500">
+                  {user?.email || "Add your email address"}
+                </p>
+              </div>
+            </div>
 
-          {/* Email */}
-          <div className="flex flex-col">
-            <label
-              htmlFor="email"
-              className="text-sm font-semibold text-gray-700">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              // placeholder={user.email}
-              className="mt-2 w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: "Please enter a valid email address",
-                },
-              })}
-            />
-            {errors.email && (
-              <p className="text-xs text-red-500 mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="min-w-0 p-4 sm:p-6 lg:p-7">
+              <div className="grid min-w-0 gap-4 gap-y-5 sm:grid-cols-2 sm:gap-x-5">
+                {fields.map(({ name, label, type, icon: Icon, rules }) => (
+                  <div key={name}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Icon
+                        aria-hidden="true"
+                        className="pointer-events-none h-4 w-4 -translate-y-1/2 text-slate-400"
+                      />
+                      <label
+                        htmlFor={name}
+                        className="block text-sm font-medium text-slate-700">
+                        {label}
+                      </label>
+                    </div>
+                    <div className="relative">
+                      <input
+                        id={name}
+                        type={type}
+                        min={name === "age" ? 18 : undefined}
+                        aria-invalid={Boolean(errors[name])}
+                        aria-describedby={
+                          errors[name] ? `${name}-error` : undefined
+                        }
+                        className={`w-full min-w-0 rounded-xl border bg-white py-2 sm:py-3 px-3 pl-10 pr-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100 ${
+                          errors[name] ? "border-rose-300" : "border-slate-200"
+                        }`}
+                        {...register(name, rules)}
+                      />
+                    </div>
+                    {errors[name] && (
+                      <p
+                        id={`${name}-error`}
+                        role="alert"
+                        className="mt-1.5 text-xs font-medium text-rose-600">
+                        {errors[name].message}
+                      </p>
+                    )}
+                  </div>
+                ))}
 
-          {/* Age */}
-          <div className="flex flex-col">
-            <label
-              htmlFor="age"
-              className="text-sm font-semibold text-gray-700">
-              Age
-            </label>
-            <input
-              id="age"
-              type="number"
-              min={18}
-              // placeholder={user.age}
-              className="mt-2 w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
-              {...register("age", {
-                required: "Age is required",
-                min: {
-                  value: 18,
-                  message: "You must be at least 18 years old",
-                },
-              })}
-            />
-            {errors.age && (
-              <p className="text-xs text-red-500 mt-1">{errors.age.message}</p>
-            )}
-          </div>
+                <div className="sm:col-span-2">
+                  <div className="flex items-center mb-2 gap-2">
+                    <FiMapPin
+                      aria-hidden="true"
+                      className="pointer-events-none h-4 w-4 text-slate-400"
+                    />
+                    <label
+                      htmlFor="address"
+                      className="block text-sm font-medium text-slate-700">
+                      Home address
+                    </label>
+                  </div>
+                  <div className="relative">
+                    <textarea
+                      id="address"
+                      rows={3}
+                      aria-invalid={Boolean(errors.address)}
+                      aria-describedby={
+                        errors.address ? "address-error" : undefined
+                      }
+                      className={`w-full resize-y rounded-xl px-3 border bg-white py-3 pl-10 pr-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100 ${
+                        errors.address ? "border-rose-300" : "border-slate-200"
+                      }`}
+                      {...register("address", {
+                        required: "Address is required",
+                      })}
+                    />
+                  </div>
+                  {errors.address && (
+                    <p
+                      id="address-error"
+                      role="alert"
+                      className="mt-1.5 text-xs font-medium text-rose-600">
+                      {errors.address.message}
+                    </p>
+                  )}
+                </div>
+              </div>
 
-          {/* Phone */}
-          <div className="flex flex-col">
-            <label
-              htmlFor="phone"
-              className="text-sm font-semibold text-gray-700">
-              Phone number
-            </label>
-            <input
-              id="phone"
-              type="tel"
-              // placeholder={user.phone}
-              className="mt-2 w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
-              {...register("phone", {
-                pattern: {
-                  value: /^[6-9]\d{9}$/,
-                  message: "Please enter a valid Indian mobile number",
-                },
-                required: "Phone number is required",
-              })}
-            />
-            {errors.phone && (
-              <p className="text-xs text-red-500 mt-1">
-                {errors.phone.message}
-              </p>
-            )}
-          </div>
-
-          {/* Address */}
-          <div className="flex flex-col md:col-span-2">
-            <label
-              htmlFor="address"
-              className="text-sm font-semibold text-gray-700">
-              Address
-            </label>
-            <textarea
-              id="address"
-              // placeholder={
-              //   user.address ? user.address : "Please enter address here..."
-              // }
-              rows={4}
-              className="mt-2 w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
-              {...register("address", { required: "Address is required" })}
-            />
-            {errors.address && (
-              <p className="text-xs text-red-500 mt-1">
-                {errors.address.message}
-              </p>
-            )}
-          </div>
-
-          {/* Submit Button */}
-          <div className="md:col-span-2">
-            <button
-              type="submit"
-              disabled={!isDirty}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 transition-colors cursor-pointer">
-              Update Profile
-            </button>
-          </div>
-        </form>
+              <div className="mt-7 flex justify-center pt-5">
+                <button
+                  type="submit"
+                  disabled={!isDirty || isSubmitting}
+                  className="inline-flex min-h-11 items-center justify-center gap-2 cursor-pointer rounded-xl bg-violet-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none">
+                  <FiSave aria-hidden="true" className="h-4 w-4" />
+                  {isSubmitting ? "Saving changes..." : "Save changes"}
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
       </div>
     </div>
   );
