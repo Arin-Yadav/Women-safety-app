@@ -1,12 +1,13 @@
-import {
-  IoAdd,
-  IoChatbubbleOutline,
-  IoPeopleOutline,
-} from "react-icons/io5";
-import { RouteHomepageLayout } from "../helpers/RouteName";
 import { Link } from "react-router-dom";
-import { HiOutlineHome } from "react-icons/hi2";
-import { FaLink } from "react-icons/fa";
+import { RouteHomepageLayout } from "../helpers/RouteName";
+import {
+  Plus,
+  MessageCircle,
+  UserGroup,
+  House,
+  Link as LinkIcon,
+  Sparkles,
+} from "lucide-react";
 
 const ChatSidebar = ({
   rooms,
@@ -37,7 +38,7 @@ const ChatSidebar = ({
       <div className="mb-5 flex items-center justify-between pb-3 border-b border-gray-300 px-2">
         <Link to={RouteHomepageLayout} className="flex items-center gap-3">
           <span className="grid h-8 w-8 place-items-center rounded-2xl bg-linear-to-br from-fuchsia-500 to-violet-700 text-lg text-white shadow-md shadow-violet-200">
-            <IoChatbubbleOutline />
+            <MessageCircle size={16} />
           </span>
           <span>
             <span className="block text-lg font-bold leading-tight tracking-tight text-slate-900 sm:text-xl">
@@ -53,33 +54,27 @@ const ChatSidebar = ({
       {/* Quick Action */}
       <div className="mb-5 pb-3  flex flex-col gap-3">
         <p className="mb-3 flex items-center gap-2 px-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
-          <FaLink className="text-sm" />
+          <LinkIcon size={16} className="text-sm" />
           Quick Action
         </p>
 
         <Link
           to={RouteHomepageLayout}
           className="flex items-center gap-2 rounded px-4 py-3 ring-1 ring-violet-100 text-sm font-semibold text-violet-700 transition hover:border-violet-200 hover:bg-violet-100 focus-visible:outline-2 focus-visible:outline-violet-500 sm:px-5">
-          <HiOutlineHome className="text-base" />
+          <House size={16} strokeWidth={1} className="text-base" />
           <span>Home</span>
         </Link>
-
-        {/* <Link
-          className="flex items-center gap-2 rounded shadow-sm ring-1 ring-violet-100 px-4 py-3 text-sm font-semibold text-violet-700 transition hover:border-violet-200 hover:bg-violet-100 focus-visible:outline-2 focus-visible:outline-violet-500 sm:px-5">
-          <HiOutlineHome className="text-base" />
-          <span>Create Group</span>
-        </Link> */}
 
         <button
           onClick={onOpenModal}
           className="flex items-center gap-2 rounded px-4 py-3 ring-1 ring-violet-100 text-sm font-semibold text-violet-700 transition hover:border-violet-200 cursor-pointer hover:bg-violet-100 focus-visible:outline-2 focus-visible:outline-violet-500 sm:px-5">
-          <IoAdd className="text-base" />
+          <Plus strokeWidth={1} size={16} className="text-base" />
           <span>Create a group</span>
         </button>
       </div>
 
       <div className="mb-3 flex items-center gap-2 px-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
-        <IoPeopleOutline className="text-sm" />
+        <UserGroup size={16} className="text-sm" />
         Groups
       </div>
 
@@ -121,7 +116,7 @@ const ChatSidebar = ({
                     </span>
                   </span>
                   {/* {isSelected && (
-                    <IoSparkles className="shrink-0 text-violet-500" />
+                    <Sparkles className="shrink-0 text-violet-500" />
                   )} */}
                 </button>
               </li>
@@ -129,7 +124,7 @@ const ChatSidebar = ({
           })
         ) : (
           <li className="mx-1 rounded-2xl border border-dashed border-violet-200 bg-violet-50/40 px-4 py-7 text-center">
-            <IoPeopleOutline className="mx-auto text-2xl text-violet-300" />
+            <UserGroup className="mx-auto text-2xl text-violet-300" />
             <p className="mt-2 text-sm font-semibold text-slate-600">
               Your groups will appear here
             </p>
@@ -153,7 +148,7 @@ const ChatSidebar = ({
         onClick={onOpenModal}
         className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-fuchsia-600 to-violet-700 px-5 py-3.5 text-sm cursor-pointer font-bold text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">
         Create a group
-        <IoAdd className="text-xl" />
+        <Plus className="text-xl" />
       </button> */}
     </aside>
   );

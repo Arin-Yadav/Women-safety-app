@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
-import { RxHamburgerMenu } from "react-icons/rx";
-import { IoMdClose } from "react-icons/io";
-import { HiOutlineShieldCheck } from "react-icons/hi2";
 import { RouteHomepageLayout } from "../helpers/RouteName";
+import { Menu, ShieldCheck, X } from "lucide-react";
 // import { useSelector } from "react-redux";
 
 const HomePageNavbar = ({ sidebarOpen, setSidebarOpen }) => {
@@ -26,14 +24,14 @@ const HomePageNavbar = ({ sidebarOpen, setSidebarOpen }) => {
             aria-expanded={sidebarOpen}
             aria-controls="homepage-sidebar"
             className="flex h-10 w-10 items-center justify-center rounded-xl text-xl cursor-pointer text-violet-800 transition hover:bg-violet-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700 md:hidden">
-            {!sidebarOpen ? <RxHamburgerMenu /> : <IoMdClose />}
+            {!sidebarOpen ? <Menu size={16} /> : <X size={16} />}
           </button>
 
           <Link
             to={RouteHomepageLayout}
             className="flex items-center gap-2 text-xl font-bold tracking-tight text-violet-800 sm:text-2xl">
             <span>Suraksha</span>
-            <HiOutlineShieldCheck className="h-7 w-7" />
+            <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5" />
           </Link>
         </div>
 
@@ -44,7 +42,7 @@ const HomePageNavbar = ({ sidebarOpen, setSidebarOpen }) => {
           <span
             aria-label={user?.fullName ? `${user.fullName} profile` : "Profile"}
             className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-100 text-sm font-bold text-violet-800">
-            {initials || <HiOutlineShieldCheck className="h-5 w-5" />}
+            {initials || <ShieldCheck className="h-5 w-5" />}
           </span>
         </div> */}
       </div>

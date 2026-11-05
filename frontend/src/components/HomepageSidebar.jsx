@@ -2,17 +2,14 @@ import axios from "axios";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  HiArrowRightOnRectangle,
-  HiOutlineChatBubbleLeftRight,
-  HiOutlineHome,
-  HiOutlineUserCircle,
-} from "react-icons/hi2";
-import {
   RouteChatLayout,
   RouteHomepageLayout,
   RouteIndex,
   RouteProfile,
 } from "../helpers/RouteName";
+import { House, LogOut, MessageCircle, User } from "lucide-react";
+
+User
 
 const HomePageSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -38,17 +35,17 @@ const HomePageSidebar = ({ sidebarOpen, setSidebarOpen }) => {
     {
       label: "Overview",
       to: RouteHomepageLayout,
-      icon: <HiOutlineHome className="h-5 w-5" />,
+      icon: <House className="h-5 w-5" />,
     },
     {
       label: "Messages",
       to: RouteChatLayout,
-      icon: <HiOutlineChatBubbleLeftRight className="h-5 w-5" />,
+      icon: <MessageCircle className="h-5 w-5" />,
     },
     {
       label: "My profile",
       to: RouteProfile,
-      icon: <HiOutlineUserCircle className="h-5 w-5" />,
+      icon: <User className="h-5 w-5" />,
     },
   ];
 
@@ -102,7 +99,7 @@ const HomePageSidebar = ({ sidebarOpen, setSidebarOpen }) => {
           type="button"
           onClick={handleLogout}
           className="flex min-h-11 w-full items-center justify-center gap-2 cursor-pointer rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 transition hover:border-rose-200 hover:bg-rose-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600">
-          <HiArrowRightOnRectangle className="h-5 w-5" />
+          <LogOut className="h-4 w-4 sm:h-5 sm:w-5" />
           Log out
         </button>
       </div>

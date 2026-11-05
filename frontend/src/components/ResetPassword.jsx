@@ -6,11 +6,7 @@ import {
 } from "react-router-dom";
 
 import { useState } from "react";
-
-import {
-  FaEye,
-  FaEyeSlash
-} from "react-icons/fa";
+import { Eye, EyeOff } from "lucide-react";
 
 const ResetPassword = () => {
 
@@ -194,8 +190,8 @@ const ResetPassword = () => {
 
               {
                 showPassword
-                  ? <FaEyeSlash />
-                  : <FaEye />
+                  ? <EyeOff />
+                  : <Eye />
               }
 
             </button>

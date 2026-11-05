@@ -3,8 +3,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import { useSocket } from "../hooks/useSocket";
-import { IoSend, IoPeopleOutline } from "react-icons/io5";
-// import { CiLocationOn } from "react-icons/ci";
+import { SendHorizontal, Users, MapPin } from "lucide-react";
 import ManageMembersModal from "./ManageMembersModal";
 
 const MessageBubble = React.memo(({ msg, userId }) => {
@@ -33,7 +32,7 @@ const MessageBubble = React.memo(({ msg, userId }) => {
             </div>
 
             <p className="font-medium flex items-center gap-1 mt-2">
-              {/* <CiLocationOn className="text-lg" /> */}
+              {/* <MapPin  className="text-lg" /> */}
               {isOwnMessage ? (
                 <>
                   <span>{msg?.sender?.fullName}</span>
@@ -83,7 +82,7 @@ const MessageList = React.memo(({ messages, userId, typingUsers }) => {
       ) : (
         <div className="flex h-full min-h-56 flex-col items-center justify-center px-4 text-center">
           {/* <div className="grid h-16 w-16 place-items-center rounded-3xl border border-violet-100 bg-white text-2xl text-violet-500 shadow-sm">
-            <IoPeopleOutline />
+            <Users />
           </div> */}
           {/* <p className="mt-4 text-base font-bold text-slate-700">
             A fresh start
@@ -120,7 +119,7 @@ const MessageList = React.memo(({ messages, userId, typingUsers }) => {
 const ChatArea = ({ room }) => {
   const fullUser = useSelector((state) => state.user);
   const user = fullUser?.user;
-  const userId = user?._id;
+  const userId = user?.id;
   const username = user?.username || user?.fullName;
 
   const [messages, setMessages] = useState([]);
@@ -257,8 +256,8 @@ const ChatArea = ({ room }) => {
           <button
             onClick={() => setShowManageModal(true)}
             className="inline-flex shrink-0 items-center gap-2 rounded-full cursor-pointer border border-violet-100 bg-violet-50 px-3 py-2 text-xs font-bold text-violet-700 transition hover:bg-violet-100 focus-visible:outline-2 focus-visible:outline-violet-500 sm:px-4 sm:text-sm">
-            <IoPeopleOutline />
-            <span className="hidden sm:inline">Manage</span>
+            <Users strokeWidth={1} size={16} className="text-sm" />
+            <span className="hidden sm:inline font-semibold">Manage</span>
           </button>
         )}
       </div>
@@ -287,7 +286,7 @@ const ChatArea = ({ room }) => {
           aria-label="Send message"
           disabled={!text.trim()}
           className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-linear-to-r from-fuchsia-600 to-violet-700 text-white shadow-md shadow-violet-200 transition hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600 disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0">
-          <IoSend className="text-lg" />
+          <SendHorizontal strokeWidth={1} className="text-lg" />
         </button>
       </form>
 

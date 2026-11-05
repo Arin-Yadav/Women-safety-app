@@ -1,4 +1,4 @@
-import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import { ShieldCheck } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="md:col-span-2">
           <h2 className="flex items-center gap-2 text-3xl font-bold text-violet-800 sm:text-4xl">
             Suraksha
-            <IoShieldCheckmarkOutline />
+            <ShieldCheck />
           </h2>
           <p className="mt-3 max-w-md text-sm leading-6 text-slate-500">
             Stay connected to your trusted circle with location sharing,

@@ -2,9 +2,7 @@ import { useState } from "react";
 import { Link as ScrollLink } from "react-scroll";
 import { Link } from "react-router-dom";
 import { RouteIndex, RouteLogin } from "../helpers/RouteName";
-import { RxHamburgerMenu } from "react-icons/rx";
-import { IoMdClose } from "react-icons/io";
-import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import { Menu, ShieldCheck, X } from "lucide-react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +17,7 @@ export default function Navbar() {
             to={RouteIndex}
             className="flex items-center text-2xl gap-2 font-bold text-purple-700">
             <span>Suraksha</span>
-            <IoShieldCheckmarkOutline />
+            <ShieldCheck />
           </Link>
 
           {/* Desktop Menu */}
@@ -62,7 +60,7 @@ export default function Navbar() {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden text-xl text-purple-700 focus:outline-none">
-            {isOpen ? <IoMdClose /> : <RxHamburgerMenu />}
+            {isOpen ? <X /> : <Menu />}
           </button>
         </div>
       </div>

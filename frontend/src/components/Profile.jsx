@@ -5,27 +5,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { setUser } from "../redux/slices/userSlice";
 import {
-  FiCalendar,
-  FiMapPin,
-  FiMail,
-  FiPhone,
-  FiSave,
-  FiUser,
-} from "react-icons/fi";
+  CalendarDays,
+  MapPin,
+  Mail,
+  Phone,
+  Save,
+  User,
+} from "lucide-react";
 
 const fields = [
   {
     name: "fullName",
     label: "Full name",
     type: "text",
-    icon: FiUser,
+    icon: User,
     rules: { required: "Full name is required" },
   },
   {
     name: "email",
     label: "Email address",
     type: "email",
-    icon: FiMail,
+    icon: Mail,
     rules: {
       required: "Email is required",
       pattern: {
@@ -38,7 +38,7 @@ const fields = [
     name: "age",
     label: "Age",
     type: "number",
-    icon: FiCalendar,
+    icon: CalendarDays,
     rules: {
       required: "Age is required",
       min: { value: 18, message: "You must be at least 18 years old" },
@@ -48,7 +48,7 @@ const fields = [
     name: "phone",
     label: "Phone number",
     type: "tel",
-    icon: FiPhone,
+    icon: Phone,
     rules: {
       required: "Phone number is required",
       pattern: {
@@ -167,7 +167,7 @@ const Profile = () => {
                     <div className="flex items-center gap-2 mb-2">
                       <Icon
                         aria-hidden="true"
-                        className="pointer-events-none h-4 w-4 -translate-y-1/2 text-slate-400"
+                        className="pointer-events-none h-4 w-4 text-slate-400"
                       />
                       <label
                         htmlFor={name}
@@ -184,7 +184,7 @@ const Profile = () => {
                         aria-describedby={
                           errors[name] ? `${name}-error` : undefined
                         }
-                        className={`w-full min-w-0 rounded-xl border bg-white py-2 sm:py-3 px-3 pl-10 pr-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100 ${
+                        className={`w-full min-w-0 rounded-xl border bg-white py-2 sm:py-3 px-3 sm:px-3 pl-10 pr-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100 ${
                           errors[name] ? "border-rose-300" : "border-slate-200"
                         }`}
                         {...register(name, rules)}
@@ -203,7 +203,7 @@ const Profile = () => {
 
                 <div className="sm:col-span-2">
                   <div className="flex items-center mb-2 gap-2">
-                    <FiMapPin
+                    <MapPin
                       aria-hidden="true"
                       className="pointer-events-none h-4 w-4 text-slate-400"
                     />
@@ -221,7 +221,7 @@ const Profile = () => {
                       aria-describedby={
                         errors.address ? "address-error" : undefined
                       }
-                      className={`w-full resize-y rounded-xl px-3 border bg-white py-3 pl-10 pr-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100 ${
+                      className={`w-full resize-y rounded-xl px-3 sm:px-3 border bg-white py-3 pl-10 pr-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100 ${
                         errors.address ? "border-rose-300" : "border-slate-200"
                       }`}
                       {...register("address", {
@@ -245,7 +245,7 @@ const Profile = () => {
                   type="submit"
                   disabled={!isDirty || isSubmitting}
                   className="inline-flex min-h-11 items-center justify-center gap-2 cursor-pointer rounded-xl bg-violet-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none">
-                  <FiSave aria-hidden="true" className="h-4 w-4" />
+                  <Save aria-hidden="true" className="h-4 w-4" />
                   {isSubmitting ? "Saving changes..." : "Save changes"}
                 </button>
               </div>

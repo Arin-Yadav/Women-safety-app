@@ -1,28 +1,26 @@
-import { HiOutlineBellAlert } from "react-icons/hi2";
-import { CiLocationOn, CiLock } from "react-icons/ci";
-import { IoChatbubbleOutline } from "react-icons/io5";
+import { BellRing, LockKeyhole, MapPin, MessageCircle } from "lucide-react";
 
 const KeyFeatures = () => {
   const features = [
     {
       title: "Emergency Alerts",
       desc: "One tap notifies trusted contacts with your live location during emergencies.",
-      icon: <HiOutlineBellAlert className="h-8 w-8" />,
+      icon: <BellRing className="h-8 w-8" />,
     },
     {
       title: "Live Location",
       desc: "Share your real-time location with family and guardians for added safety.",
-      icon: <CiLocationOn className="h-8 w-8" />,
+      icon: <MapPin className="h-8 w-8" />,
     },
     {
       title: "Chat Support",
       desc: "Keep in touch with your trusted circle through in-app group messaging.",
-      icon: <IoChatbubbleOutline className="h-8 w-8" />,
+      icon: <MessageCircle className="h-8 w-8" />,
     },
     {
       title: "Privacy First",
       desc: "Choose who belongs in your trusted circle and when to share your location.",
-      icon: <CiLock className="h-8 w-8" />,
+      icon: <LockKeyhole className="h-8 w-8" />,
     },
   ];
 

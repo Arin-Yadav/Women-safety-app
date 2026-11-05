@@ -1,11 +1,11 @@
 import {
-  HiArrowRight,
-  HiOutlineBellAlert,
-  HiOutlineChatBubbleLeftRight,
-  HiOutlineMapPin,
-  HiOutlineShieldCheck,
-  HiOutlineUserGroup,
-} from "react-icons/hi2";
+  ArrowRight,
+  BellRing,
+  MapPin,
+  MessageCircle,
+  ShieldCheck,
+  UsersRound,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { RouteSignup } from "../helpers/RouteName";
 import Navbar from "./Navbar";
@@ -19,21 +19,21 @@ const steps = [
     title: "Build your trusted circle",
     description:
       "Bring the people you rely on into one place, so support is easier to reach when you need it.",
-    icon: <HiOutlineUserGroup className="h-6 w-6" />,
+    icon: <UsersRound className="h-6 w-6" />,
   },
   {
     number: "02",
     title: "Stay connected on the go",
     description:
       "Share your location with your circle and keep in touch through in-app messaging.",
-    icon: <HiOutlineMapPin className="h-6 w-6" />,
+    icon: <MapPin className="h-6 w-6" />,
   },
   {
     number: "03",
     title: "Send an SOS when it matters",
     description:
       "Use the emergency alert to notify your trusted contacts and share your location.",
-    icon: <HiOutlineBellAlert className="h-6 w-6" />,
+    icon: <BellRing className="h-6 w-6" />,
   },
 ];
 
@@ -54,7 +54,7 @@ const LandingPage = () => {
           <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
             <div className="text-center lg:text-left">
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-rose-100 bg-white/80 px-4 py-2 text-sm font-medium text-rose-700 shadow-sm">
-                <HiOutlineShieldCheck className="h-5 w-5" />A little more
+                <ShieldCheck className="h-5 w-5" />A little more
                 confidence, wherever you go
               </div>
 
@@ -75,7 +75,7 @@ const LandingPage = () => {
                   to={RouteSignup}
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-violet-700 px-7 py-3.5 font-semibold text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5 hover:bg-violet-800 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700">
                   Create your account
-                  <HiArrowRight className="h-5 w-5" />
+                  <ArrowRight className="h-5 w-5" />
                 </Link>
                 <a
                   href="#features"
@@ -99,7 +99,7 @@ const LandingPage = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-violet-100 text-violet-700">
-                        <HiOutlineShieldCheck className="h-6 w-6" />
+                        <ShieldCheck className="h-6 w-6" />
                       </div>
                       <div>
                         <p className="font-semibold text-slate-900">
@@ -143,7 +143,7 @@ const LandingPage = () => {
                       />
                     </svg>
                     <div className="relative flex h-16 w-16 items-center justify-center rounded-full border-4 border-white bg-violet-700 text-white shadow-xl shadow-violet-300/70">
-                      <HiOutlineMapPin className="h-8 w-8" />
+                      <MapPin className="h-8 w-8" />
                     </div>
                     <div className="absolute bottom-4 left-4 rounded-xl border border-white/80 bg-white/95 px-3 py-2 shadow-lg">
                       <p className="text-xs font-semibold text-slate-800">
@@ -154,14 +154,14 @@ const LandingPage = () => {
                       </p>
                     </div>
                     <div className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border-4 border-white bg-rose-100 text-rose-600 shadow-md">
-                      <HiOutlineUserGroup className="h-5 w-5" />
+                      <UsersRound className="h-5 w-5" />
                     </div>
                   </div>
 
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     <div className="flex items-center gap-3 rounded-2xl cursor-pointer border border-slate-100 bg-white p-3">
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
-                        <HiOutlineBellAlert className="h-5 w-5" />
+                        <BellRing className="h-5 w-5" />
                       </span>
                       <span>
                         <span className="block text-sm font-semibold text-slate-800">
@@ -174,7 +174,7 @@ const LandingPage = () => {
                     </div>
                     <div className="flex items-center gap-3 rounded-2xl cursor-pointer border border-slate-100 bg-white p-3">
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-700">
-                        <HiOutlineChatBubbleLeftRight className="h-5 w-5" />
+                        <MessageCircle className="h-5 w-5" />
                       </span>
                       <span>
                         <span className="block text-sm font-semibold text-slate-800">

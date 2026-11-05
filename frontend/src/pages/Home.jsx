@@ -1,26 +1,26 @@
 import axios from "axios";
 import { useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import {
-  HiArrowUpRight,
-  HiOutlineBellAlert,
-  HiOutlineCheckCircle,
-  HiOutlineExclamationTriangle,
-  HiOutlineMapPin,
-  HiOutlinePhone,
-  HiOutlineSpeakerWave,
-  HiOutlineUserGroup,
-} from "react-icons/hi2";
-import SafetyTips from "../components/SafetyTips";
 import { RouteChatLayout } from "../helpers/RouteName";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import SafetyTips from "../components/SafetyTips";
+import {
+  ArrowUpRight,
+  BellRing,
+  CircleCheck,
+  MapPin,
+  Phone,
+  TriangleAlert,
+  UsersRound,
+  Volume2,
+} from "lucide-react";
 
 const Home = () => {
   const [sosState, setSosState] = useState({ status: "idle", message: "" });
   const [soundMessage, setSoundMessage] = useState("");
   const [playingSound, setPlayingSound] = useState(null);
 
-  const user = useSelector((state) => state?.user?.user );
+  const user = useSelector((state) => state?.user?.user);
   const rooms = useSelector((state) => state?.room?.rooms) || [];
   const privateRooms = rooms.filter((room) => room.roomType === "private");
 
@@ -157,16 +157,16 @@ const Home = () => {
         onEnded={() => setPlayingSound(null)}
       />
 
-      <main className="mx-auto w-full max-w-7xl px-4 py-7 sm:px-6 sm:py-9 lg:px-10 lg:py-11">
+      <main className="mx-auto w-full max-w-7xl px-4 py-7 sm:px-6 lg:px-10">
         <section className="mb-8 flex flex-col gap-5 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-semibold text-violet-700">
-              YOUR PERSONAL SAFETY SPACE
-            </p>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+            <h1 className="mt-2 text-3xl font-bold tracking-tight text-violet-700 sm:text-4xl">
               {greeting}
               {firstName ? `, ${firstName}` : ""}
             </h1>
+            {/* <p className="text-sm mt-5 font-semibold text-violet-700">
+              YOUR PERSONAL SAFETY SPACE
+            </p> */}
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
               Your trusted circle and safety tools are all in one place. Take a
               moment to check in before you head out.
@@ -176,7 +176,7 @@ const Home = () => {
             to={RouteChatLayout}
             className="inline-flex min-h-11 items-center justify-center sm:hidden gap-2 self-start rounded-xl border border-violet-200 bg-white px-4 py-2.5 text-sm font-semibold text-violet-800 shadow-sm transition hover:border-violet-300 hover:bg-violet-50 sm:self-auto">
             Open your chats
-            <HiArrowUpRight className="h-4 w-4" />
+            <ArrowUpRight className="h-4 w-4" />
           </Link>
         </section>
 
@@ -186,14 +186,14 @@ const Home = () => {
             <div className="relative">
               <div className="flex items-start gap-4">
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-rose-50 text-rose-600">
-                  <HiOutlineBellAlert className="h-6 w-6" />
+                  <BellRing className="h-6 w-6" />
                 </span>
                 <div>
                   <h2 className="text-xl font-bold text-slate-950 sm:text-2xl">
                     Emergency SOS
                   </h2>
                   <p className="mt-1 text-sm leading-6 text-slate-600">
-                    Sends your current location to your private rooms.
+                    Sends your current location to your private rooms/groups.
                   </p>
                 </div>
               </div>
@@ -215,7 +215,6 @@ const Home = () => {
               </div>
 
               <div className="mt-5 flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-                <HiOutlineUserGroup className="h-5 w-5 shrink-0 text-violet-700" />
                 <p className="text-sm text-slate-600">
                   {privateRooms.length > 0 ? (
                     <>
@@ -223,7 +222,7 @@ const Home = () => {
                       <Link
                         to={RouteChatLayout}
                         className="font-semibold pl-1 text-blue-600 hover:text-blue-700 hover:underline">
-                        {privateRooms.length} emergency / private
+                        {privateRooms.length} emergency/private
                         <span className="pl-1">
                           {privateRooms.length === 1 ? "room" : "rooms"}
                         </span>
@@ -251,9 +250,9 @@ const Home = () => {
                         : "bg-violet-50 text-violet-800"
                   }`}>
                   {sosState.status === "error" ? (
-                    <HiOutlineExclamationTriangle className="mt-0.5 h-5 w-5 shrink-0" />
+                    <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0" />
                   ) : (
-                    <HiOutlineCheckCircle className="mt-0.5 h-5 w-5 shrink-0" />
+                    <CircleCheck className="mt-0.5 h-5 w-5 shrink-0" />
                   )}
                   {sosState.message}
                 </div>
@@ -268,7 +267,7 @@ const Home = () => {
           <section className="rounded-[1.75rem] border border-violet-100 bg-[#e6e2f4] p-5 sm:p-8">
             <div className="flex items-start gap-4">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-violet-700 shadow-sm">
-                <HiOutlineSpeakerWave className="h-6 w-6" />
+                <Volume2 className="h-6 w-6" />
               </span>
               <div>
                 <h2 className="text-xl font-bold text-slate-950 sm:text-2xl">
@@ -285,7 +284,7 @@ const Home = () => {
               <article className="rounded-2xl border border-amber-100 bg-white p-4 sm:p-5">
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
-                    <HiOutlineSpeakerWave className="h-5 w-5" />
+                    <Volume2 className="h-5 w-5" />
                   </span>
                   <div>
                     <h3 className="font-semibold text-slate-900">
@@ -311,7 +310,7 @@ const Home = () => {
               <article className="rounded-2xl border border-emerald-100 bg-white p-4 sm:p-5">
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
-                    <HiOutlinePhone className="h-5 w-5" />
+                    <Phone className="h-5 w-5" />
                   </span>
                   <div>
                     <h3 className="font-semibold text-slate-900">
@@ -356,7 +355,7 @@ const Home = () => {
         <section className="mt-8 rounded-[1.75rem] border border-slate-100 bg-white p-5 shadow-sm sm:mt-10 sm:p-8">
           <div className="mb-6 flex items-center gap-3">
             <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-50 text-sky-700">
-              <HiOutlineMapPin className="h-5 w-5" />
+              <MapPin className="h-5 w-5" />
             </span>
             <div>
               <h2 className="text-xl font-bold text-slate-950">
