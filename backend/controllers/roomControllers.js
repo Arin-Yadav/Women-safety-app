@@ -150,7 +150,7 @@ async function getRoomWithPrivateMembers(req, res) {
         .json({ success: false, message: "Room not found" });
     }
 
-    res.json({
+    res.status(200).json({
       success: true,
       roomName: room.roomName,
       roomType: room.roomType,
