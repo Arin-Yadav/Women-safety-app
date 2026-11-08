@@ -1,12 +1,19 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { RouteChatLayout } from "../helpers/RouteName";
+import { X, EllipsisVertical, Trash, Menu } from "lucide-react";
+import { removeRoom } from "../redux/slices/roomSlice";
 
-function ManageMembersModal({ roomId, onClose }) {
+function ManageMembersModal({ roomId, onClose, setSelectedRoom }) {
   const [email, setEmail] = useState("");
   const [members, setMembers] = useState([]);
   const [emergencyEmails, setEmergencyEmails] = useState([]);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const fullUser = useSelector((state) => state.user);
   const user = fullUser?.user;
@@ -52,7 +59,8 @@ function ManageMembersModal({ roomId, onClose }) {
         toast.success(response.data.message);
       }
     } catch (error) {
-      console.error("Add Member Error:", error);
+      console.error("Add Member Error:", error.response.data.message);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -64,10 +72,35 @@ function ManageMembersModal({ roomId, onClose }) {
         { withCredentials: true },
       );
 
-      setMembers(response.data.members || []);
-      setEmergencyEmails(response.data.emergencyEmails || []);
+      if (response.data.success) {
+        setMembers(response.data.members || []);
+        setEmergencyEmails(response.data.emergencyEmails || []);
+        toast.success(response.data.message);
+      }
     } catch (error) {
       console.error("Remove Member Error:", error);
+      toast.error(error.response.data.message);
+    }
+  };
+
+  // console.log("setSelectedRoom:", typeof setSelectedRoom);
+  
+  const handleDeleteGroup = async () => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/api/rooms/${roomId}`,
+        { withCredentials: true },
+      );
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        navigate(RouteChatLayout);
+        dispatch(removeRoom(roomId));
+        setSelectedRoom(null);
+      }
+    } catch (error) {
+      console.error("Remove Member Error:", error);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -76,11 +109,11 @@ function ManageMembersModal({ roomId, onClose }) {
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 sm:mx-0 p-6 sm:p-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">Manage Members</h2>
-          <button
+          {/* <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 transition">
-            ✕
-          </button>
+            <X />
+          </button> */}
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
@@ -116,7 +149,7 @@ function ManageMembersModal({ roomId, onClose }) {
                     <button
                       onClick={() => handleRemoveMember(m._id, "registered")}
                       className="text-sm text-red-600 hover:text-red-800 transition cursor-pointer">
-                      Remove
+                      <Trash strokeWidth={1} size={16} />
                     </button>
                   </li>
                 ))}
@@ -135,7 +168,7 @@ function ManageMembersModal({ roomId, onClose }) {
                         handleRemoveMember(item._id || item.email, "emergency")
                       }
                       className="text-sm text-red-600 hover:text-red-800 transition cursor-pointer">
-                      Remove
+                      <Trash strokeWidth={1} size={16} />
                     </button>
                   </li>
                 ))}
@@ -144,7 +177,16 @@ function ManageMembersModal({ roomId, onClose }) {
           </ul>
         </div>
 
-        <div className="flex justify-end mt-6">
+        <div className="flex justify-end mt-6 gap-4">
+          <button
+            onClick={async () => {
+              await handleDeleteGroup();
+              onClose();
+            }}
+            className="px-5 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 text-red-500 transition cursor-pointer">
+            Delete Group
+          </button>
+
           <button
             onClick={onClose}
             className="px-5 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition cursor-pointer">

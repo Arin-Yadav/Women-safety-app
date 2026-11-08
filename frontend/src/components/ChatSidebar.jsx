@@ -6,7 +6,6 @@ import {
   UserGroup,
   House,
   Link as LinkIcon,
-  Sparkles,
 } from "lucide-react";
 
 const ChatSidebar = ({

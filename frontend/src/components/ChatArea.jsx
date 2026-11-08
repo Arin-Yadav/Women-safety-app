@@ -3,7 +3,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import { useSocket } from "../hooks/useSocket";
-import { SendHorizontal, Users, MapPin } from "lucide-react";
+import { SendHorizontal, Users } from "lucide-react";
 import ManageMembersModal from "./ManageMembersModal";
 
 const MessageBubble = React.memo(({ msg, userId }) => {
@@ -116,7 +116,7 @@ const MessageList = React.memo(({ messages, userId, typingUsers }) => {
   );
 });
 
-const ChatArea = ({ room }) => {
+const ChatArea = ({ room, setSelectedRoom }) => {
   const fullUser = useSelector((state) => state.user);
   const user = fullUser?.user;
   const userId = user?.id;
@@ -294,6 +294,8 @@ const ChatArea = ({ room }) => {
         <ManageMembersModal
           roomId={room._id}
           onClose={() => setShowManageModal(false)}
+          selectedRoom={room}
+          setSelectedRoom={setSelectedRoom}
         />
       )}
     </div>

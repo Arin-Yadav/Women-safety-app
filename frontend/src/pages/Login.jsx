@@ -5,7 +5,7 @@ import { signinSchema } from "../validation/signinSchema";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/slices/userSlice";
-import { useState } from "react";
+import { toast } from "react-toastify";
 import {
   RouteForgotPassword,
   RouteHomepageLayout,
@@ -16,12 +16,9 @@ export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [serverError, setServerError] = useState("");
-
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(signinSchema),
@@ -36,31 +33,14 @@ export default function Login() {
         { withCredentials: true },
       );
 
-      dispatch(setUser(response.data.user));
-      navigate(RouteHomepageLayout);
+      if (response.data.success) {
+        dispatch(setUser(response.data.user));
+        navigate(RouteHomepageLayout);
+        toast.success(response.data.message)
+      }
     } catch (err) {
       console.error("FULL ERROR:", err);
-
-      if (err.response) {
-        const message = err.response.data.message;
-
-        // Show under fields
-        if (message.toLowerCase().includes("email")) {
-          setError("email", {
-            type: "manual",
-            message: message,
-          });
-        } else if (message.toLowerCase().includes("password")) {
-          setError("password", {
-            type: "manual",
-            message: message,
-          });
-        } else {
-          setServerError(message); // show top error
-        }
-      } else {
-        setServerError("Network error");
-      }
+      toast.error(err?.response?.data?.message);
     }
   };
 
@@ -76,11 +56,6 @@ export default function Login() {
             Login to continue to Suraksha
           </p>
         </div>
-
-        {/* Server Error */}
-        {serverError && (
-          <p className="text-red-500 text-center mb-3">{serverError}</p>
-        )}
 
         {/* Form */}
         <form

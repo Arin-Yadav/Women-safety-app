@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const roomSlice = createSlice({
   name: "room",
-  initialState: { rooms: [], currentRoomId: null },
+  initialState: { rooms: [] },
   reducers: {
     setRoom: (state, action) => {
       state.rooms = action.payload; // replace with full array
@@ -11,11 +11,11 @@ const roomSlice = createSlice({
     addRoom: (state, action) => {
       state.rooms.push(action.payload); // add new room
     },
-    setCurrentRoomId: (state, action) => {
-      state.currentRoomId = action.payload;
+    removeRoom: (state, action) => {
+      state.rooms = state.rooms.filter((room) => room._id !== action.payload);
     },
   },
 });
 
-export const { setRoom, addRoom, setCurrentRoomId } = roomSlice.actions;
+export const { setRoom, addRoom, removeRoom } = roomSlice.actions;
 export default roomSlice.reducer;

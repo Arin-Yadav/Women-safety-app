@@ -1,9 +1,10 @@
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "../validation/signupSchema.js";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteLogin } from "../helpers/RouteName.js";
-import axios from "axios";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -12,7 +13,6 @@ const SignUp = () => {
     register,
     handleSubmit,
     setValue,
-    setError,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -38,29 +38,20 @@ const SignUp = () => {
   // Submit handler
   const onSubmit = async (data) => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/signup`, data, {
-        withCredentials: true,
-      });
-      navigate(RouteLogin);
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/signup`,
+        data,
+        {
+          withCredentials: true,
+        },
+      );
+      if (response.data.success) {
+        navigate(RouteLogin);
+        toast.success(response.data?.message);
+      }
     } catch (err) {
       console.error("FULL ERROR:", err);
-
-      if (err.response) {
-        const message = err.response.data.message;
-
-        // Email error
-        if (message?.toLowerCase().includes("email")) {
-          setError("email", {
-            type: "manual",
-
-            message: message,
-          });
-        } else {
-          alert(message);
-        }
-      } else {
-        alert("Network error");
-      }
+      toast.error(err.response?.data?.message);
     }
   };
 

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Home, Menu, MessageCircle, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { addRoom, setCurrentRoomId, setRoom } from "../redux/slices/roomSlice";
+import { addRoom, setRoom } from "../redux/slices/roomSlice";
 import { RouteHomepageLayout } from "../helpers/RouteName";
 import CreateRoomModal from "../components/CreateRoomModal";
 import ChatSidebar from "../components/ChatSidebar";
@@ -13,14 +13,14 @@ const ChatLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
+  
+  const dispatch = useDispatch();
   const rooms = useSelector((state) => state.room.rooms) || [];
 
   const fullUser = useSelector((state) => state.user);
   const user = fullUser?.user;
   const userId = user?.id;
 
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!userId) return;
@@ -53,10 +53,7 @@ const ChatLayout = () => {
       );
 
       const newRoom = response.data.room;
-
-      dispatch(setCurrentRoomId(newRoom._id));
       dispatch(addRoom(newRoom));
-
       setSelectedRoom(newRoom);
       setShowModal(false);
     } catch (error) {
@@ -151,7 +148,7 @@ const ChatLayout = () => {
               </button> */}
             </div>
           ) : (
-            <ChatArea key={selectedRoom._id} room={selectedRoom} />
+            <ChatArea key={selectedRoom._id} room={selectedRoom} setSelectedRoom={setSelectedRoom} />
           )}
         </main>
       </div>

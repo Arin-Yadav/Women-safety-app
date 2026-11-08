@@ -1,33 +1,33 @@
 import axios from "axios";
-import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { House, LogOut, MessageCircle, User } from "lucide-react";
 import {
   RouteChatLayout,
   RouteHomepageLayout,
   RouteIndex,
   RouteProfile,
 } from "../helpers/RouteName";
-import { House, LogOut, MessageCircle, User } from "lucide-react";
-
-User
+import { toast } from "react-toastify";
 
 const HomePageSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [logoutError, setLogoutError] = useState("");
 
   const handleLogout = async () => {
-    setLogoutError("");
     try {
-      await axios.post(
+      const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/logout`,
         {},
         { withCredentials: true },
       );
-      navigate(RouteIndex);
+
+      if (response.data.success) {
+        navigate(RouteIndex);
+        toast.success(response?.data?.message);
+      }
     } catch (error) {
       console.error("Logout failed:", error.response?.data || error.message);
-      setLogoutError("Could not log out. Please try again.");
+      toast.error(error.response?.data?.message);
     }
   };
 
@@ -90,11 +90,6 @@ const HomePageSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       </nav>
 
       <div className="mt-auto border-t border-slate-100 pt-4">
-        {logoutError && (
-          <p role="alert" className="mb-3 text-center text-sm text-rose-700">
-            {logoutError}
-          </p>
-        )}
         <button
           type="button"
           onClick={handleLogout}
