@@ -30,13 +30,14 @@ export async function handleCreateNewUsers(req, res) {
     });
 
     return res.status(201).json({
+      success: true,
       message: "User created successfully",
     });
   } catch (err) {
     console.error(err);
-
     return res.status(500).json({
-      message: "Server error",
+      success: false,
+      message: err || "Server error",
     });
   }
 }
@@ -45,7 +46,6 @@ export async function handleCreateNewUsers(req, res) {
 export async function handleSignin(req, res) {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -82,6 +82,7 @@ export async function handleSignin(req, res) {
     });
 
     return res.status(200).json({
+      success: true,
       message: "Login successful",
       user: {
         id: user._id,
@@ -94,7 +95,6 @@ export async function handleSignin(req, res) {
     });
   } catch (err) {
     console.error(err);
-
     return res.status(500).json({
       message: "Server error",
     });
@@ -103,16 +103,25 @@ export async function handleSignin(req, res) {
 
 // LOGOUT
 export async function handleLogout(req, res) {
-  res.clearCookie("access-token", {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-    path: "/",
-  });
+  try {
+    res.clearCookie("access-token", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+    });
 
-  return res.json({
-    message: "Logged out successfully",
-  });
+    res.status(200).json({
+      message: "Logged out successfully",
+      success: true,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
 }
 
 // EDIT PROFILE

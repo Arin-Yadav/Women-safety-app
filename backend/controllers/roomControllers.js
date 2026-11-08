@@ -73,6 +73,15 @@ async function handleAddnewMemebersToRoom(req, res) {
         .json({ success: false, message: "Email is required" });
     }
 
+    const isExist = await User.findOne({ email });
+
+    if (!isExist) {
+      return res.status(404).json({
+        success: false,
+        message: "Invalid user detail",
+      });
+    }
+
     let room = await Room.findById(roomId);
 
     if (!room) {
@@ -209,10 +218,39 @@ async function handleRemovePrivateGroupMembers(req, res) {
   }
 }
 
+async function handleDeleteGroup(req, res) {
+  try {
+    const { roomId } = req.params;
+    
+    const deletedRoom = await Room.findByIdAndDelete(roomId);
+
+    if (!deletedRoom) {
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Room deleted successfully",
+      data: deletedRoom,
+    });
+  } catch (error) {
+    console.error("Delete room error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+}
+
 export {
   handleCreateRooms,
   handleGetRooms,
   handleAddnewMemebersToRoom,
   handleRemovePrivateGroupMembers,
   getRoomWithPrivateMembers,
+  handleDeleteGroup,
 };
