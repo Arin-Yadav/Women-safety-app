@@ -119,7 +119,7 @@ const MessageList = React.memo(({ messages, userId, typingUsers }) => {
 const ChatArea = ({ room, setSelectedRoom }) => {
   const fullUser = useSelector((state) => state.user);
   const user = fullUser?.user;
-  const userId = user?.id;
+  const userId = user?._id || user?.id;
   const username = user?.username || user?.fullName;
 
   const [messages, setMessages] = useState([]);

@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link as ScrollLink } from "react-scroll";
 import { Link } from "react-router-dom";
 import { RouteIndex, RouteLogin } from "../helpers/RouteName";
-import { Menu, ShieldCheck, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import logo from "../assets/images/main_logo.png"
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,8 +17,12 @@ export default function Navbar() {
           <Link
             to={RouteIndex}
             className="flex items-center text-2xl gap-2 font-bold text-purple-700">
+            <img
+              src={logo}
+              alt="Women_Safety_Logo"
+              className="h-8 w-auto lg:h-10"
+            />
             <span>Suraksha</span>
-            <ShieldCheck />
           </Link>
 
           {/* Desktop Menu */}

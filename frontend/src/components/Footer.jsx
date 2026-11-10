@@ -1,4 +1,4 @@
-import { ShieldCheck } from "lucide-react";
+import logo from "../assets/images/main_logo.png"
 
 const Footer = () => {
   return (
@@ -6,8 +6,12 @@ const Footer = () => {
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 xl:px-0 py-12 md:grid-cols-4">
         <div className="md:col-span-2">
           <h2 className="flex items-center gap-2 text-3xl font-bold text-violet-800 sm:text-4xl">
+            <img
+              src={logo}
+              alt="Women_Safety_Logo"
+              className="h-12 w-auto lg:h-14"
+            />
             Suraksha
-            <ShieldCheck />
           </h2>
           <p className="mt-3 max-w-md text-sm leading-6 text-slate-500">
             Stay connected to your trusted circle with location sharing,
@@ -51,7 +55,10 @@ const Footer = () => {
       </div>
 
       <div className="border-t border-slate-100 px-6 py-5 text-center text-xs text-slate-400">
-        <p>© {new Date().getFullYear()} Suraksha. Your safety and wellbeing matter.</p>
+        <p>
+          © {new Date().getFullYear()} Suraksha. Your safety and wellbeing
+          matter.
+        </p>
       </div>
     </footer>
   );

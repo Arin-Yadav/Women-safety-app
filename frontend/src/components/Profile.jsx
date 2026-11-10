@@ -132,15 +132,15 @@ const Profile = () => {
       .toUpperCase() || "U";
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] w-full min-w-0 bg-slate-50 mt-5 sm:mt-0 px-3 py-6 sm:px-5  lg:px-8 lg:py-10">
-      <div className="mx-auto w-full max-w-6xl min-w-0">
-        <header className="mb-6 sm:mb-8">
+    <div className="min-h-[calc(100vh-4rem)] w-full min-w-0 bg-slate-50 px-8 py-6">
+      <div className="w-full">
+        <header className="mb-6">
           <p className="mb-2 text-2xl sm:text-3xl text-center font-semibold uppercase tracking-[0.16em] text-violet-700">
             Profile
           </p>
         </header>
 
-        <div className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-start xl:gap-6">
+        <div className="max-w-4xl mx-auto">
           <section className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="flex min-w-0 gap-4 border-b border-slate-100 p-4 items-center lg:p-7">
               <div
@@ -240,7 +240,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              <div className="mt-7 flex justify-center pt-5">
+              <div className="mt-5 flex justify-center pt-5">
                 <button
                   type="submit"
                   disabled={!isDirty || isSubmitting}

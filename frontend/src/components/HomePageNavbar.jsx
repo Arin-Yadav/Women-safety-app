@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { RouteHomepageLayout } from "../helpers/RouteName";
-import { Menu, ShieldCheck, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import logo from "../assets/images/main_logo.png"
 // import { useSelector } from "react-redux";
 
 const HomePageNavbar = ({ sidebarOpen, setSidebarOpen }) => {
@@ -30,8 +31,12 @@ const HomePageNavbar = ({ sidebarOpen, setSidebarOpen }) => {
           <Link
             to={RouteHomepageLayout}
             className="flex items-center gap-2 text-xl font-bold tracking-tight text-violet-800 sm:text-2xl">
+            <img
+              src={logo}
+              alt="Women_Safety_Logo"
+              className="h-8 w-auto lg:h-10"
+            />
             <span>Suraksha</span>
-            <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5" />
           </Link>
         </div>
 
